@@ -1,0 +1,36 @@
+/my-app
+├── /public
+│   └── /favicon.ico
+│   └── /robots.txt
+│   └── /logo.png
+├── /src
+│   ├── /assets             # Store images, icons, etc.
+│   │   └── /images
+│   │   └── /icons
+│   ├── /components         # Reusable and page-specific components
+│   │   ├── /common         # Shared components like buttons, forms, etc.
+│   │   ├── /auth           # Components for login, register
+│   │   ├── /profile        # Profile-related components
+│   │   └── /chat           # Chat-related components
+│   ├── /contexts           # Contexts for app-wide state (auth, theme)
+│   │   ├── /ThemeContext.js
+│   │   └── /AuthContext.js
+│   ├── /pages              # Pages for routing (auth, home, profile, chat)
+│   │   ├── /auth           # Login, register pages
+│   │   ├── /home           # Home page
+│   │   ├── /profile        # Profile page
+│   │   └── /chat           # Chat page
+│   ├── /styles             # Global and component-specific styles
+│   │   ├── /global.css     # Global CSS (light/dark theme, etc.)
+│   │   ├── /theme          # Theme-related styles (dark/light mode)
+│   │   ├── /components     # Component-specific styles (e.g., Button.module.css)
+│   │   └── /utils          # Utility styles
+│   ├── /utils              # Helper functions (auth, api calls, chat logic)
+│   │   ├── /auth.js        # Auth-related helpers
+│   │   ├── /api.js         # API utility functions
+│   │   ├── /chat.js        # Chat helpers (e.g., socket management)
+│   │   └── /theme.js       # Theme utility functions (for light/dark)
+├── /node_modules           # Node modules folder
+├── package.json            # Project configuration (dependencies, scripts, etc.)
+├── tailwind.config.js      # Tailwind CSS config (if you're using Tailwind)
+└── next.config.js          # Next.js config (optional)

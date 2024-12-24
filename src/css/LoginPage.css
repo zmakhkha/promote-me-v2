@@ -1,0 +1,101 @@
+/* src/css/login.css */
+
+.login-page {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background: linear-gradient(45deg, #FF80A9, #FF4C8B); /* Fun gradient */
+	font-family: 'Comic Sans MS', cursive, sans-serif; /* Playful font */
+}
+
+.login-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-grow: 1;
+	padding: 2rem;
+}
+
+.login-card {
+	background: #ffffff;
+	padding: 2rem;
+	border-radius: 12px;
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+	max-width: 450px;
+	width: 100%;
+}
+
+.login-heading {
+	text-align: center;
+	margin-bottom: 1.5rem;
+	font-size: 2.5rem;
+	color: #FF4C8B; /* Matching the gradient theme */
+	font-weight: bold;
+}
+
+.login-input-group {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+}
+
+.login-input {
+	padding: 1rem;
+	border: 2px solid #FF80A9; /* Soft pink border */
+	border-radius: 8px;
+	font-size: 1.2rem;
+	transition: 0.3s;
+	width: 100%;
+	color: #333333; /* Darker text color */
+}
+
+.login-input::placeholder {
+	color: #777777; /* Darker placeholder color */
+}
+
+.login-input:focus {
+	border-color: #FF4C8B; /* Change border on focus */
+	outline: none;
+	box-shadow: 0 0 5px rgba(255, 76, 139, 0.6); /* Add a subtle shadow to highlight focus */
+	border-width: 2px; /* Ensure the border width is consistent */
+}
+
+.login-button {
+	padding: 1rem;
+	background-color: #FF4C8B; /* Bright pink button */
+	color: white;
+	font-size: 1.5rem;
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+}
+
+.login-button:hover {
+	background-color: #FF80A9; /* Hover effect */
+}
+
+.error-message {
+	color: red;
+	text-align: center;
+	margin-top: 1rem;
+	font-size: 1rem;
+}
+
+.account-link {
+	text-align: center;
+	margin-top: 1rem;
+	font-size: 1.2rem;
+}
+
+.register-link {
+	color: #FF4C8B;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.register-link:hover {
+	text-decoration: underline;
+}
