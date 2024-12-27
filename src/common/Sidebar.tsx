@@ -38,10 +38,19 @@ const Sidebar = () => {
       <Flex
         direction="column"
         align="center"
+        justify="flex-start"
         bg={bg}
         p={4}
-        width="100%"
-        height="100%"
+        width={{ base: "100vw", md: "80px" }}
+        height={{ base: "60px", md: "100vh" }}
+        position="fixed"
+        bottom={{ base: 0, md: "auto" }}
+        left={0}
+        zIndex={1000}
+        borderTop={{ base: "1px solid", md: "none" }}
+        borderRight={{ base: "none", md: "1px solid" }}
+        borderColor="gray.200"
+        overflowY="auto"
       >
         {/* Home */}
         <Tooltip label="Home" aria-label="Home">
@@ -56,8 +65,6 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-        <Box height="1px" width="20px" bg="gray.400" mb={2} />
-
         {/* Snapchat */}
         <Tooltip label="Snapchat" aria-label="Snapchat">
           <Link href="/snapchat">
@@ -70,8 +77,6 @@ const Sidebar = () => {
             />
           </Link>
         </Tooltip>
-
-        <Box height="1px" width="20px" bg="gray.400" mb={2} />
 
         {/* Instagram */}
         <Tooltip label="Instagram" aria-label="Instagram">
@@ -86,8 +91,6 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-        <Box height="1px" width="20px" bg="gray.400" mb={2} />
-
         {/* TikTok */}
         <Tooltip label="TikTok" aria-label="TikTok">
           <Link href="/tiktok">
@@ -101,8 +104,6 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-        <Box height="1px" width="20px" bg="gray.400" mb={2} />
-
         {/* Logout */}
         <Tooltip label="Log Out" aria-label="Logout">
           <IconButton
@@ -110,6 +111,7 @@ const Sidebar = () => {
             aria-label="Logout"
             variant="ghost"
             onClick={onOpen}
+            mb={2}
             _hover={{ color: hoverColor }}
           />
         </Tooltip>
@@ -126,11 +128,7 @@ const Sidebar = () => {
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Confirm Logout
             </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Are you sure you want to log out?
-            </AlertDialogBody>
-
+            <AlertDialogBody>Are you sure you want to log out?</AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
