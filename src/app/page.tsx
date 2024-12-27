@@ -1,14 +1,42 @@
-'use client'
+"use client";
+import { Grid, GridItem } from "@chakra-ui/react";
+import React from "react";
+import useColorModeStyles from "../utils/useColorModeStyles";
+import Sidebar from "@/common/Sidebar";
 
-import { Box, Button, Heading } from '@chakra-ui/react'
+const Page = () => {
+  const { bg, textColor, navBgColor } = useColorModeStyles();
 
-export default function Home() {
   return (
-    <Box textAlign="center" mt={10}>
-      <Heading>Welcome to Chakra UI in Next.js!</Heading>
-      <Button colorScheme="teal" mt={4}>
-        Click Me
-      </Button>
-    </Box>
-  )
-}
+    <Grid
+      templateAreas={{
+        base: `"header"
+               "main"`,
+        md: `"header header"
+             "nav main"`,
+      }}
+      gridTemplateRows={{ base: "auto 1fr", md: "50px 1fr" }}
+      gridTemplateColumns={{ base: "1fr", md: "50px 1fr" }}
+      height="100vh"
+      gap="0.5"
+      color={textColor}
+      fontWeight="bold"
+    >
+      <GridItem area={"header"}>
+        {/* <Header /> */}
+      </GridItem>
+      <GridItem
+        bg={navBgColor}
+        area={"nav"}
+        display={{ base: "none", md: "block" }}
+      >
+        <Sidebar />
+      </GridItem>
+      <GridItem pl="2" bg={navBgColor} area={"main"}>
+        {/* <AlertMain /> */}
+      </GridItem>
+    </Grid>
+  );
+};
+
+export default Page;
