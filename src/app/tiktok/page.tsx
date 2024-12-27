@@ -1,10 +1,11 @@
 "use client";
+
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 
-const Page = () => {
+const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
   return (
@@ -22,21 +23,28 @@ const Page = () => {
       color={textColor}
       fontWeight="bold"
     >
-      <GridItem area={"header"}>
-        {/* <Header /> */}
+      {/* Header Section */}
+      <GridItem area="header" bg={bg} p={4}>
+        {/* Placeholder for Header */}
+        <h1>Header</h1>
       </GridItem>
+
+      {/* Sidebar Section */}
       <GridItem
+        area="nav"
         bg={navBgColor}
-        area={"nav"}
         display={{ base: "none", md: "block" }}
       >
         <Sidebar />
       </GridItem>
-      <GridItem pl="2" bg={navBgColor} area={"main"}>
-        {/* <AlertMain /> */}
+
+      {/* Main Content Section */}
+      <GridItem area="main" pl="2" bg={navBgColor}>
+        {/* Placeholder for Main Content */}
+        <h2>Main Content Area</h2>
       </GridItem>
     </Grid>
   );
 };
 
-export default Page;
+export default HomePage;
