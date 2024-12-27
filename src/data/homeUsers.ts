@@ -110,7 +110,21 @@ const homeUsers = [
 	  snapchat: "lucas_snap",
 	  instagram: "lucas_ig",
 	  tiktok: "lucas_tt"
-	}
+	},
+	{
+		id: 8,
+		username: "Elyas AMo",
+		age: 28,
+		gender: "Male",
+		location: "Houston, USA",
+		bio: "Looking for a t3nigga, Sports fanatic and thrill-seeker ⚽. Ready for our next adventure?",
+		interests: ["Sports", "Outdoors", "Gaming"],
+		imageUrl: "https://via.placeholder.com/150",
+		isOnline: true,
+		snapchat: "lucas_snap",
+		instagram: "lucas_ig",
+		tiktok: "lucas_tt"
+	  }
   ];
   
   export default homeUsers;
