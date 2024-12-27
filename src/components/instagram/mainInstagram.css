@@ -1,82 +1,47 @@
-.container {
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	margin-right: 10px;
+/* Custom Styles for Specific UI Elements */
+
+/* Title and Date Range Picker Containers */
+.title-container, .date-range-picker-container {
+	border-radius: 8px;
+	padding: 16px;
+	background-color: var(--chakra-colors-gray-100); /* Light mode background */
+	border: 1px solid #e2e8f0; /* Border color for light mode */
   }
   
-  .header {
-	margin: 3px;
-	border-radius: 5px;
-	margin-top: 10px;
-	grid-column: span 2;
-	display: flex;
-	justify-content: left;
-	align-items: center;
-	height: 50px;
-	background-color: var(--chakra-colors-gray-200); /* Light mode background */
-	border: 1px solid #ccc;
-	padding-left: 10px;
-	font-size: medium;
-	font-weight: 800;
+  /* .title-container {
+	margin-bottom: 10px;
+  } */
+  
+  .date-range-picker-container {
+	margin-bottom: 10px;
   }
   
-  .box {
-	margin: 3px;
-	border-radius: 5px;
-	flex-wrap: wrap;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border: 1px solid #ccc;
-	height: 400px;
-	font-size: 24px;
-	font-weight: bold;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+  .user-card {
+	border-radius: 8px;
+	transition: all 0.3s ease;
   }
   
-  .wide {
-	grid-column: span 2;
+  .user-card:hover {
+	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.08);
+	transform: scale(1.05);
   }
   
-  @media (max-width: 576px) {
-	.container {
-	  grid-template-columns: 1fr;
-	}
-	
-	.header {
-	  margin: 2px 0 0 ; 
-	  width: 100%;
-	}
-	
-	.box {
-	  display: flex;
-	  flex-wrap: wrap;
-	  border: 1px solid #ccc;
-	  height: 400px; 
-	  grid-column: span 2;
-	  width: 100%; 
-	  height: auto; 
-	  /* margin: 2px 0;  */
-	}
-  }
-  
-  /* Dark mode support */
-  :root {
-	--chakra-colors-gray-200: #edf2f7; /* Light mode */
-	--chakra-colors-gray-700: #4a5568; /* Dark mode */
-  }
-  
+  /* Tailwind Styles for Responsiveness */
   @media (prefers-color-scheme: dark) {
-	.header {
+	/* Dark Mode Specific Custom Styles */
+	.title-container, .date-range-picker-container {
 	  background-color: var(--chakra-colors-gray-700); /* Dark mode background */
-	  color: white; /* Optional: set text color for dark mode */
+	  border: 1px solid #4a5568; /* Dark mode border */
 	}
   
-	.box {
+	.user-card {
 	  background-color: var(--chakra-colors-gray-700); /* Dark mode background */
 	  color: white; /* Optional: set text color for dark mode */
 	}
   }
+  
+  /* Tailwind utility classes */
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
   

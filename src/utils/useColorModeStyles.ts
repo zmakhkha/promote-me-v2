@@ -3,11 +3,14 @@ import { useColorMode, useColorModeValue } from '@chakra-ui/react';
 
 const useColorModeStyles = () => {
   const { toggleColorMode } = useColorMode();
-  const bg = useColorModeValue('white', 'gray.800');
-  const textColor = useColorModeValue('gray.800', 'gray.200');
-  const hoverColor = useColorModeValue('blue.500', 'blue.300');
-  const bgColor = useColorModeValue('green.500', 'green.300');
-  const navBgColor = useColorModeValue('gray.100', 'gray.600');
+  
+  // Define background, text, and other color values based on the color mode
+  const bg = useColorModeValue('white', 'gray.800');  // General background
+  const textColor = useColorModeValue('gray.800', 'gray.200');  // Text color for general content
+  const borderColor = useColorModeValue('gray.300', 'gray.600');  // Border color
+  const hoverColor = useColorModeValue('blue.500', 'blue.300');  // Hover effect color
+  const bgColor = useColorModeValue('green.500', 'green.300');  // Background color for special elements
+  const navBgColor = useColorModeValue('gray.100', 'gray.600');  // Background color for navigation
 
   // Define specific colors for indicators
   const humidityColors = {
@@ -31,13 +34,14 @@ const useColorModeStyles = () => {
   return {
     bg,
     textColor,
-    toggleColorMode,
+    borderColor,
     hoverColor,
     bgColor,
     navBgColor,
     humidityColors,
     solarRadiationColors,
     solarPanelVoltageColors,
+    toggleColorMode,
   };
 };
 

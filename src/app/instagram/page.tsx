@@ -5,6 +5,7 @@ import React from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MainInstagram from "@/components/instagram/mainInstagram";
+import Header from "@/common/Header";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -27,7 +28,8 @@ const HomePage = () => {
       {/* Header Section */}
       <GridItem area="header" bg={bg} p={4}>
         {/* Placeholder for Header */}
-        <h1>Header</h1>
+        {/* <h1>Header</h1> */}
+        <Header/>
       </GridItem>
 
       {/* Sidebar Section */}
