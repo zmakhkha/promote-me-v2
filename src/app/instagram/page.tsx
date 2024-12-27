@@ -4,6 +4,7 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import MainInstagram from "@/components/instagram/mainInstagram";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -41,7 +42,7 @@ const HomePage = () => {
       {/* Main Content Section */}
       <GridItem area="main" pl="2" bg={navBgColor}>
         {/* Placeholder for Main Content */}
-        <h2>Main Content Area</h2>
+        <MainInstagram/>
       </GridItem>
     </Grid>
   );

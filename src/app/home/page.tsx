@@ -1,11 +1,48 @@
 "use client";
-import { Grid, GridItem } from "@chakra-ui/react";
-import React from "react";
+
+import React, { useState, useEffect } from "react";
+import { Grid, GridItem, Center } from "@chakra-ui/react";
 import Sidebar from "@/common/Sidebar";
+// import UserCard from "@/components/UserCard";
+import homeUsers from "@/data/homeUsers";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 
-const Page = () => {
-  const { bg, textColor, navBgColor } = useColorModeStyles();
+const HomePage = () => {
+  const { textColor, navBgColor } = useColorModeStyles();
+
+  const [users, setUsers] = useState(homeUsers);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [animation, setAnimation] = useState<object | null>(null);
+
+  const currentUser = users[currentIndex];
+
+  const handleNextUser = () => {
+    setCurrentIndex((prev) => (prev + 1) % users.length);
+    setAnimation({ opacity: 0, x: 100 });
+    setTimeout(() => {
+      setAnimation({ opacity: 1, x: 0 });
+    }, 200);
+  };
+
+  const handleCancel = () => {
+    console.log("Chat canceled");
+    setAnimation({ opacity: 0, x: -200 });
+    setTimeout(() => {
+      handleNextUser();
+    }, 300);
+  };
+
+  const handleLike = () => {
+    console.log("User liked!");
+    setAnimation({ opacity: 0, x: 200 });
+    setTimeout(() => {
+      handleNextUser();
+    }, 300);
+  };
+
+  useEffect(() => {
+    if (!currentUser) setCurrentIndex(0);
+  }, [currentIndex, users]);
 
   return (
     <Grid
@@ -22,21 +59,41 @@ const Page = () => {
       color={textColor}
       fontWeight="bold"
     >
-      <GridItem area={"header"}>
-        {/* <Header /> */}
+      {/* Header */}
+      <GridItem area="header" bg={navBgColor} p={4}>
+        <h1>Header</h1>
       </GridItem>
+
+      {/* Sidebar */}
       <GridItem
+        area="nav"
         bg={navBgColor}
-        area={"nav"}
         display={{ base: "none", md: "block" }}
       >
         <Sidebar />
       </GridItem>
-      <GridItem pl="2" bg={navBgColor} area={"main"}>
-        {/* <AlertMain /> */}
-      </GridItem>
+
+      {/* Main Content */}
+      {/* <GridItem area="main" pl="2" bg={navBgColor}>
+        <Center height="100%">
+          {currentUser ? (
+            <UserCard
+              username={currentUser.username}
+              description={currentUser.description}
+              tags={currentUser.tags}
+              imageUrl={currentUser.imageUrl}
+              isConnected={currentUser.isConnected}
+              onCancel={handleCancel}
+              onLike={handleLike}
+              animation={animation}
+            />
+          ) : (
+            <p>No more users!</p>
+          )}
+        </Center>
+      </GridItem> */}
     </Grid>
   );
 };
 
-export default Page;
+export default HomePage;
