@@ -1,18 +1,14 @@
 /* Custom Styles for Specific UI Elements */
 
-/* Title and Date Range Picker Containers */
-.title-container, .date-range-picker-container {
+/* Shared Container Styles */
+.shared-container {
 	border-radius: 8px;
 	padding: 16px;
 	background-color: var(--chakra-colors-gray-100); /* Light mode background */
 	border: 1px solid #e2e8f0; /* Border color for light mode */
   }
   
-  /* .title-container {
-	margin-bottom: 10px;
-  } */
-  
-  .date-range-picker-container {
+  .title-container, .date-range-picker-container {
 	margin-bottom: 10px;
   }
   
@@ -26,10 +22,10 @@
 	transform: scale(1.05);
   }
   
-  /* Tailwind Styles for Responsiveness */
+  /* Dark Mode Specific Styles */
   @media (prefers-color-scheme: dark) {
 	/* Dark Mode Specific Custom Styles */
-	.title-container, .date-range-picker-container {
+	.shared-container {
 	  background-color: var(--chakra-colors-gray-700); /* Dark mode background */
 	  border: 1px solid #4a5568; /* Dark mode border */
 	}
@@ -39,9 +35,4 @@
 	  color: white; /* Optional: set text color for dark mode */
 	}
   }
-  
-  /* Tailwind utility classes */
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
   

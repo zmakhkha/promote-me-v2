@@ -122,7 +122,7 @@ const homeUsers = [
 		imageUrl: "https://via.placeholder.com/150",
 		isOnline: true,
 		snapchat: "lucas_snap",
-		instagram: "lucas_ig",
+		instagram: "mks_zak",
 		tiktok: "lucas_tt"
 	  }
   ];

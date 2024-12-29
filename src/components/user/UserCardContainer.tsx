@@ -6,10 +6,12 @@ const UserCardContainer = ({ children }: { children: React.ReactNode }) => {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      justifyContent="center"
+      justifyContent="flex-start"
       boxShadow="md"
       borderRadius="lg"
-      padding="10px"
+      padding={10}
+      width="100%"
+      maxWidth="350px"
       bg="white"
     >
       {children}

@@ -1,5 +1,5 @@
 import { SimpleGrid, Text } from "@chakra-ui/react";
-import UserCardSkeleton from "./UserCardSkeleton"; // create a skeleton loader for UserCard
+import UserCardSkeleton from "./UserCardSkeleton";
 import UserCard from "./UserCard";
 import UserCardContainer from "./UserCardContainer";
 
@@ -14,19 +14,23 @@ interface Props {
     interests: string[];
     imageUrl: string;
     isOnline: boolean;
+    instagram: string;
   }>;
 }
 
 const UserGrid = ({ homeUsers }: Props) => {
-  const Skeletons = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const Skeletons = Array.from({ length: 10 }, (_, i) => i + 1);
 
-  if (!homeUsers) return <Text>No users found</Text>;
+  if (!homeUsers || homeUsers.length === 0)
+    return <Text textAlign="center">No users found</Text>;
 
   return (
     <SimpleGrid
-      columns={{ sm: 1, md: 2, lg: 3, xl: 4 }}
-      padding="10px"
-      spacing={6}
+      columns={{ base: 1, sm: 1, md: 2, lg: 3, xl: 4 }}
+      padding={{ base: "5px", md: "10px" }}
+      spacing={{ base: 4, md: 6 }}
+      justifyItems="center"
+      alignItems="start"
     >
       {/* Loading Skeletons */}
       {Skeletons.map((skeleton) => (
