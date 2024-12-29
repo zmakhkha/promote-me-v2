@@ -1,6 +1,6 @@
-import { Card, CardBody, Heading, HStack, Image, Text, Badge } from "@chakra-ui/react";
+import { Card, CardBody, Heading, HStack, Image, Text, Badge, Box } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { MdCheckCircle, MdCancel } from "react-icons/md";
+import { MdCheckCircle, MdCancel, MdLocationOff } from "react-icons/md";
 
 interface HomeUser {
   id: number;
@@ -20,22 +20,40 @@ interface Props {
 
 const UserCard = ({ user }: Props) => {
   return (
-    <Card>
-      <Image src={user.imageUrl} borderRadius="full" boxSize="150px" objectFit="cover" />
+    <Card maxW="sm" borderRadius="lg" boxShadow="lg" overflow="hidden">
+      {/* Image Section */}
+      <Box height="200px" overflow="hidden">
+        <Image
+          src={user.imageUrl}
+          alt={`${user.username}'s profile`}
+          objectFit="cover"
+          width="100%"
+          height="100%"
+          borderRadius="md"
+        />
+      </Box>
+
       <CardBody>
+        {/* Header Section with User Info */}
         <HStack justify="space-between" marginBottom={3}>
-          <Heading fontSize="xl">
+          <Heading fontSize="xl" fontWeight="semibold">
             {user.username}, {user.age}
           </Heading>
-          <Badge colorScheme={user.isOnline ? "green" : "red"}>
+          <Badge colorScheme={user.isOnline ? "green" : "red"} variant="solid" borderRadius="full">
             {user.isOnline ? <MdCheckCircle /> : <MdCancel />} {user.isOnline ? "Online" : "Offline"}
           </Badge>
         </HStack>
+
+        {/* Location Section */}
         <HStack marginBottom={2}>
           <FaMapMarkerAlt />
-          <Text>{user.location}</Text>
+          <Text>{user.location || <MdLocationOff />} </Text>
         </HStack>
+
+        {/* Bio Section */}
         <Text marginBottom={2}>{user.bio}</Text>
+
+        {/* Interests Section */}
         <Heading fontSize="md" marginBottom={2}>
           Interests
         </Heading>
