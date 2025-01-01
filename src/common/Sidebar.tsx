@@ -15,7 +15,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { FaHome } from "react-icons/fa";
+import { FaHome, FaCog } from "react-icons/fa";
 import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
 import { useRouter } from "next/navigation";
@@ -63,12 +63,7 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-        <Box
-          height={{ base: "auto", md: "1px" }}
-          width={{ base: "1px", md: "20px" }}
-          bg="gray.400"
-          mb={{ base: 0, md: 2 }}
-        />
+        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
 
         {/* Snapchat */}
         <Tooltip label="Snapchat" aria-label="Snapchat">
@@ -83,12 +78,7 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-        <Box
-          height={{ base: "auto", md: "1px" }}
-          width={{ base: "1px", md: "20px" }}
-          bg="gray.400"
-          mb={{ base: 0, md: 2 }}
-        />
+        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
 
         {/* Instagram */}
         <Tooltip label="Instagram" aria-label="Instagram">
@@ -103,12 +93,7 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-        <Box
-          height={{ base: "auto", md: "1px" }}
-          width={{ base: "1px", md: "20px" }}
-          bg="gray.400"
-          mb={{ base: 0, md: 2 }}
-        />
+        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
 
         {/* TikTok */}
         <Tooltip label="TikTok" aria-label="TikTok">
@@ -123,12 +108,22 @@ const Sidebar = () => {
           </Link>
         </Tooltip>
 
-        <Box
-          height={{ base: "auto", md: "1px" }}
-          width={{ base: "1px", md: "20px" }}
-          bg="gray.400"
-          mb={{ base: 0, md: 2 }}
-        />
+        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
+
+        {/* Settings */}
+        <Tooltip label="Settings" aria-label="Settings">
+          <Link href="/settings">
+            <IconButton
+              icon={<FaCog />}
+              aria-label="Settings"
+              variant="ghost"
+              mb={{ base: 0, md: 2 }}
+              _hover={{ color: hoverColor }}
+            />
+          </Link>
+        </Tooltip>
+
+        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
 
         {/* Logout */}
         <Tooltip label="Log Out" aria-label="Logout">
@@ -144,28 +139,16 @@ const Sidebar = () => {
       </Flex>
 
       {/* Logout Confirmation Dialog */}
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
               Confirm Logout
             </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Are you sure you want to log out?
-            </AlertDialogBody>
-
+            <AlertDialogBody>Are you sure you want to log out?</AlertDialogBody>
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
-              </Button>
-              <Button colorScheme="red" onClick={handleLogout} ml={3}>
-                Log Out
-              </Button>
+              <Button ref={cancelRef} onClick={onClose}>Cancel</Button>
+              <Button colorScheme="red" onClick={handleLogout} ml={3}>Log Out</Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
