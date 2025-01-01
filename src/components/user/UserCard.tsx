@@ -12,6 +12,7 @@ import {
   Divider,
   Link,
   Flex,
+  Spacer,
 } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdCheckCircle, MdCancel, MdLocationOff } from "react-icons/md";
@@ -34,15 +35,19 @@ interface Props {
 }
 
 const UserCard = ({ user }: Props) => {
-  const { bg, textColor, borderColor, hoverColor, bgColor } =
-    useColorModeStyles(); // Destructure the colors
+  const { bg, textColor, borderColor, hoverColor } = useColorModeStyles(); // Destructure the colors
   const imageSize = useBreakpointValue({ base: "150px", md: "200px" });
   const cardMaxHeight = useBreakpointValue({ base: "450px", md: "600px" });
 
+  // Truncate bio if it's longer than 90 characters
+  const truncatedBio =
+    user.bio.length > 90 ? `${user.bio.substring(0, 90)}...` : user.bio;
+
   return (
     <Card
-      maxW="sm"
+      width="sm"
       maxH={cardMaxHeight}
+      height="450px"
       borderRadius="xl"
       boxShadow="lg"
       overflow="hidden"
@@ -83,14 +88,15 @@ const UserCard = ({ user }: Props) => {
         direction="column"
         overflowY="auto"
         maxH={`calc(${cardMaxHeight} - ${imageSize})`}
+        flex="1"
       >
-        <CardBody>
+        <CardBody flex="1" display="flex" flexDirection="column">
           {/* Header Section with User Info */}
           <HStack justify="space-between" mb={1}>
             <Heading fontSize="xl" fontWeight="semibold" color={textColor}>
               {user.username}, {user.age}
             </Heading>
-            <Badge
+            {/* <Badge
               colorScheme={user.isOnline ? "green" : "red"}
               variant="solid"
               borderRadius="full"
@@ -104,7 +110,7 @@ const UserCard = ({ user }: Props) => {
               <span style={{ marginLeft: "4px" }}>
                 {user.isOnline ? "Online" : "Offline"}
               </span>
-            </Badge>
+            </Badge> */}
           </HStack>
 
           {/* Location Section */}
@@ -116,9 +122,19 @@ const UserCard = ({ user }: Props) => {
           </HStack>
 
           {/* Bio Section */}
-          <Text fontSize="sm" color={textColor} mb={1} lineHeight="1.6">
-            {user.bio}
+          <Text
+            fontSize="sm"
+            color={textColor}
+            mb={1}
+            // lineHeight="1.6"
+            flex="1"
+            // overflow="hidden"
+            textOverflow="ellipsis"
+          >
+            {truncatedBio}
           </Text>
+
+          <Spacer /> {/* Pushes content to the top if there's empty space */}
 
           {/* Interests Section */}
           <Heading fontSize="md" mb={1} color={textColor}>
@@ -126,7 +142,7 @@ const UserCard = ({ user }: Props) => {
           </Heading>
           <HStack wrap="wrap">
             {user.interests.map((interest, index) => (
-              <Badge key={index} colorScheme="blue" fontSize="sm" mr={2} mb={1}>
+              <Badge key={index} colorScheme="blue" fontSize="sm">
                 {interest}
               </Badge>
             ))}
@@ -136,7 +152,7 @@ const UserCard = ({ user }: Props) => {
 
       {/* Divider and Instagram Link */}
       <Divider borderColor={borderColor} />
-      <Box textAlign="center" py={3}>
+      <Box textAlign="center" py={2}>
         <Link
           href={`https://www.instagram.com/${user.instagram}`}
           isExternal

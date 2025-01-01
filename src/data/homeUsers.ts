@@ -138,7 +138,7 @@ const homeUsers = [
 	  age: 25,
 	  gender: "Female",
 	  location: "Austin, USA",
-	  bio: "Nature lover 🌻 and animal activist.",
+	  bio: "Nature lover 🌻 and animal activist. EZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZEEEEEEEFFFFFFFFFFFFFFFFFFFF",
 	  interests: ["Nature", "Animals", "Photography"],
 	  imageUrl: "https://via.placeholder.com/150",
 	  isOnline: false,

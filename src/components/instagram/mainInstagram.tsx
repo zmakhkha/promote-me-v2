@@ -8,7 +8,9 @@ import UserCard from "../user/UserCard"; // Import UserCard component
 const MainInstagram = () => {
   const { bg, textColor, borderColor } = useColorModeStyles(); // Use the custom hook
   const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>(new Date().toISOString().split("T")[0]);
+  const [endDate, setEndDate] = useState<string>(
+    new Date().toISOString().split("T")[0]
+  );
 
   return (
     <Box p={1}>
@@ -42,22 +44,22 @@ const MainInstagram = () => {
 
       {/* User Cards Grid */}
       <SimpleGrid
-              border="1px solid"
+        border="1px solid"
         borderColor={borderColor}
-      className="title-container"
-      borderRadius="md"
-      p={1}
-      mb={1}
-      bg={bg}
-        columns={{ base: 2, sm: 2, md: 3, lg: 4 }} 
+        className="title-container"
+        borderRadius="md"
+        p={1}
+        mb={1}
+        bg={bg}
+        columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
         spacing={4}
         w="100%"
       >
         {homeUsers.map((user) => (
-          <Box 
-            key={user.id} 
-            w="100%" 
-            display="flex" 
+          <Box
+            key={user.id}
+            w="100%"
+            display="flex"
             justifyContent="center"
             // p={1}
           >
