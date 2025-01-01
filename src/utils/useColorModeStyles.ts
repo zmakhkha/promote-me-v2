@@ -6,6 +6,7 @@ const useColorModeStyles = () => {
   
   // Define background, text, and other color values based on the color mode
   const bg = useColorModeValue('white', 'gray.800');  // General background
+  const tiktok = useColorModeValue('gray.800', 'white');  // General background
   const textColor = useColorModeValue('gray.800', 'gray.200');  // Text color for general content
   const borderColor = useColorModeValue('gray.300', 'gray.600');  // Border color
   const hoverColor = useColorModeValue('blue.500', 'blue.300');  // Hover effect color
@@ -34,6 +35,7 @@ const useColorModeStyles = () => {
   return {
     bg,
     textColor,
+    tiktok,
     borderColor,
     hoverColor,
     bgColor,
