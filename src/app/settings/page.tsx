@@ -4,6 +4,8 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import MainSettings from "@/components/settings/MainSettings";
+import Header from "@/common/Header";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -23,13 +25,10 @@ const HomePage = () => {
       color={textColor}
       fontWeight="bold"
     >
-      {/* Header Section */}
       <GridItem area="header" bg={bg} p={4}>
-        {/* Placeholder for Header */}
-        <h1>Header</h1>
+        <Header/>
       </GridItem>
 
-      {/* Sidebar Section */}
       <GridItem
         area="nav"
         bg={navBgColor}
@@ -38,10 +37,8 @@ const HomePage = () => {
         <Sidebar />
       </GridItem>
 
-      {/* Main Content Section */}
       <GridItem area="main" pl="2" bg={navBgColor}>
-        {/* Placeholder for Main Content */}
-        <h2>Main Settings</h2>
+        <MainSettings/>
       </GridItem>
     </Grid>
   );
