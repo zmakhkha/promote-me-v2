@@ -1,101 +1,135 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Text, Image, Button, VStack, HStack, Badge } from "@chakra-ui/react";
-import { FaHeart, FaTimes, FaComment } from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
-import homeUsers from "@/data/homeUsers";
+import { Box, Text, Button } from "@chakra-ui/react";
+import { FaInstagram, FaSnapchat, FaTiktok, FaComment } from "react-icons/fa";
+import { useRouter } from "next/navigation"; // Importing Next.js useRouter hook
+import useColorModeStyles from "@/utils/useColorModeStyles"; // Import the custom hook
 
-const MotionBox = motion(Box);
+const MainHome: React.FC = () => {
+  const { bg, textColor, borderColor } = useColorModeStyles(); // Use the custom hook
+  const router = useRouter(); // Hook to handle navigation
 
-const MainHome = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const handleNextUser = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % homeUsers.length);
+  // Function to handle navigation when platform buttons are clicked
+  const handlePlatformClick = (platform: string) => {
+    router.push(`/${platform.toLowerCase()}`); // Navigates to /instagram, /snapchat, or /tiktok
   };
 
-  const currentUser = homeUsers[currentIndex];
+  // Function to handle random chat button click
+  const handleRandomChat = () => {
+    // You can adjust this logic to navigate to a random user chat page
+    const randomPlatform = ["instagram", "snapchat", "tiktok"];
+    const randomPlatformIndex = Math.floor(
+      Math.random() * randomPlatform.length
+    );
+    router.push(`/${randomPlatform[randomPlatformIndex]}/random-chat`); // Redirect to a random chat page
+  };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100%"
-      p={4}
-    >
-      <AnimatePresence>
-        <MotionBox
-          key={currentUser.id}
-          initial={{ opacity: 0, x: 300 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -300 }}
-          transition={{ duration: 0.5 }}
-          maxW="400px"
-          borderWidth="1px"
-          borderRadius="lg"
-          overflow="hidden"
-          boxShadow="lg"
-          bg="white"
+    <Box p={4}>
+      {/* Title Section with Border */}
+      <Box
+        border="1px solid"
+        borderColor={borderColor}
+        borderRadius="md"
+        p={4}
+        mb={4}
+        bg={bg}
+        className="title-container"
+      >
+        <Text fontSize="3xl" fontWeight="bold" color={textColor}>
+          Explore New Connections
+        </Text>
+        <Text fontSize="md" mt={2} color={textColor}>
+          Welcome to our platform! Discover and connect with new people based on
+          shared interests and passions. Whether you're looking for friends,
+          networking, or new experiences, you'll find it here.
+        </Text>
+        {/* SEO Optimized Text Section */}
+        <Box
+        //   border="1px solid"
+          borderColor={borderColor}
+          borderRadius="md"
+          p={4}
+          mb={4}
+          bg={bg}
+          className="seo-text-container"
         >
-          {/* User Image */}
-          <Image
-            src={currentUser.imageUrl}
-            alt={currentUser.username}
-            objectFit="cover"
-            width="100%"
-            height="350px"
-          />
+          <Text fontSize="xl" fontWeight="semibold" color={textColor}>
+            Discover Your Next Friend or Network Connection
+          </Text>
+          <Text fontSize="md" mt={2} color={textColor}>
+            Our platform connects people who share common interests, hobbies,
+            and values. Browse through detailed profiles and start meaningful
+            conversations. Whether you're into technology, art, travel, or
+            anything in between, we have a community for you!
+          </Text>
+          <Text fontSize="sm" mt={2} color={textColor}>
+            Explore people based on location, interests, and more! Get started
+            now and meet someone new today.
+          </Text>
+        </Box>
 
-          {/* User Details */}
-          <Box p={4}>
-            <Text fontSize="xl" fontWeight="bold">
-              {currentUser.firstName}, {currentUser.age}
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              {currentUser.location}
-            </Text>
-            <Text mt={2} noOfLines={2}>
-              {currentUser.bio.length > 50
-                ? `${currentUser.bio.substring(0, 50)}...`
-                : currentUser.bio}
-            </Text>
-            <HStack spacing={2} mt={2}>
-              {currentUser.interests.map((interest) => (
-                <Badge key={interest} colorScheme="teal">
-                  {interest}
-                </Badge>
-              ))}
-            </HStack>
-          </Box>
+        <Box
+          borderColor={borderColor}
+          borderRadius="md"
+          p={4}
+          mb={4}
+          bg={bg}
+          className="intro-text-container"
+        >
+          <Text fontSize="md" color={textColor} textAlign="center">
+            You can chat with friends on Instagram, Snapchat, or TikTok, or you
+            can choose to chat randomly with someone from any platform. Select
+            an option to get started!
+          </Text>
+        </Box>
 
-          {/* Action Buttons */}
-          <HStack justifyContent="space-around" p={4}>
-            <Button
-              leftIcon={<FaHeart />}
-              colorScheme="green"
-              onClick={handleNextUser}
-            >
-              Like
-            </Button>
-            <Button
-              leftIcon={<FaComment />}
-              colorScheme="blue"
-              onClick={() => alert(`Chat with ${currentUser.firstName}`)}
-            >
-              Chat
-            </Button>
-            <Button
-              leftIcon={<FaTimes />}
-              colorScheme="red"
-              onClick={handleNextUser}
-            >
-              Ignore
-            </Button>
-          </HStack>
-        </MotionBox>
-      </AnimatePresence>
+        {/* Platform Selection Buttons */}
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          mb={4}
+          bg={bg}
+        >
+          <Button
+            leftIcon={<FaInstagram />}
+            colorScheme="pink"
+            onClick={() => handlePlatformClick("Instagram")}
+            mx={2}
+          >
+            Instagram users
+          </Button>
+          <Button
+            leftIcon={<FaSnapchat />}
+            colorScheme="yellow"
+            onClick={() => handlePlatformClick("Snapchat")}
+            mx={2}
+          >
+            Snapchat users
+          </Button>
+          <Button
+            leftIcon={<FaTiktok />}
+            colorScheme="green"
+            onClick={() => handlePlatformClick("TikTok")}
+            mx={2}
+          >
+            TikTok users
+          </Button>
+        </Box>
+		<Text align="center">Or</Text>
+        {/* Display Random Chat Button */}
+        <Box textAlign="center" mb={4}>
+          <Button
+            leftIcon={<FaComment />}
+            colorScheme="blue"
+            onClick={handleRandomChat}
+          >
+            Chat Randomly
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 };

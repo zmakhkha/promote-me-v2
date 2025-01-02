@@ -8,9 +8,19 @@ import {
   MenuItem,
   Tooltip,
   Link,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  Button,
 } from "@chakra-ui/react";
 import { BellIcon, SettingsIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
+import { IoLogOut } from "react-icons/io5";
+import { HiDocumentText } from "react-icons/hi";
+import { MdPrivacyTip } from "react-icons/md";
 import logo from "../../public/logo.png";
 import Image from "next/image";
 import useColorModeStyles from "@/utils/useColorModeStyles";
@@ -18,8 +28,10 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 const Header = () => {
   const { bg, toggleColorMode } = useColorModeStyles();
   const [username, setUsername] = useState("User");
-//   const axiosInstance = useAxiosInstance();
   const { hoverColor } = useColorModeStyles();
+
+  const [isOpen, setIsOpen] = useState(false);
+  const cancelRef = React.useRef();
 
   useEffect(() => {
     // axiosInstance
@@ -34,11 +46,20 @@ const Header = () => {
     //   });
   }, []);
 
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
+
+  const handleLogout = () => {
+    // Handle logout logic here
+    console.log("Logged out");
+    onClose();
+  };
+
   return (
     <Flex justify="space-between" align="center" p={4} bg={bg} h="100%">
       <Image height={28} src={logo} alt="Logo" />
       <Flex align="center">
-        <Tooltip label="Notifications" aria-label="Analytics">
+        <Tooltip label="Notifications" aria-label="Notifications">
           <Link href="/notifications">
             <IconButton
               icon={<BellIcon />}
@@ -58,7 +79,18 @@ const Header = () => {
           />
           <MenuList>
             <MenuItem>Welcome {username}</MenuItem>
-            <MenuItem icon={<SettingsIcon />}>Settings</MenuItem>
+            <MenuItem icon={<FaUser />}>
+              <Link href="/profile">Profile</Link>
+            </MenuItem>
+            <MenuItem icon={<HiDocumentText />}>
+              <Link href="/termsofservice">Terms of Service</Link>
+            </MenuItem>
+            <MenuItem icon={<MdPrivacyTip />}>
+              <Link href="/privacypolicy">Privacy Policy</Link>
+            </MenuItem>
+            <MenuItem onClick={onOpen} icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}>
+              Log Out
+            </MenuItem>
           </MenuList>
         </Menu>
         <IconButton
@@ -69,6 +101,22 @@ const Header = () => {
           ml={4}
         />
       </Flex>
+
+      {/* Logout Confirmation Dialog */}
+      <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Confirm Logout
+            </AlertDialogHeader>
+            <AlertDialogBody>Are you sure you want to log out?</AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>Cancel</Button>
+              <Button colorScheme="red" onClick={handleLogout} ml={3}>Log Out</Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 };
