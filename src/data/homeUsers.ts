@@ -1,7 +1,7 @@
 const homeUsers = [
 	{
 	  id: 1,
-	  username: "Sophia Martinez",
+	  username: "Sophia_Martinez",
 	  profile_image: "profile_image",
 	  firstName: "Sophia",
 	  email: "sophia@email.com",
@@ -22,7 +22,7 @@ const homeUsers = [
 	},
 	{
 	  id: 2,
-	  username: "Liam Johnson",
+	  username: "Liam_Johnson",
 	  profile_image: "profile_image",
 	  firstName: "Liam",
 	  email: "liam@email.com",
@@ -43,7 +43,7 @@ const homeUsers = [
 	},
 	{
 	  id: 3,
-	  username: "Emily Brown",
+	  username: "Emily_Brown",
 	  profile_image: "profile_image",
 	  firstName: "Emily",
 	  email: "emily@email.com",
@@ -64,7 +64,7 @@ const homeUsers = [
 	},
 	{
 	  id: 4,
-	  username: "Noah Williams",
+	  username: "Noah_Williams",
 	  profile_image: "profile_image",
 	  firstName: "Noah",
 	  email: "noah@email.com",
@@ -85,7 +85,7 @@ const homeUsers = [
 	},
 	{
 	  id: 5,
-	  username: "Ava Wilson",
+	  username: "Ava_Wilson",
 	  profile_image: "profile_image",
 	  firstName: "Ava",
 	  email: "ava@email.com",
@@ -106,7 +106,7 @@ const homeUsers = [
 	},
 	{
 	  id: 6,
-	  username: "Lucas Moore",
+	  username: "Lucas_Moore",
 	  profile_image: "profile_image",
 	  firstName: "Lucas",
 	  email: "lucas@email.com",
@@ -127,7 +127,7 @@ const homeUsers = [
 	},
 	{
 	  id: 7,
-	  username: "Isabella Thomas",
+	  username: "Isabella_Thomas",
 	  profile_image: "profile_image",
 	  firstName: "Isabella",
 	  email: "isabella@email.com",
@@ -148,7 +148,7 @@ const homeUsers = [
 	},
 	{
 	  id: 8,
-	  username: "Mason Anderson",
+	  username: "Mason_Anderson",
 	  profile_image: "profile_image",
 	  firstName: "Mason",
 	  email: "mason@email.com",
@@ -169,7 +169,7 @@ const homeUsers = [
 	},
 	{
 	  id: 9,
-	  username: "Amelia Taylor",
+	  username: "Amelia_Taylor",
 	  profile_image: "profile_image",
 	  firstName: "Amelia",
 	  email: "amelia@email.com",

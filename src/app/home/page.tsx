@@ -1,48 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Grid, GridItem, Center } from "@chakra-ui/react";
+import { Grid, GridItem } from "@chakra-ui/react";
+import React from "react";
 import Sidebar from "@/common/Sidebar";
-// import UserCard from "@/components/UserCard";
-import homeUsers from "@/data/homeUsers";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import Header from "@/common/Header";
+import MainHome from "@/components/home/MainHome";
 
 const HomePage = () => {
-  const { textColor, navBgColor } = useColorModeStyles();
-
-  const [users, setUsers] = useState(homeUsers);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [animation, setAnimation] = useState<object | null>(null);
-
-  const currentUser = users[currentIndex];
-
-  const handleNextUser = () => {
-    setCurrentIndex((prev) => (prev + 1) % users.length);
-    setAnimation({ opacity: 0, x: 100 });
-    setTimeout(() => {
-      setAnimation({ opacity: 1, x: 0 });
-    }, 200);
-  };
-
-  const handleCancel = () => {
-    console.log("Chat canceled");
-    setAnimation({ opacity: 0, x: -200 });
-    setTimeout(() => {
-      handleNextUser();
-    }, 300);
-  };
-
-  const handleLike = () => {
-    console.log("User liked!");
-    setAnimation({ opacity: 0, x: 200 });
-    setTimeout(() => {
-      handleNextUser();
-    }, 300);
-  };
-
-  useEffect(() => {
-    if (!currentUser) setCurrentIndex(0);
-  }, [currentIndex, users]);
+  const { bg, textColor, navBgColor } = useColorModeStyles();
 
   return (
     <Grid
@@ -59,12 +25,13 @@ const HomePage = () => {
       color={textColor}
       fontWeight="bold"
     >
-      {/* Header */}
-      <GridItem area="header" bg={navBgColor} p={4}>
-        <h1>Header</h1>
+      {/* Header Section */}
+      <GridItem area="header" bg={bg} p={4}>
+        {/* Placeholder for Header */}
+      <Header/>        
       </GridItem>
 
-      {/* Sidebar */}
+      {/* Sidebar Section */}
       <GridItem
         area="nav"
         bg={navBgColor}
@@ -73,25 +40,12 @@ const HomePage = () => {
         <Sidebar />
       </GridItem>
 
-      {/* Main Content */}
-      {/* <GridItem area="main" pl="2" bg={navBgColor}>
-        <Center height="100%">
-          {currentUser ? (
-            <UserCard
-              username={currentUser.username}
-              description={currentUser.description}
-              tags={currentUser.tags}
-              imageUrl={currentUser.imageUrl}
-              isConnected={currentUser.isConnected}
-              onCancel={handleCancel}
-              onLike={handleLike}
-              animation={animation}
-            />
-          ) : (
-            <p>No more users!</p>
-          )}
-        </Center>
-      </GridItem> */}
+      {/* Main Content Section */}
+      <GridItem area="main" pl="2" bg={navBgColor}>
+        {/* Placeholder for Main Content */}
+        {/* <h2>MainHome</h2> */}
+        <MainHome/>
+      </GridItem>
     </Grid>
   );
 };

@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdCheckCircle, MdCancel, MdLocationOff } from "react-icons/md";
+import { FaInstagram } from "react-icons/fa";
 
 interface HomeUser {
   id: number;
@@ -63,6 +64,8 @@ const UserCard = ({ user }: Props) => {
     >
       {/* Image Section */}
       <Box
+        as={Link}
+        href={`/profile/${user.username}`}
         height={imageSize}
         width="100%"
         overflow="hidden"
@@ -82,7 +85,6 @@ const UserCard = ({ user }: Props) => {
           borderRadius="md"
         />
       </Box>
-
       {/* Scrollable Content */}
       <Flex
         direction="column"
@@ -112,7 +114,6 @@ const UserCard = ({ user }: Props) => {
               </span>
             </Badge> */}
           </HStack>
-
           {/* Location Section */}
           <HStack mb={1}>
             <FaMapMarkerAlt color="gray.600" />
@@ -120,7 +121,6 @@ const UserCard = ({ user }: Props) => {
               {user.location || <MdLocationOff color="gray.400" />}
             </Text>
           </HStack>
-
           {/* Bio Section */}
           <Text
             fontSize="sm"
@@ -133,23 +133,30 @@ const UserCard = ({ user }: Props) => {
           >
             {truncatedBio}
           </Text>
-
           <Spacer /> {/* Pushes content to the top if there's empty space */}
-
           {/* Interests Section */}
           <Heading fontSize="md" mb={1} color={textColor}>
             Interests
           </Heading>
-          <HStack wrap="wrap">
+          <Flex wrap="wrap" gap={2}>
             {user.interests.map((interest, index) => (
-              <Badge key={index} colorScheme="blue" fontSize="sm">
+              <Badge
+                key={index}
+                colorScheme="blue"
+                fontSize="sm"
+                px={2}
+                // py={1}
+                borderRadius="full"
+                boxShadow="md"
+                bg="blue.100"
+                color="blue.800"
+              >
                 {interest}
               </Badge>
             ))}
-          </HStack>
+          </Flex>
         </CardBody>
       </Flex>
-
       {/* Divider and Instagram Link */}
       <Divider borderColor={borderColor} />
       <Box textAlign="center" py={2}>
@@ -158,8 +165,13 @@ const UserCard = ({ user }: Props) => {
           isExternal
           color="blue.400"
           fontWeight="medium"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          gap={2}
           _hover={{ textDecoration: "underline" }}
         >
+          <FaInstagram />
           View Instagram
         </Link>
       </Box>

@@ -1,48 +1,32 @@
-// utils/useColorModeStyles.ts
 import { useColorMode, useColorModeValue } from '@chakra-ui/react';
 
 const useColorModeStyles = () => {
   const { toggleColorMode } = useColorMode();
-  
-  // Define background, text, and other color values based on the color mode
-  const bg = useColorModeValue('white', 'gray.800');  // General background
-  const tiktok = useColorModeValue('gray.800', 'white');  // General background
-  const textColor = useColorModeValue('gray.800', 'gray.200');  // Text color for general content
-  const borderColor = useColorModeValue('gray.300', 'gray.600');  // Border color
-  const hoverColor = useColorModeValue('blue.500', 'blue.300');  // Hover effect color
-  const bgColor = useColorModeValue('green.500', 'green.300');  // Background color for special elements
-  const navBgColor = useColorModeValue('gray.100', 'gray.600');  // Background color for navigation
 
-  // Define specific colors for indicators
-  const humidityColors = {
-    red: useColorModeValue('red.500', 'red.300'),
-    yellow: useColorModeValue('yellow.500', 'yellow.300'),
-    green: useColorModeValue('green.500', 'green.300'),
-  };
+  // Instagram Theme Colors
+  const instagramGradient = useColorModeValue(
+    'linear(to-r, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5)',
+    'linear(to-r, #4f5bd5, #962fbf, #d62976, #fa7e1e, #feda75)'
+  );
+  const instagramTextColor = useColorModeValue('#d62976', '#feda75');
+  const instagramIconColor = useColorModeValue('#d62976', '#feda75');
 
-  const solarRadiationColors = {
-    red: useColorModeValue('red.500', 'red.300'),
-    yellow: useColorModeValue('yellow.500', 'yellow.300'),
-    green: useColorModeValue('green.500', 'green.300'),
-  };
-
-  const solarPanelVoltageColors = {
-    red: useColorModeValue('red.500', 'red.300'),
-    yellow: useColorModeValue('yellow.500', 'yellow.300'),
-    green: useColorModeValue('green.500', 'green.300'),
-  };
+  // General Theme Colors
+  const bg = useColorModeValue('white', 'gray.800');
+  const textColor = useColorModeValue('gray.800', 'gray.200');
+  const borderColor = useColorModeValue('gray.300', 'gray.600');
+  const hoverColor = useColorModeValue('#fa7e1e', '#d62976');
+  const navBgColor = useColorModeValue('gray.100', 'gray.600');
 
   return {
     bg,
     textColor,
-    tiktok,
     borderColor,
     hoverColor,
-    bgColor,
     navBgColor,
-    humidityColors,
-    solarRadiationColors,
-    solarPanelVoltageColors,
+    instagramGradient,
+    instagramTextColor,
+    instagramIconColor,
     toggleColorMode,
   };
 };
