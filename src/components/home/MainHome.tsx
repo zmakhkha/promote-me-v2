@@ -22,7 +22,7 @@ const MainHome: React.FC = () => {
     const randomPlatformIndex = Math.floor(
       Math.random() * randomPlatform.length
     );
-    router.push(`/${randomPlatform[randomPlatformIndex]}/random-chat`); // Redirect to a random chat page
+    router.push(`/chat`); // Redirect to a random chat page
   };
 
   return (
