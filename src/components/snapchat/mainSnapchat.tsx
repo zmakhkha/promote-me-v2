@@ -4,6 +4,7 @@ import homeUsers from "@/data/homeUsers";
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles"; // Import the custom hook
 import UserCard from "../user/UserCard"; // Import UserCard component
+import SnapCard from "../user/SnapCard";
 
 const USERS_PER_PAGE = 8; // Define the number of users per page
 
@@ -42,7 +43,7 @@ const MainInstagram = () => {
         className="title-container"
       >
         <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-          Instagram Users
+          Snapchat Users
         </Text>
       </Box>
 
@@ -73,7 +74,7 @@ const MainInstagram = () => {
             display="flex"
             justifyContent="center"
           >
-            <UserCard user={user} />
+            <SnapCard user={user} />
           </Box>
         ))}
       </SimpleGrid>

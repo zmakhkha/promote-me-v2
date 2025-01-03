@@ -3,11 +3,11 @@ import { Box, Text, SimpleGrid, Button, HStack } from "@chakra-ui/react";
 import homeUsers from "@/data/homeUsers";
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles"; // Import the custom hook
-import UserCard from "../user/UserCard"; // Import UserCard component
+import TiktokCard from "../user/TiktokCard";
 
 const USERS_PER_PAGE = 8; // Define the number of users per page
 
-const MainInstagram = () => {
+const MainTiktok = () => {
   const { bg, textColor, borderColor } = useColorModeStyles(); // Use the custom hook
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>(
@@ -42,7 +42,7 @@ const MainInstagram = () => {
         className="title-container"
       >
         <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-          Instagram Users
+          Tiktok Users
         </Text>
       </Box>
 
@@ -73,7 +73,7 @@ const MainInstagram = () => {
             display="flex"
             justifyContent="center"
           >
-            <UserCard user={user} />
+            <TiktokCard user={user} />
           </Box>
         ))}
       </SimpleGrid>
@@ -100,4 +100,4 @@ const MainInstagram = () => {
   );
 };
 
-export default MainInstagram;
+export default MainTiktok;
