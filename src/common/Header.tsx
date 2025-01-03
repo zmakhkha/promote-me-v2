@@ -15,17 +15,21 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
   Button,
+  useColorMode,
+  chakra,
 } from "@chakra-ui/react";
 import { BellIcon, SettingsIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { HiDocumentText } from "react-icons/hi";
 import { MdPrivacyTip } from "react-icons/md";
-import logo from "../../public/logo.png";
+import logoLight from "../../public/logo-light.png";
+import logoDark from "../../public/logo-dark.png";
 import Image from "next/image";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-
 const Header = () => {
+  const { colorMode } = useColorMode();
+  const logo = colorMode == 'light' ? logoLight : logoDark;
   const { bg, toggleColorMode } = useColorModeStyles();
   const [username, setUsername] = useState("User");
   const { hoverColor } = useColorModeStyles();
@@ -57,7 +61,7 @@ const Header = () => {
 
   return (
     <Flex justify="space-between" align="center" p={4} bg={bg} h="100%">
-      <Image height={28} src={logo} alt="Logo" />
+      <Image height={80} src={logo} alt="Logo" />
       <Flex align="center">
         <Tooltip label="Notifications" aria-label="Notifications">
           <Link href="/notifications">
