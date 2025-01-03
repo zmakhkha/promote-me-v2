@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+"use client";
+import dynamic from "next/dynamic";
+import React, { useState, useEffect } from "react";
 import {
   Flex,
   IconButton,
@@ -18,7 +20,7 @@ import {
   useColorMode,
   chakra,
 } from "@chakra-ui/react";
-import { BellIcon, SettingsIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { BellIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { HiDocumentText } from "react-icons/hi";
@@ -27,9 +29,13 @@ import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 import Image from "next/image";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+
+// Dynamically load the burger menu with SSR disabled
+const MobileMenu = dynamic(() => import("./MobileMenu"), { ssr: false });
+
 const Header = () => {
   const { colorMode } = useColorMode();
-  const logo = colorMode == 'light' ? logoLight : logoDark;
+  const logo = colorMode === "light" ? logoLight : logoDark;
   const { bg, toggleColorMode } = useColorModeStyles();
   const [username, setUsername] = useState("User");
   const { hoverColor } = useColorModeStyles();
@@ -38,23 +44,13 @@ const Header = () => {
   const cancelRef = React.useRef();
 
   useEffect(() => {
-    // axiosInstance
-    //   .get("/api/header-data/")
-    //   .then((response) => {
-    //     const userData = response.data;
-    //     console.log(response.data);
-    //     setUsername(userData.username);
-    //   })
-    //   .catch((error) => {
-    //     console.log("Error fetching header data", error);
-    //   });
+    // Fetch user data here if needed
   }, []);
 
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
 
   const handleLogout = () => {
-    // Handle logout logic here
     console.log("Logged out");
     onClose();
   };
@@ -62,7 +58,7 @@ const Header = () => {
   return (
     <Flex justify="space-between" align="center" p={4} bg={bg} h="100%">
       <Image height={80} src={logo} alt="Logo" />
-      <Flex align="center">
+      <Flex align="center" display={{ base: "none", md: "flex" }}>
         <Tooltip label="Notifications" aria-label="Notifications">
           <Link href="/notifications">
             <IconButton
@@ -104,6 +100,11 @@ const Header = () => {
           onClick={toggleColorMode}
           ml={4}
         />
+      </Flex>
+
+      {/* Mobile Burger Menu */}
+      <Flex display={{ base: "flex", md: "none" }}>
+        <MobileMenu />
       </Flex>
 
       {/* Logout Confirmation Dialog */}
