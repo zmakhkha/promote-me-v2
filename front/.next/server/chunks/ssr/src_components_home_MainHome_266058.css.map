@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/zakaria/work/promote-me/src/components/home/MainHome.css"],"sourcesContent":[".ignore-animation {\r\n  border: 2px solid red;\r\n  opacity: 0;\r\n  transform: translateY(300px);\r\n  transition: all 0.5s ease;\r\n}\r\n\r\n.like-animation {\r\n  border: 2px solid blue;\r\n  opacity: 0;\r\n  transform: translateY(300px);\r\n  transition: all 0.5s ease;\r\n}\r\n"],"names":[],"mappings":"AAAA;;;;;;;AAOA"}},
+    {"offset": {"line": 14, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}

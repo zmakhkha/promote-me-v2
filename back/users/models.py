@@ -1,0 +1,47 @@
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.db import models
+
+class DefaultUserManager(BaseUserManager):
+    def create_user(self, username, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Email is required')
+        email = self.normalize_email(email)
+        user = self.model(username=username, email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(username, email, password, **extra_fields)
+
+class DefaultUser(AbstractBaseUser, PermissionsMixin):
+    username = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    email = models.EmailField(unique=True)
+    points = models.IntegerField(default=0)
+    likes = models.IntegerField(default=0)
+    views = models.IntegerField(default=0)
+    age = models.IntegerField(null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')])
+    location = models.CharField(max_length=100)
+    bio = models.TextField()
+    interests = models.JSONField(default=list)
+    image_url = models.URLField(blank=True, null=True)
+    is_online = models.BooleanField(default=False)
+    snapchat = models.CharField(max_length=50, blank=True, null=True)
+    instagram = models.CharField(max_length=50, blank=True, null=True)
+    tiktok = models.CharField(max_length=50, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
+    
+    objects = DefaultUserManager()
+    
+    USERNAME_FIELD = 'username'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['email']
+
+    def __str__(self):
+        return self.username

@@ -1,0 +1,17 @@
+/* [project]/src/components/home/MainHome.css [app-client] (css) */
+.ignore-animation {
+  border: 2px solid red;
+  opacity: 0;
+  transform: translateY(300px);
+  transition: all .5s;
+}
+
+.like-animation {
+  border: 2px solid #00f;
+  opacity: 0;
+  transform: translateY(300px);
+  transition: all .5s;
+}
+
+
+/*# sourceMappingURL=src_components_home_MainHome_266058.css.map*/

@@ -39,3 +39,118 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#backend
+# Python Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+env/
+*.env
+*.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django Files
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Migrations
+**/migrations/__pycache__/
+**/migrations/*.pyc
+**/migrations/*.pyo
+**/migrations/*.log
+
+# Environment Variables
+.env
+.env.local
+.env.production
+.env.dev
+*.secret
+
+# Static and Media Files
+/static/
+staticfiles/
+media/
+mediafiles/
+
+# Logs
+*.log
+*.out
+*.err
+logs/
+debug.log
+
+# Node.js Dependencies
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# JetBrains
+/.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Coverage and Testing
+.coverage
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+htmlcov/
+*.cover
+*.pycover
+.hypothesis/
+
+# Build Files
+dist/
+build/
+.eggs/
+*.egg-info/
+.installed.cfg
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Django Secret Key File
+secrets.json
+
+# Temporary Files
+tmp/
+temp/
+*.bak
+*.swp
+*.swo
+*.tmp
+~$*
+
+# MyPy Cache
+.mypy_cache/
+
+# Security
+config.json
+keys.json
