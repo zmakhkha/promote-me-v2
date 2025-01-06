@@ -29,7 +29,7 @@ const RegisterPage = () => {
     <div className="register-page">
       <div className="register-container">
         <div className="register-card">
-          <h1 className="register-heading">Sign Up for Love!</h1>
+          <h1 className="register-heading">Sign Up</h1>
           <form onSubmit={handleRegister}>
             <div className="form-row">
               <div className="input-group">

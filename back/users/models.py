@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
+from .validators import max_size_validator
+
 
 class DefaultUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -24,12 +26,16 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
     points = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
-    age = models.IntegerField(null=True, blank=True)
+    birth_date = models.DateField(null=True, blank=True)  # Replaced age with birth_date
     gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')])
     location = models.CharField(max_length=100)
     bio = models.TextField()
     interests = models.JSONField(default=list)
-    image_url = models.URLField(blank=True, null=True)
+    image_url = models.ImageField(
+        upload_to='images',
+        validators=[max_size_validator],
+        default='images/default.png'
+    )
     is_online = models.BooleanField(default=False)
     snapchat = models.CharField(max_length=50, blank=True, null=True)
     instagram = models.CharField(max_length=50, blank=True, null=True)
@@ -45,3 +51,11 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    @property
+    def age(self):
+        """Calculate age dynamically from birth_date."""
+        if self.birth_date:
+            today = date.today()
+            return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+        return None
