@@ -42,7 +42,7 @@ const UserCard = ({ user }: Props) => {
 
   // Truncate bio if it's longer than 90 characters
   const truncatedBio =
-    user.bio.length > 90 ? `${user.bio.substring(0, 90)}...` : user.bio;
+    user.bio.length > 90 ? `${user.bio.substring(0, 45)}...` : user.bio;
 
   return (
     <Card
@@ -139,7 +139,7 @@ const UserCard = ({ user }: Props) => {
             Interests
           </Heading>
           <Flex wrap="wrap" gap={2}>
-            {user.interests.map((interest, index) => (
+            {user.interests.slice(0,3).map((interest, index) => (
               <Badge
                 key={index}
                 colorScheme="blue"
