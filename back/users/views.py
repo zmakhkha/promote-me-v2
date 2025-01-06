@@ -73,6 +73,8 @@ class SignUpAPIView(APIView):
 
 
 class UserListView(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    
     serializer_class = UserListSerializer
 
     def get_queryset(self):

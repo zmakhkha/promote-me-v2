@@ -68,6 +68,6 @@ class UserListSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
-            'age', 'gender', 'location', 'bio', 'interests', 'is_online',
+            'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]

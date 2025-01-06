@@ -1,27 +1,49 @@
-import React, { useState } from "react";
-import { Box, Text, SimpleGrid, Button, HStack } from "@chakra-ui/react";
-import homeUsers from "@/data/homeUsers";
+import React, { useState, useEffect } from "react";
+import { Box, Text, SimpleGrid, Button, HStack, Spinner } from "@chakra-ui/react";
 import DateRangePicker from "@/common/DateRangePicker";
-import useColorModeStyles from "@/utils/useColorModeStyles"; // Import the custom hook
-import UserCard from "../user/UserCard"; // Import UserCard component
+import useColorModeStyles from "@/utils/useColorModeStyles";
+import UserCard from "../user/UserCard";
+import api from "@/services/axios";
 
 const USERS_PER_PAGE = 8; // Define the number of users per page
 
 const MainInstagram = () => {
   const { bg, textColor, borderColor } = useColorModeStyles(); // Use the custom hook
+  const [users, setUsers] = useState<any[]>([]); // State to store fetched users
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const totalPages = Math.ceil(homeUsers.length / USERS_PER_PAGE);
+  const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
 
-  // Get the users for the current page
-  const currentUsers = homeUsers.slice(
-    (currentPage - 1) * USERS_PER_PAGE,
-    currentPage * USERS_PER_PAGE
-  );
+  // Fetch users from API
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await api.get("/api/v1/users/", {
+        params: {
+          page: currentPage,
+          age_from: startDate,
+          age_to: endDate,
+        },
+      });
+      setUsers(response.data.results || response.data); // Adjust based on API response structure
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Failed to fetch users");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch data on component mount or when page/startDate/endDate changes
+  useEffect(() => {
+    fetchUsers();
+  }, [currentPage, startDate, endDate]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -31,7 +53,7 @@ const MainInstagram = () => {
 
   return (
     <Box p={1}>
-      {/* Title Section with Border */}
+      {/* Title Section */}
       <Box
         border="1px solid"
         borderColor={borderColor}
@@ -39,14 +61,13 @@ const MainInstagram = () => {
         p={1}
         mb={1}
         bg={bg}
-        className="title-container"
       >
         <Text fontSize="3xl" fontWeight="bold" color={textColor}>
           Instagram Users
         </Text>
       </Box>
 
-      {/* Date Range Picker with Border */}
+      {/* Date Range Picker */}
       <Box
         border="1px solid"
         borderColor={borderColor}
@@ -54,44 +75,47 @@ const MainInstagram = () => {
         p={1}
         mb={1}
         bg={bg}
-        className="date-range-picker-container"
       >
         <DateRangePicker setStartDate={setStartDate} setEndDate={setEndDate} />
       </Box>
 
       {/* User Cards Grid */}
-      <SimpleGrid
-        p={1}
-        columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
-        spacing={4}
-        w="100%"
-      >
-        {currentUsers.map((user) => (
-          <Box
-            key={user.id}
-            w="100%"
-            display="flex"
-            justifyContent="center"
-          >
-            <UserCard user={user} />
-          </Box>
-        ))}
-      </SimpleGrid>
+      {isLoading ? (
+        <Spinner size="xl" color={textColor} />
+      ) : error ? (
+        <Text color="red.500">{error}</Text>
+      ) : (
+        <SimpleGrid
+          p={1}
+          columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
+          spacing={4}
+          w="100%"
+        >
+          {users.slice(
+            (currentPage - 1) * USERS_PER_PAGE,
+            currentPage * USERS_PER_PAGE
+          ).map((user) => (
+            <Box key={user.id} w="100%" display="flex" justifyContent="center">
+              <UserCard user={user} />
+            </Box>
+          ))}
+        </SimpleGrid>
+      )}
 
       {/* Pagination Controls */}
       <HStack justifyContent="center" p={2} mt={4} spacing={2}>
         <Button
           onClick={() => handlePageChange(currentPage - 1)}
-          isDisabled={currentPage === 1}
+          isDisabled={currentPage === 1 || isLoading}
         >
           Previous
         </Button>
         <Text>
-          Page {currentPage} of {totalPages}
+          Page {currentPage} of {totalPages || 1}
         </Text>
         <Button
           onClick={() => handlePageChange(currentPage + 1)}
-          isDisabled={currentPage === totalPages}
+          isDisabled={currentPage === totalPages || isLoading}
         >
           Next
         </Button>

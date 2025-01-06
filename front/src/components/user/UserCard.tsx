@@ -26,7 +26,7 @@ interface HomeUser {
   location: string;
   bio: string;
   interests: string[];
-  imageUrl: string;
+  image_url: string;
   isOnline: boolean;
   instagram: string;
 }
@@ -77,7 +77,7 @@ const UserCard = ({ user }: Props) => {
         }}
       >
         <Image
-          src={user.imageUrl}
+          src={user.image_url}
           alt={`${user.username}'s profile`}
           objectFit="cover"
           width="100%"
