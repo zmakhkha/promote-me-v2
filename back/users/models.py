@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from .validators import max_size_validator
-
+from datetime import date
 
 class DefaultUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
