@@ -1,3 +1,4 @@
+"use client";
 import React, { useState, useEffect } from "react";
 import { Box, Text, SimpleGrid, Button, HStack, Spinner } from "@chakra-ui/react";
 import DateRangePicker from "@/common/DateRangePicker";
@@ -5,15 +6,14 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 import UserCard from "../user/UserCard";
 import api from "@/services/axios";
 
-const USERS_PER_PAGE = 8; // Define the number of users per page
+const USERS_PER_PAGE = 8;
 
 const MainInstagram = () => {
-  const { bg, textColor, borderColor } = useColorModeStyles(); // Use the custom hook
-  const [users, setUsers] = useState<any[]>([]); // State to store fetched users
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
-  );
+  const { bg, textColor, borderColor } = useColorModeStyles();
+  const [users, setUsers] = useState<any[]>([]);
+  const [gender, setGender] = useState<string>("");
+  const [minAge, setMinAge] = useState<number>(13);
+  const [maxAge, setMaxAge] = useState<number>(60);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,11 +28,12 @@ const MainInstagram = () => {
       const response = await api.get("/api/v1/users/", {
         params: {
           page: currentPage,
-          age_from: startDate,
-          age_to: endDate,
+          gender,
+          age_from: minAge,
+          age_to: maxAge,
         },
       });
-      setUsers(response.data.results || response.data); // Adjust based on API response structure
+      setUsers(response.data.results || response.data);
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to fetch users");
     } finally {
@@ -40,10 +41,9 @@ const MainInstagram = () => {
     }
   };
 
-  // Fetch data on component mount or when page/startDate/endDate changes
   useEffect(() => {
     fetchUsers();
-  }, [currentPage, startDate, endDate]);
+  }, [currentPage, gender, minAge, maxAge]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -54,29 +54,19 @@ const MainInstagram = () => {
   return (
     <Box p={1}>
       {/* Title Section */}
-      <Box
-        border="1px solid"
-        borderColor={borderColor}
-        borderRadius="md"
-        p={1}
-        mb={1}
-        bg={bg}
-      >
-        <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-          Instagram Users
-        </Text>
+      <Box border="1px solid" borderColor={borderColor} borderRadius="md" p={1} mb={1} bg={bg}>
+        <Text fontSize="3xl" fontWeight="bold" color={textColor}>Instagram Users</Text>
       </Box>
 
       {/* Date Range Picker */}
-      <Box
-        border="1px solid"
-        borderColor={borderColor}
-        borderRadius="md"
-        p={1}
-        mb={1}
-        bg={bg}
-      >
-        <DateRangePicker setStartDate={setStartDate} setEndDate={setEndDate} />
+      <Box border="1px solid" borderColor={borderColor} borderRadius="md" p={1} mb={1} bg={bg}>
+        <DateRangePicker 
+          setGender={setGender} 
+          setAgeRange={(min: number, max: number) => {
+            setMinAge(min);
+            setMaxAge(max);
+          }} 
+        />
       </Box>
 
       {/* User Cards Grid */}
@@ -85,12 +75,7 @@ const MainInstagram = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : (
-        <SimpleGrid
-          p={1}
-          columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
-          spacing={4}
-          w="100%"
-        >
+        <SimpleGrid p={1} columns={{ base: 2, sm: 2, md: 3, lg: 4 }} spacing={4} w="100%">
           {users.slice(
             (currentPage - 1) * USERS_PER_PAGE,
             currentPage * USERS_PER_PAGE
@@ -104,19 +89,11 @@ const MainInstagram = () => {
 
       {/* Pagination Controls */}
       <HStack justifyContent="center" p={2} mt={4} spacing={2}>
-        <Button
-          onClick={() => handlePageChange(currentPage - 1)}
-          isDisabled={currentPage === 1 || isLoading}
-        >
+        <Button onClick={() => handlePageChange(currentPage - 1)} isDisabled={currentPage === 1 || isLoading}>
           Previous
         </Button>
-        <Text>
-          Page {currentPage} of {totalPages || 1}
-        </Text>
-        <Button
-          onClick={() => handlePageChange(currentPage + 1)}
-          isDisabled={currentPage === totalPages || isLoading}
-        >
+        <Text>Page {currentPage} of {totalPages || 1}</Text>
+        <Button onClick={() => handlePageChange(currentPage + 1)} isDisabled={currentPage === totalPages || isLoading}>
           Next
         </Button>
       </HStack>

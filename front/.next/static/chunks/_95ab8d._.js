@@ -565,8 +565,8 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
     _s();
     const { textColor } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"])();
     const [gender, setSelectedGender] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [minAge, setMinAge] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(18);
-    const [maxAge, setMaxAge] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(30);
+    const [minAge, setMinAge] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(13);
+    const [maxAge, setMaxAge] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(60);
     const handleGenderChange = (e)=>{
         setSelectedGender(e.target.value);
         setGender(e.target.value);
@@ -576,8 +576,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$h$2d$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HStack"], {
         spacing: 2,
-        overflow: "hidden" // Prevent overflow
-        ,
+        overflow: "hidden",
         justifyContent: "space-between",
         width: "100%",
         children: [
@@ -588,7 +587,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                         children: "Gender:"
                     }, void 0, false, {
                         fileName: "[project]/src/common/DateRangePicker.tsx",
-                        lineNumber: 36,
+                        lineNumber: 31,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$select$2f$select$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Select"], {
@@ -602,7 +601,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                                 children: "Any"
                             }, void 0, false, {
                                 fileName: "[project]/src/common/DateRangePicker.tsx",
-                                lineNumber: 43,
+                                lineNumber: 33,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -610,7 +609,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                                 children: "Male"
                             }, void 0, false, {
                                 fileName: "[project]/src/common/DateRangePicker.tsx",
-                                lineNumber: 44,
+                                lineNumber: 34,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -618,19 +617,19 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                                 children: "Female"
                             }, void 0, false, {
                                 fileName: "[project]/src/common/DateRangePicker.tsx",
-                                lineNumber: 45,
+                                lineNumber: 35,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/common/DateRangePicker.tsx",
-                        lineNumber: 37,
+                        lineNumber: 32,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/common/DateRangePicker.tsx",
-                lineNumber: 35,
+                lineNumber: 30,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$h$2d$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HStack"], {
@@ -640,7 +639,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                         children: "Age:"
                     }, void 0, false, {
                         fileName: "[project]/src/common/DateRangePicker.tsx",
-                        lineNumber: 51,
+                        lineNumber: 41,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -652,7 +651,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                         color: textColor
                     }, void 0, false, {
                         fileName: "[project]/src/common/DateRangePicker.tsx",
-                        lineNumber: 52,
+                        lineNumber: 42,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
@@ -660,7 +659,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                         children: "to"
                     }, void 0, false, {
                         fileName: "[project]/src/common/DateRangePicker.tsx",
-                        lineNumber: 60,
+                        lineNumber: 50,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
@@ -672,7 +671,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                         color: textColor
                     }, void 0, false, {
                         fileName: "[project]/src/common/DateRangePicker.tsx",
-                        lineNumber: 61,
+                        lineNumber: 51,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$button$2f$button$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -680,13 +679,13 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
                         children: "Apply"
                     }, void 0, false, {
                         fileName: "[project]/src/common/DateRangePicker.tsx",
-                        lineNumber: 69,
+                        lineNumber: 59,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/common/DateRangePicker.tsx",
-                lineNumber: 50,
+                lineNumber: 40,
                 columnNumber: 7
             }, this)
         ]
@@ -696,7 +695,7 @@ const DateRangePicker = ({ setGender, setAgeRange })=>{
         columnNumber: 5
     }, this);
 };
-_s(DateRangePicker, "FV+blIPw02PDpHVd/6bGfU0wPxU=", false, function() {
+_s(DateRangePicker, "evnmBelgNt77wQiKn/3mnuhhWT8=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]
     ];
@@ -731,7 +730,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/react-icons/fa/index.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/typography/text.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$md$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/react-icons/md/index.mjs [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$spacer$2f$spacer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/spacer/spacer.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$badge$2f$badge$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/badge/badge.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$divider$2f$divider$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/divider/divider.mjs [app-client] (ecmascript)");
 ;
@@ -753,11 +751,11 @@ const UserCard = ({ user })=>{
         md: "600px"
     });
     // Truncate bio if it's longer than 90 characters
-    const truncatedBio = user.bio.length > 90 ? `${user.bio.substring(0, 45)}...` : user.bio;
+    const truncatedBio = user.bio.length > 90 ? `${user.bio.substring(0, 60)}...` : user.bio;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$card$2f$card$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Card"], {
         width: "sm",
         maxH: cardMaxHeight,
-        height: "450px",
+        // height="450px"
         borderRadius: "xl",
         boxShadow: "lg",
         overflow: "hidden",
@@ -792,12 +790,12 @@ const UserCard = ({ user })=>{
                     borderRadius: "md"
                 }, void 0, false, {
                     fileName: "[project]/src/components/user/UserCard.tsx",
-                    lineNumber: 79,
+                    lineNumber: 80,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/user/UserCard.tsx",
-                lineNumber: 66,
+                lineNumber: 67,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$flex$2f$flex$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Flex"], {
@@ -815,74 +813,56 @@ const UserCard = ({ user })=>{
                             mb: 1,
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$heading$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Heading"], {
                                 fontSize: "xl",
-                                fontWeight: "semibold",
+                                fontWeight: "bold",
                                 color: textColor,
+                                mb: 2,
+                                textAlign: "center",
                                 children: [
-                                    user.username,
-                                    ", ",
+                                    user.first_name,
+                                    " · ",
+                                    user.gender,
+                                    " · ",
                                     user.age
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/user/UserCard.tsx",
-                                lineNumber: 98,
+                                lineNumber: 99,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/src/components/user/UserCard.tsx",
-                            lineNumber: 97,
+                            lineNumber: 98,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$h$2d$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HStack"], {
-                            mb: 1,
+                            // justify="center"
+                            mb: 2,
+                            color: "gray.500",
+                            fontSize: "sm",
+                            fontStyle: "italic",
                             children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaMapMarkerAlt"], {
-                                    color: "gray.600"
-                                }, void 0, false, {
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$fa$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["FaMapMarkerAlt"], {}, void 0, false, {
                                     fileName: "[project]/src/components/user/UserCard.tsx",
-                                    lineNumber: 119,
+                                    lineNumber: 117,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
-                                    fontSize: "md",
-                                    color: textColor,
-                                    children: user.location || /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$md$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["MdLocationOff"], {
-                                        color: "gray.400"
-                                    }, void 0, false, {
+                                    children: user.location || /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$md$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["MdLocationOff"], {}, void 0, false, {
                                         fileName: "[project]/src/components/user/UserCard.tsx",
-                                        lineNumber: 121,
-                                        columnNumber: 33
+                                        lineNumber: 118,
+                                        columnNumber: 37
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/user/UserCard.tsx",
-                                    lineNumber: 120,
+                                    lineNumber: 118,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/user/UserCard.tsx",
-                            lineNumber: 118,
+                            lineNumber: 110,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
-                            fontSize: "sm",
-                            color: textColor,
-                            mb: 1,
-                            // lineHeight="1.6"
-                            flex: "1",
-                            // overflow="hidden"
-                            textOverflow: "ellipsis",
-                            children: truncatedBio
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/user/UserCard.tsx",
-                            lineNumber: 125,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$spacer$2f$spacer$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Spacer"], {}, void 0, false, {
-                            fileName: "[project]/src/components/user/UserCard.tsx",
-                            lineNumber: 136,
-                            columnNumber: 11
-                        }, this),
-                        " ",
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$heading$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Heading"], {
                             fontSize: "md",
                             mb: 1,
@@ -919,12 +899,12 @@ const UserCard = ({ user })=>{
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/user/UserCard.tsx",
-                    lineNumber: 95,
+                    lineNumber: 96,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/user/UserCard.tsx",
-                lineNumber: 89,
+                lineNumber: 90,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$divider$2f$divider$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Divider"], {
@@ -970,7 +950,7 @@ const UserCard = ({ user })=>{
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/user/UserCard.tsx",
-        lineNumber: 48,
+        lineNumber: 49,
         columnNumber: 5
     }, this);
 };
@@ -1029,19 +1009,21 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$button$2f$button$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/button/button.mjs [app-client] (ecmascript)");
 ;
 var _s = __turbopack_refresh__.signature();
+"use client";
 ;
 ;
 ;
 ;
 ;
 ;
-const USERS_PER_PAGE = 8; // Define the number of users per page
+const USERS_PER_PAGE = 8;
 const MainInstagram = ()=>{
     _s();
-    const { bg, textColor, borderColor } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"])(); // Use the custom hook
-    const [users, setUsers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]); // State to store fetched users
-    const [startDate, setStartDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    const [endDate, setEndDate] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(new Date().toISOString().split("T")[0]);
+    const { bg, textColor, borderColor } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"])();
+    const [users, setUsers] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [gender, setGender] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [minAge, setMinAge] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(13);
+    const [maxAge, setMaxAge] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(60);
     const [currentPage, setCurrentPage] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
     const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
@@ -1054,26 +1036,27 @@ const MainInstagram = ()=>{
             const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$axios$2f$index$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].get("/api/v1/users/", {
                 params: {
                     page: currentPage,
-                    age_from: startDate,
-                    age_to: endDate
+                    gender,
+                    age_from: minAge,
+                    age_to: maxAge
                 }
             });
-            setUsers(response.data.results || response.data); // Adjust based on API response structure
+            setUsers(response.data.results || response.data);
         } catch (err) {
             setError(err.response?.data?.detail || "Failed to fetch users");
         } finally{
             setIsLoading(false);
         }
     };
-    // Fetch data on component mount or when page/startDate/endDate changes
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "MainInstagram.useEffect": ()=>{
             fetchUsers();
         }
     }["MainInstagram.useEffect"], [
         currentPage,
-        startDate,
-        endDate
+        gender,
+        minAge,
+        maxAge
     ]);
     const handlePageChange = (newPage)=>{
         if (newPage >= 1 && newPage <= totalPages) {
@@ -1097,7 +1080,7 @@ const MainInstagram = ()=>{
                     children: "Instagram Users"
                 }, void 0, false, {
                     fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                    lineNumber: 65,
+                    lineNumber: 58,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
@@ -1113,16 +1096,19 @@ const MainInstagram = ()=>{
                 mb: 1,
                 bg: bg,
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$common$2f$DateRangePicker$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                    setStartDate: setStartDate,
-                    setEndDate: setEndDate
+                    setGender: setGender,
+                    setAgeRange: (min, max)=>{
+                        setMinAge(min);
+                        setMaxAge(max);
+                    }
                 }, void 0, false, {
                     fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                    lineNumber: 79,
+                    lineNumber: 63,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                lineNumber: 71,
+                lineNumber: 62,
                 columnNumber: 7
             }, this),
             isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$spinner$2f$spinner$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Spinner"], {
@@ -1130,14 +1116,14 @@ const MainInstagram = ()=>{
                 color: textColor
             }, void 0, false, {
                 fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                lineNumber: 84,
+                lineNumber: 74,
                 columnNumber: 9
             }, this) : error ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
                 color: "red.500",
                 children: error
             }, void 0, false, {
                 fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                lineNumber: 86,
+                lineNumber: 76,
                 columnNumber: 9
             }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$grid$2f$simple$2d$grid$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SimpleGrid"], {
                 p: 1,
@@ -1157,17 +1143,17 @@ const MainInstagram = ()=>{
                             user: user
                         }, void 0, false, {
                             fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                            lineNumber: 99,
+                            lineNumber: 84,
                             columnNumber: 15
                         }, this)
                     }, user.id, false, {
                         fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                        lineNumber: 98,
+                        lineNumber: 83,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                lineNumber: 88,
+                lineNumber: 78,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$h$2d$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["HStack"], {
@@ -1182,7 +1168,7 @@ const MainInstagram = ()=>{
                         children: "Previous"
                     }, void 0, false, {
                         fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                        lineNumber: 107,
+                        lineNumber: 92,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
@@ -1194,7 +1180,7 @@ const MainInstagram = ()=>{
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                        lineNumber: 113,
+                        lineNumber: 95,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$button$2f$button$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -1203,13 +1189,13 @@ const MainInstagram = ()=>{
                         children: "Next"
                     }, void 0, false, {
                         fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                        lineNumber: 116,
+                        lineNumber: 96,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/instagram/mainInstagram.tsx",
-                lineNumber: 106,
+                lineNumber: 91,
                 columnNumber: 7
             }, this)
         ]
@@ -1219,7 +1205,7 @@ const MainInstagram = ()=>{
         columnNumber: 5
     }, this);
 };
-_s(MainInstagram, "v0HdReTZQ57vH2fFMyqm1QCfNqE=", false, function() {
+_s(MainInstagram, "A2d6ZhewZvE35o6cfwVxIKr4eFY=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]
     ];

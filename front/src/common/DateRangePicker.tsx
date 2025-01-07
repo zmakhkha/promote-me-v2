@@ -12,8 +12,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ setGender, setAgeRang
   const { textColor } = useColorModeStyles();
 
   const [gender, setSelectedGender] = useState<string>("");
-  const [minAge, setMinAge] = useState<number>(18);
-  const [maxAge, setMaxAge] = useState<number>(30);
+  const [minAge, setMinAge] = useState<number>(13);
+  const [maxAge, setMaxAge] = useState<number>(60);
 
   const handleGenderChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedGender(e.target.value);
@@ -25,21 +25,11 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ setGender, setAgeRang
   };
 
   return (
-    <HStack
-      spacing={2}
-      overflow="hidden" // Prevent overflow
-      justifyContent="space-between"
-      width="100%"
-    >
+    <HStack spacing={2} overflow="hidden" justifyContent="space-between" width="100%">
       {/* Gender Filter */}
       <HStack>
         <Text color={textColor}>Gender:</Text>
-        <Select 
-          value={gender} 
-          onChange={handleGenderChange}
-          color={textColor}
-          width="auto"
-        >
+        <Select value={gender} onChange={handleGenderChange} color={textColor} width="auto">
           <option value="">Any</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>

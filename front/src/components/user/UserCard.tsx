@@ -21,6 +21,7 @@ import { FaInstagram } from "react-icons/fa";
 interface HomeUser {
   id: number;
   username: string;
+  first_name: string;
   age: number;
   gender: string;
   location: string;
@@ -42,13 +43,13 @@ const UserCard = ({ user }: Props) => {
 
   // Truncate bio if it's longer than 90 characters
   const truncatedBio =
-    user.bio.length > 90 ? `${user.bio.substring(0, 45)}...` : user.bio;
+    user.bio.length > 90 ? `${user.bio.substring(0, 60)}...` : user.bio;
 
   return (
     <Card
       width="sm"
       maxH={cardMaxHeight}
-      height="450px"
+      // height="450px"
       borderRadius="xl"
       boxShadow="lg"
       overflow="hidden"
@@ -95,51 +96,50 @@ const UserCard = ({ user }: Props) => {
         <CardBody flex="1" display="flex" flexDirection="column">
           {/* Header Section with User Info */}
           <HStack justify="space-between" mb={1}>
-            <Heading fontSize="xl" fontWeight="semibold" color={textColor}>
-              {user.username}, {user.age}
-            </Heading>
-            {/* <Badge
-              colorScheme={user.isOnline ? "green" : "red"}
-              variant="solid"
-              borderRadius="full"
-              px={4}
-              py={1}
-              fontSize="sm"
-              display="flex"
-              alignItems="center"
+            <Heading
+              fontSize="xl"
+              fontWeight="bold"
+              color={textColor}
+              mb={2}
+              textAlign="center"
             >
-              {user.isOnline ? <MdCheckCircle /> : <MdCancel />}
-              <span style={{ marginLeft: "4px" }}>
-                {user.isOnline ? "Online" : "Offline"}
-              </span>
-            </Badge> */}
+              {user.first_name} · {user.gender} · {user.age}
+            </Heading>
           </HStack>
           {/* Location Section */}
-          <HStack mb={1}>
-            <FaMapMarkerAlt color="gray.600" />
-            <Text fontSize="md" color={textColor}>
-              {user.location || <MdLocationOff color="gray.400" />}
-            </Text>
+          <HStack
+            // justify="center"
+            mb={2}
+            color="gray.500"
+            fontSize="sm"
+            fontStyle="italic"
+          >
+            <FaMapMarkerAlt />
+            <Text>{user.location || <MdLocationOff />}</Text>
           </HStack>
           {/* Bio Section */}
-          <Text
-            fontSize="sm"
-            color={textColor}
-            mb={1}
-            // lineHeight="1.6"
-            flex="1"
-            // overflow="hidden"
-            textOverflow="ellipsis"
+          {/* About (Bio) Section */}
+          {/* <Box
+            bg="gray.200"
+            p={3}
+            borderRadius="md"
+            mb={2}
+            // textAlign="justify"
+            _dark={{
+              bg: "gray.700",
+            }}
           >
-            {truncatedBio}
-          </Text>
-          <Spacer /> {/* Pushes content to the top if there's empty space */}
+            <Text fontSize="sm" color={textColor}>
+              {truncatedBio}
+            </Text>
+          </Box> */}
+          {/* <Spacer /> Pushes content to the top if there's empty space */}
           {/* Interests Section */}
           <Heading fontSize="md" mb={1} color={textColor}>
             Interests
           </Heading>
           <Flex wrap="wrap" gap={2}>
-            {user.interests.slice(0,3).map((interest, index) => (
+            {user.interests.slice(0, 3).map((interest, index) => (
               <Badge
                 key={index}
                 colorScheme="blue"

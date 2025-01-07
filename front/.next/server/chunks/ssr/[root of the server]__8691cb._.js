@@ -952,10 +952,9 @@ const homeUsers = [
     {
         id: 1,
         username: "Sophia_Martinez",
-        //   profile_image: "profile_image",
         firstName: "Sophia",
-        email: "sophia@email.com",
         lastName: "Martinez",
+        email: "sophia@email.com",
         points: 25,
         likes: 12,
         views: 18,

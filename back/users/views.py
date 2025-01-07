@@ -72,28 +72,47 @@ class SignUpAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+from rest_framework import generics
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
+from django.db.models import F, Func, Value
+from django.db.models.functions import ExtractYear
+from datetime import datetime
+
+from .models import DefaultUser
+from .serializers import UserListSerializer
+
+
 class UserListView(generics.ListAPIView):
     permission_classes = [AllowAny]
-    
     serializer_class = UserListSerializer
 
     def get_queryset(self):
         queryset = DefaultUser.objects.all()
 
-        # Get the age filter parameters
+        # Get query parameters
         age_from = self.request.query_params.get('age_from')
         age_to = self.request.query_params.get('age_to')
         gender = self.request.query_params.get('gender')
 
-        if age_from and age_to:
+        # Filter by age range
+        current_year = datetime.now().year
+        if age_from or age_to:
             try:
-                age_from = int(age_from)
-                age_to = int(age_to)
+                if age_from:
+                    birth_year_to = current_year - int(age_from)
+                    queryset = queryset.filter(birth_date__year__lte=birth_year_to)
+                if age_to:
+                    birth_year_from = current_year - int(age_to)
+                    queryset = queryset.filter(birth_date__year__gte=birth_year_from)
             except ValueError:
-                raise ValidationError("Age parameters must be integers.")
-            queryset = queryset.filter(age__gte=age_from, age__lte=age_to)
+                raise ValidationError("Age parameters must be valid integers.")
 
+        # Filter by gender
         if gender:
-            queryset = queryset.filter(gender=gender)
+            valid_genders = ['male', 'female', 'other']
+            if gender.lower() not in valid_genders:
+                raise ValidationError(f"Gender must be one of {valid_genders}.")
+            queryset = queryset.filter(gender=gender.lower())
 
         return queryset

@@ -533,7 +533,7 @@ const __TURBOPACK__default__export__ = Sidebar;
 
 var { r: __turbopack_require__, f: __turbopack_module_context__, i: __turbopack_import__, s: __turbopack_esm__, v: __turbopack_export_value__, n: __turbopack_export_namespace__, c: __turbopack_cache__, M: __turbopack_modules__, l: __turbopack_load__, j: __turbopack_dynamic__, P: __turbopack_resolve_absolute_path__, U: __turbopack_relative_url__, R: __turbopack_resolve_module_id_path__, b: __turbopack_worker_blob_url__, g: global, __dirname, t: __turbopack_require_real__ } = __turbopack_context__;
 {
-__turbopack_export_value__("/_next/static/media/no-avatar.1cc78d9f.png");}}),
+__turbopack_export_value__("/_next/static/media/no-avatar.a8352308.png");}}),
 "[project]/src/data/image/no-avatar.png.mjs { IMAGE => \"[project]/src/data/image/no-avatar.png [app-ssr] (static)\" } [app-ssr] (structured image object, ecmascript)": ((__turbopack_context__) => {
 "use strict";
 
@@ -546,11 +546,11 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$data$2f$image$2f$no$2
 ;
 const __TURBOPACK__default__export__ = {
     src: __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$data$2f$image$2f$no$2d$avatar$2e$png__$5b$app$2d$ssr$5d$__$28$static$29$__["default"],
-    width: 231,
-    height: 272,
-    blurDataURL: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAICAYAAAA1BOUGAAAA80lEQVR42gHoABf/ADm39/9yyfv/D4TS/whpsP8Dbr3/JJTf/4bP+v8AVMP9/5vL5f9CZHj/Wmty/yhzpP9at/H/WLv1/wBixf7/jrfL/5GEcP/LvKD/e6e4/3nN+f84tvj/AHTK/f+bz+n/0cev/+rWtf+PvM3/dcz5/3LL+/8AVLz3/3fI8f+Oqa//o6ij/5/Ax/+U1vb/ftD8/wAjj9T/Uo+y/2FhW/+VlYf/mZuQ/5LN6f9Ys+n/AAprs/8te6//RkxM/05LRP9Ob4L/RpXI/wtqsP8ADleQ/wtFdP8qMzn/MDEx/yVIY/8ISn3/CVCG/3belZMwLvALAAAAAElFTkSuQmCC",
-    blurWidth: 7,
-    blurHeight: 8
+    width: 3840,
+    height: 2160,
+    blurDataURL: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAFCAIAAAD38zoCAAAAM0lEQVR42nWN2woAIAxCT4su///FMUyoh4lsoKg0ErofwoYYVvJJGjBhwYb+JsK8tdXGAQ4VADl9mhIsAAAAAElFTkSuQmCC",
+    blurWidth: 8,
+    blurHeight: 5
 };
 }}),
 "[project]/src/components/profile/MainProfile.tsx [app-ssr] (ecmascript)": ((__turbopack_context__) => {
