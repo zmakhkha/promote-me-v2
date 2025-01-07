@@ -94,6 +94,7 @@ class UserListView(generics.ListAPIView):
         age_from = self.request.query_params.get('age_from')
         age_to = self.request.query_params.get('age_to')
         gender = self.request.query_params.get('gender')
+        print(f"-------------->|{gender}|")
 
         # Filter by age range
         current_year = datetime.now().year
@@ -110,10 +111,10 @@ class UserListView(generics.ListAPIView):
 
         # Filter by gender
         if gender:
-            valid_genders = ['male', 'female', 'other']
-            if gender.lower() not in valid_genders:
+            valid_genders = ['Male', 'Female', 'other']
+            if gender not in valid_genders:
                 raise ValidationError(f"Gender must be one of {valid_genders}.")
-            queryset = queryset.filter(gender=gender.lower())
+            queryset = queryset.filter(gender=gender)
 
         return queryset
 
