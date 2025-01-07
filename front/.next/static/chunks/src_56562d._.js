@@ -69,16 +69,19 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/dist/compiled/react/index.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/src/utils/useColorModeStyles.ts [app-client] (ecmascript)");
+(()=>{
+    const e = new Error("Cannot find module '../../services/'");
+    e.code = 'MODULE_NOT_FOUND';
+    throw e;
+})();
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$toast$2f$use$2d$toast$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/toast/use-toast.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/input/input.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2d$group$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/radio/radio-group.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/stack/stack.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/radio/radio.mjs [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2d$group$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/checkbox/checkbox-group.mjs [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/typography/text.mjs [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/checkbox/checkbox.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$flex$2f$flex$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/flex/flex.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$box$2f$box$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/box/box.mjs [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/typography/text.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$button$2f$button$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_import__("[project]/node_modules/@chakra-ui/react/dist/esm/button/button.mjs [app-client] (ecmascript)");
 ;
 var _s = __turbopack_refresh__.signature();
@@ -87,19 +90,21 @@ var _s = __turbopack_refresh__.signature();
 ;
 ;
 ;
+;
 const MainRegister = ()=>{
     _s();
     const [step, setStep] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({
+        username: "",
         email: "",
-        confirmationCode: "",
-        firstName: "",
-        lastName: "",
-        dateOfBirth: "",
+        password: "",
+        first_name: "",
+        last_name: "",
+        birth_date: "",
         gender: "",
-        lookingFor: "",
-        interests: [],
-        photo: null
+        location: "",
+        bio: "",
+        interests: []
     });
     const [isClient, setIsClient] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const { bg, textColor, hoverColor, borderColor } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"])();
@@ -111,7 +116,62 @@ const MainRegister = ()=>{
         }
     }["MainRegister.useEffect"], []);
     if (!isClient) return null;
+    const updateFormData = (key, value)=>{
+        setFormData((prev)=>({
+                ...prev,
+                [key]: value
+            }));
+    };
+    const handleNext = async ()=>{
+        if (step === steps.length) {
+            try {
+                const response = await axios.post("/api/v1/register/", formData);
+                console.log("✅ Registration successful:", response.data);
+                toast({
+                    title: "Account Created Successfully",
+                    description: "Redirecting to home page...",
+                    status: "success",
+                    duration: 3000
+                });
+                router.push("/home");
+            } catch (error) {
+                if (error.response) {
+                    console.error("❌ Backend Error Response:", error.response.data);
+                    toast({
+                        title: "Registration Failed",
+                        description: error.response.data?.email || error.response.data?.username || "An error occurred.",
+                        status: "error",
+                        duration: 5000
+                    });
+                } else {
+                    console.error("❌ Network Error or No Response:", error.message);
+                    toast({
+                        title: "Network Error",
+                        description: "Failed to connect to the server.",
+                        status: "error",
+                        duration: 5000
+                    });
+                }
+            }
+            return;
+        }
+        setStep((prev)=>prev + 1);
+    };
     const steps = [
+        {
+            title: "Choose a Username",
+            description: "This will be your unique identifier.",
+            key: "username",
+            component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
+                placeholder: "Enter your username",
+                value: formData.username,
+                onChange: (e)=>updateFormData("username", e.target.value)
+            }, void 0, false, {
+                fileName: "[project]/src/components/register/MainRegister.tsx",
+                lineNumber: 92,
+                columnNumber: 9
+            }, this)
+        },
         {
             title: "What's your email?",
             description: "To create or login to your account",
@@ -123,67 +183,65 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("email", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 49,
+                lineNumber: 104,
                 columnNumber: 9
             }, this)
         },
         {
-            title: "Enter the confirmation code",
-            description: "Check your email for the code we sent you.",
-            key: "confirmationCode",
+            title: "Choose a Password",
+            description: "Make sure it's strong and secure.",
+            key: "password",
             component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                placeholder: "Enter confirmation code",
-                type: "text",
-                value: formData.confirmationCode,
-                onChange: (e)=>updateFormData("confirmationCode", e.target.value)
+                placeholder: "Enter your password",
+                type: "password",
+                value: formData.password,
+                onChange: (e)=>updateFormData("password", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 62,
+                lineNumber: 117,
                 columnNumber: 9
             }, this)
         },
         {
             title: "What's your first name?",
             description: "Let us know how to address you.",
-            key: "firstName",
+            key: "first_name",
             component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                 placeholder: "Enter your first name",
-                type: "text",
-                value: formData.firstName,
-                onChange: (e)=>updateFormData("firstName", e.target.value)
+                value: formData.first_name,
+                onChange: (e)=>updateFormData("first_name", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 75,
+                lineNumber: 130,
                 columnNumber: 9
             }, this)
         },
         {
             title: "What's your last name?",
             description: "Share your family name.",
-            key: "lastName",
+            key: "last_name",
             component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
                 placeholder: "Enter your last name",
-                type: "text",
-                value: formData.lastName,
-                onChange: (e)=>updateFormData("lastName", e.target.value)
+                value: formData.last_name,
+                onChange: (e)=>updateFormData("last_name", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 88,
+                lineNumber: 142,
                 columnNumber: 9
             }, this)
         },
         {
             title: "Enter your date of birth",
             description: "We need this to verify your age.",
-            key: "dateOfBirth",
+            key: "birth_date",
             component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                placeholder: "DD/MM/YYYY",
+                placeholder: "YYYY-MM-DD",
                 type: "date",
-                value: formData.dateOfBirth,
-                onChange: (e)=>updateFormData("dateOfBirth", e.target.value)
+                value: formData.birth_date,
+                onChange: (e)=>updateFormData("birth_date", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 101,
+                lineNumber: 154,
                 columnNumber: 9
             }, this)
         },
@@ -203,7 +261,7 @@ const MainRegister = ()=>{
                             children: "Male"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 119,
+                            lineNumber: 172,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radio"], {
@@ -211,7 +269,7 @@ const MainRegister = ()=>{
                             children: "Female"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 120,
+                            lineNumber: 173,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radio"], {
@@ -219,199 +277,50 @@ const MainRegister = ()=>{
                             children: "Non-Binary"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 121,
+                            lineNumber: 174,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 118,
+                    lineNumber: 171,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 114,
+                lineNumber: 167,
                 columnNumber: 9
             }, this)
         },
         {
-            title: "What are you looking for?",
-            description: "Select one option that best describes your intent.",
-            key: "lookingFor",
-            component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2d$group$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["RadioGroup"], {
-                value: formData.lookingFor,
-                onChange: (value)=>updateFormData("lookingFor", value),
-                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Stack"], {
-                    spacing: 4,
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radio"], {
-                            value: "marriage",
-                            children: "Get Married"
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 136,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radio"], {
-                            value: "relationship",
-                            children: "Find a Relationship"
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 137,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radio"], {
-                            value: "friends",
-                            children: "Chat and Meet Friends"
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 138,
-                            columnNumber: 13
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Radio"], {
-                            value: "culture",
-                            children: "Know Other Cultures"
-                        }, void 0, false, {
-                            fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 139,
-                            columnNumber: 13
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 135,
-                    columnNumber: 11
-                }, this)
-            }, void 0, false, {
-                fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 131,
-                columnNumber: 9
-            }, this)
-        },
-        {
-            title: "Select your interests",
-            description: "Choose the interests that define you most.",
-            key: "interests",
-            component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2d$group$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["CheckboxGroup"], {
-                value: formData.interests,
-                onChange: (value)=>updateFormData("interests", value),
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
-                        fontWeight: "bold",
-                        children: "Hobbies"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 153,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Stack"], {
-                        spacing: 2,
-                        mb: 4,
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Checkbox"], {
-                                value: "poetry",
-                                children: "Poetry"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/register/MainRegister.tsx",
-                                lineNumber: 155,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Checkbox"], {
-                                value: "prose",
-                                children: "Prose"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/register/MainRegister.tsx",
-                                lineNumber: 156,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Checkbox"], {
-                                value: "makeup",
-                                children: "Makeup"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/register/MainRegister.tsx",
-                                lineNumber: 157,
-                                columnNumber: 13
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 154,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
-                        fontWeight: "bold",
-                        children: "Sports"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 159,
-                        columnNumber: 11
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$stack$2f$stack$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Stack"], {
-                        spacing: 2,
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Checkbox"], {
-                                value: "climbing",
-                                children: "Climbing"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/register/MainRegister.tsx",
-                                lineNumber: 161,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$checkbox$2f$checkbox$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Checkbox"], {
-                                value: "badminton",
-                                children: "Badminton"
-                            }, void 0, false, {
-                                fileName: "[project]/src/components/register/MainRegister.tsx",
-                                lineNumber: 162,
-                                columnNumber: 13
-                            }, this)
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 160,
-                        columnNumber: 11
-                    }, this)
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 149,
-                columnNumber: 9
-            }, this)
-        },
-        {
-            title: "Add your first photo",
-            description: "Upload a profile picture to represent yourself.",
-            key: "photo",
+            title: "Where are you located?",
+            description: "Provide your current city and country.",
+            key: "location",
             component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
-                type: "file",
-                accept: "image/*",
-                onChange: (e)=>updateFormData("photo", e.target.files?.[0])
+                placeholder: "Enter your location",
+                value: formData.location,
+                onChange: (e)=>updateFormData("location", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 172,
+                lineNumber: 184,
+                columnNumber: 9
+            }, this)
+        },
+        {
+            title: "Write a short bio",
+            description: "Tell us a bit about yourself.",
+            key: "bio",
+            component: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Input"], {
+                placeholder: "Write something about you",
+                value: formData.bio,
+                onChange: (e)=>updateFormData("bio", e.target.value)
+            }, void 0, false, {
+                fileName: "[project]/src/components/register/MainRegister.tsx",
+                lineNumber: 196,
                 columnNumber: 9
             }, this)
         }
     ];
-    const updateFormData = (key, value)=>{
-        setFormData((prev)=>({
-                ...prev,
-                [key]: value
-            }));
-    };
-    const handleNext = ()=>{
-        if (step === steps.length) {
-            toast({
-                title: "Account Created Successfully",
-                description: "Redirecting to home page...",
-                status: "success",
-                duration: 3000
-            });
-            router.push("/home");
-            return;
-        }
-        setStep((prev)=>prev + 1);
-    };
     const currentStep = steps[step - 1];
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$flex$2f$flex$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Flex"], {
         justify: "center",
@@ -432,7 +341,7 @@ const MainRegister = ()=>{
                     children: currentStep.title
                 }, void 0, false, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 204,
+                    lineNumber: 210,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Text"], {
@@ -441,7 +350,7 @@ const MainRegister = ()=>{
                     children: currentStep.description
                 }, void 0, false, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 205,
+                    lineNumber: 211,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$box$2f$box$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Box"], {
@@ -449,7 +358,7 @@ const MainRegister = ()=>{
                     children: currentStep.component
                 }, void 0, false, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 206,
+                    lineNumber: 212,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$button$2f$button$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Button"], {
@@ -458,22 +367,22 @@ const MainRegister = ()=>{
                     children: step === steps.length ? "Finish" : "Next"
                 }, void 0, false, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 207,
+                    lineNumber: 213,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/register/MainRegister.tsx",
-            lineNumber: 203,
+            lineNumber: 209,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/register/MainRegister.tsx",
-        lineNumber: 202,
+        lineNumber: 208,
         columnNumber: 5
     }, this);
 };
-_s(MainRegister, "NQ3pjDApaantf4/bK5ZUOLOlwnI=", false, function() {
+_s(MainRegister, "ui6N/cy38w9Jo0NDXVksC3NER1A=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$useColorModeStyles$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"],
         __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$toast$2f$use$2d$toast$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"],

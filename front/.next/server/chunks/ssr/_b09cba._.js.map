@@ -8,7 +8,7 @@
     {"offset": {"line": 29, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}},
     {"offset": {"line": 35, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":""}},
     {"offset": {"line": 39, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}},
-    {"offset": {"line": 45, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/zakaria/work/promote-me/front/src/app/register/page.tsx"],"sourcesContent":["import MainRegister from '@/components/register/MainRegister'\r\nimport React from 'react'\r\n\r\nconst page = () => {\r\n  return (\r\n\t<MainRegister/>\r\n  )\r\n}\r\n\r\nexport default page"],"names":[],"mappings":";;;;AAAA;;;AAGA,MAAM,OAAO;IACX,qBACD,8OAAC,8IAAA,CAAA,UAAY;;;;;AAEd;uCAEe"}},
+    {"offset": {"line": 45, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/zakaria/work/promote-me/front/src/app/register/page.tsx"],"sourcesContent":["import MainRegister from '@/components/register/MainRegister'\nimport React from 'react'\n\nconst page = () => {\n  return (\n\t<MainRegister/>\n  )\n}\n\nexport default page"],"names":[],"mappings":";;;;AAAA;;;AAGA,MAAM,OAAO;IACX,qBACD,8OAAC,8IAAA,CAAA,UAAY;;;;;AAEd;uCAEe"}},
     {"offset": {"line": 60, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}},
     {"offset": {"line": 71, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":""}},
     {"offset": {"line": 71, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}},

@@ -26,7 +26,6 @@ class UserSerializer(serializers.ModelSerializer):
     location = serializers.CharField(required=True)
     bio = serializers.CharField(required=True)
     interests = serializers.JSONField(required=True)
-    is_online = serializers.BooleanField(required=True)
     snapchat = serializers.CharField(required=True)
     instagram = serializers.CharField(required=True)
     tiktok = serializers.CharField(required=True)
@@ -54,7 +53,6 @@ class UserSerializer(serializers.ModelSerializer):
             location=validated_data['location'],
             bio=validated_data['bio'],
             interests=validated_data['interests'],
-            is_online=validated_data['is_online'],
             snapchat=validated_data['snapchat'],
             instagram=validated_data['instagram'],
             tiktok=validated_data['tiktok'],
