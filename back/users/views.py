@@ -11,7 +11,7 @@ from django.core.cache import cache
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import DefaultUser
-from .serializers import UserSerializer
+from .serializers import UserDetailSerializer, UserSerializer
 from rest_framework.exceptions import ValidationError
 
 
@@ -116,3 +116,22 @@ class UserListView(generics.ListAPIView):
             queryset = queryset.filter(gender=gender.lower())
 
         return queryset
+
+
+from rest_framework import generics
+from rest_framework.exceptions import NotFound
+from .models import DefaultUser
+from .serializers import UserListSerializer
+
+class UserDetailView(generics.RetrieveAPIView):
+    queryset = DefaultUser.objects.all()
+    serializer_class = UserDetailSerializer
+    lookup_field = 'username'
+    permission_classes = [AllowAny]
+
+    def get_object(self):
+        username = self.kwargs.get('username')
+        try:
+            return self.queryset.get(username=username)
+        except DefaultUser.DoesNotExist:
+            raise NotFound({"Error": "User not found!"})

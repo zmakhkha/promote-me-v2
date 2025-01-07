@@ -1,14 +1,29 @@
-	"use client";
+"use client";
 
+import { useRouter } from "next/navigation";
 import { Grid, GridItem } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MainProfile from "@/components/profile/MainProfile";
 import Header from "@/common/Header";
 
 const HomePage = () => {
+  const router = useRouter();
+  const [user, setUser] = useState<string | null>(null);
   const { bg, textColor, navBgColor } = useColorModeStyles();
+
+  useEffect(() => {
+    // Check for 'user' query parameter using URLSearchParams
+    const queryUser = new URLSearchParams(window.location.search).get("user");
+    if (queryUser) {
+      setUser(queryUser);
+    }
+  }, [router.prefetch]);
+
+  if (!user) {
+    return <div>Loading...</div>; // You can show a loading state or error message
+  }
 
   return (
     <Grid
@@ -27,8 +42,7 @@ const HomePage = () => {
     >
       {/* Header Section */}
       <GridItem area="header" bg={bg} p={4}>
-        {/* Placeholder for Header */}
-        <Header/>
+        <Header />
       </GridItem>
 
       {/* Sidebar Section */}
@@ -42,8 +56,8 @@ const HomePage = () => {
 
       {/* Main Content Section */}
       <GridItem area="main" pl="2" bg={navBgColor}>
-        {/* <h2>MainProfileComponent</h2> */}
-		<MainProfile/>
+        {/* Pass the user query parameter to MainProfile as a prop */}
+        <MainProfile username={user} />
       </GridItem>
     </Grid>
   );

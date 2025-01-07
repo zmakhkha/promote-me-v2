@@ -10,77 +10,77 @@ import {
   VStack,
   Divider,
   Textarea,
-  Button,
-  Tag,
-  TagLabel,
   IconButton,
   useColorModeValue,
+  TagLabel,
+  Tag,
 } from "@chakra-ui/react";
-import {
-  FaGlobe,
-  FaSnapchatGhost,
-  FaInstagram,
-  FaTiktok,
-} from "react-icons/fa";
+import { FaGlobe, FaInstagram, FaSnapchatGhost, FaTiktok } from "react-icons/fa";
 import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 
 interface UserData {
-  profile_image: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  image_url: string;
+  first_name: string;
+  last_name: string;
+  age: number | null;
+  gender: string;
   location: string;
-  age: number;
   bio: string;
   views: number;
   likes: number;
   points: number;
   interests: string[];
-  instagram?: string;
-  snapchat?: string;
-  tiktok?: string;
+  instagram?: string | null;
+  snapchat?: string | null;
+  tiktok?: string | null;
 }
 
-const MainProfile = () => {
-  const { bg, tiktok, textColor, borderColor, navBgColor } =
-    useColorModeStyles();
+interface MainProfileProps {
+  username: string; // Expecting the username as a prop
+}
+
+const MainProfile = ({ username }: MainProfileProps) => {
+  const { bg, tiktok, textColor, borderColor, navBgColor } = useColorModeStyles();
 
   const [userData, setUserData] = useState<UserData>({
-    profile_image: placeholderAvatar.src,
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    location: "USA, New Jersey",
-    age: 25,
-    bio: "Loves coffe, annimals and idk",
-    views: 1200,
-    likes: 3500,
-    points: 45,
-    interests: ["coffe", "puppies", "dogs"],
-    instagram: "https://instagram.com/johndoe",
-    snapchat: "https://snapchat.com/add/mks_zak",
-    tiktok: "https://tiktok.com/@johndoe",
+    image_url: placeholderAvatar.src,
+    first_name: "Loading...",
+    last_name: "",
+    age: null,
+    gender: "",
+    location: "",
+    bio: "",
+    views: 0,
+    likes: 0,
+    points: 0,
+    interests: [],
+    instagram: null,
+    snapchat: null,
+    tiktok: null,
   });
 
-  const [imagePreview, setImagePreview] = useState<string>(
-    placeholderAvatar.src
-  );
+  const [imagePreview, setImagePreview] = useState<string>(placeholderAvatar.src);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("/api/user/profile");
+        const response = await fetch(`http://localhost:8000/api/v1/users/${username}/`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
         const data = await response.json();
         setUserData(data);
-        setImagePreview(data.profile_image || placeholderAvatar.src);
+        setImagePreview(data.image_url || placeholderAvatar.src);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
     };
 
-    fetchUserData();
-  }, []);
+    if (username) {
+      fetchUserData();
+    }
+  }, [username]);
 
   return (
     <Flex justify="center" align="center" py={5} px={5}>
@@ -108,13 +108,14 @@ const MainProfile = () => {
 
         {/* Name and Age */}
         <Text fontSize="2xl" fontWeight="bold" color={textColor}>
-          {userData.firstName} {userData.lastName}, {userData.age}
+          {userData.first_name} {userData.last_name}
+          {userData.age !== null ? `, ${userData.age}` : ""}
         </Text>
 
         {/* Location */}
         <HStack justify="center" color={textColor} mb={2}>
           <FaGlobe />
-          <Text>{userData.location}</Text>
+          <Text>{userData.location || "Location not specified"}</Text>
         </HStack>
 
         <Divider borderColor={borderColor} mb={2} />
@@ -125,7 +126,7 @@ const MainProfile = () => {
             <IconButton
               aria-label="Instagram"
               icon={<FaInstagram />}
-              onClick={() => window.open(userData.instagram, "_blank")}
+              onClick={() => window.open(userData.instagram!, "_blank")}
               colorScheme="pink"
               variant="ghost"
             />
@@ -134,7 +135,7 @@ const MainProfile = () => {
             <IconButton
               aria-label="Snapchat"
               icon={<FaSnapchatGhost />}
-              onClick={() => window.open(userData.snapchat, "_blank")}
+              onClick={() => window.open(userData.snapchat!, "_blank")}
               colorScheme="yellow"
               variant="ghost"
             />
@@ -143,8 +144,8 @@ const MainProfile = () => {
             <IconButton
               aria-label="TikTok"
               icon={<FaTiktok />}
-              onClick={() => window.open(userData.tiktok, "_blank")}
-              color={tiktok} // Black in light mode, white in dark mode
+              onClick={() => window.open(userData.tiktok!, "_blank")}
+              color={tiktok}
               bg="transparent"
               _hover={{
                 bg: useColorModeValue("gray.200", "gray.700"),
@@ -185,11 +186,15 @@ const MainProfile = () => {
           Interests
         </Text>
         <HStack spacing={2} wrap="wrap" justify="center" mb={2}>
-          {userData.interests.map((tag, index) => (
-            <Tag key={index} size="md" variant="subtle" colorScheme="teal">
-              <TagLabel>{tag}</TagLabel>
-            </Tag>
-          ))}
+          {userData.interests.length > 0 ? (
+            userData.interests.map((tag, index) => (
+              <Tag key={index} size="md" variant="subtle" colorScheme="teal">
+                <TagLabel>{tag}</TagLabel>
+              </Tag>
+            ))
+          ) : (
+            <Text>No interests specified</Text>
+          )}
         </HStack>
 
         <Divider borderColor={borderColor} mb={2} />
@@ -199,7 +204,7 @@ const MainProfile = () => {
           About Me
         </Text>
         <Textarea
-          value={userData.bio}
+          value={userData.bio || "No bio available."}
           isReadOnly
           rows={3}
           resize="none"

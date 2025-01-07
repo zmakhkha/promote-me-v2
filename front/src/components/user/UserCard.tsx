@@ -15,8 +15,9 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
-import { MdCheckCircle, MdCancel, MdLocationOff } from "react-icons/md";
+import { MdLocationOff } from "react-icons/md";
 import { FaInstagram } from "react-icons/fa";
+import { log } from "console";
 
 interface HomeUser {
   id: number;
@@ -40,7 +41,7 @@ const UserCard = ({ user }: Props) => {
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles(); // Destructure the colors
   const imageSize = useBreakpointValue({ base: "150px", md: "200px" });
   const cardMaxHeight = useBreakpointValue({ base: "450px", md: "600px" });
-
+  console.log(user)
   // Truncate bio if it's longer than 90 characters
   const truncatedBio =
     user.bio.length > 90 ? `${user.bio.substring(0, 60)}...` : user.bio;
@@ -66,7 +67,9 @@ const UserCard = ({ user }: Props) => {
       {/* Image Section */}
       <Box
         as={Link}
-        href={`/profile/${user.username}`}
+        // href={`/profile/${user.username}`}
+        // href={`/profile/${user.username}`}
+        href={`/profile?user=${user.username}`}
         height={imageSize}
         width="100%"
         overflow="hidden"

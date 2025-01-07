@@ -71,3 +71,12 @@ class UserListSerializer(serializers.ModelSerializer):
             'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DefaultUser
+        fields = [
+            'username', 'first_name', 'last_name',
+            'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
+            'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
+        ]
