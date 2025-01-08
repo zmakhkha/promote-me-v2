@@ -52,7 +52,7 @@ const Sidebar = () => {
       >
         {/* Home */}
         <Tooltip label="Home" aria-label="Home">
-          <Link href="/home">
+          <Link href="/">
             <IconButton
               icon={<FaHome />}
               aria-label="Home"

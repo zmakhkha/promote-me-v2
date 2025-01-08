@@ -1,8 +1,12 @@
 "use client";
+
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
-import useColorModeStyles from "../utils/useColorModeStyles";
 import Sidebar from "@/common/Sidebar";
+import useColorModeStyles from "@/utils/useColorModeStyles";
+import MainInstagram from "@/components/instagram/mainInstagram";
+import Header from "@/common/Header";
+import MainHome from "@/components/home/MainHome";
 
 const Page = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -22,18 +26,26 @@ const Page = () => {
       color={textColor}
       fontWeight="bold"
     >
-      <GridItem area={"header"}>
-        {/* <Header /> */}
+      {/* Header Section */}
+      <GridItem area="header" bg={bg} p={4}>
+        {/* Placeholder for Header */}
+        {/* <h1>Header</h1> */}
+        <Header/>
       </GridItem>
+
+      {/* Sidebar Section */}
       <GridItem
+        area="nav"
         bg={navBgColor}
-        area={"nav"}
         display={{ base: "none", md: "block" }}
       >
         <Sidebar />
       </GridItem>
-      <GridItem pl="2" bg={navBgColor} area={"main"}>
-        {/* <AlertMain /> */}
+
+      {/* Main Content Section */}
+      <GridItem area="main" pl="2" bg={navBgColor}>
+        {/* Placeholder for Main Content */}
+        <MainHome/>
       </GridItem>
     </Grid>
   );

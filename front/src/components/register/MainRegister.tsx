@@ -62,7 +62,7 @@ const MainRegister = () => {
           status: "success",
           duration: 3000,
         });
-        router.push("/home");
+        router.push("/");
       } catch (error: any) {
         if (error.response) {
           console.error("❌ Backend Error Response:", error.response.data);

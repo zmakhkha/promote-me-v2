@@ -1,6 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Box, Text, SimpleGrid, Button, HStack, Spinner } from "@chakra-ui/react";
+import {
+  Box,
+  Text,
+  SimpleGrid,
+  Button,
+  HStack,
+  Spinner,
+} from "@chakra-ui/react";
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import UserCard from "../user/UserCard";
@@ -54,18 +61,34 @@ const MainInstagram = () => {
   return (
     <Box p={1}>
       {/* Title Section */}
-      <Box border="1px solid" borderColor={borderColor} borderRadius="md" p={1} mb={1} bg={bg}>
-        <Text fontSize="3xl" fontWeight="bold" color={textColor}>Instagram Users</Text>
+      <Box
+        border="1px solid"
+        borderColor={borderColor}
+        borderRadius="md"
+        p={1}
+        mb={1}
+        bg={bg}
+      >
+        <Text fontSize="3xl" fontWeight="bold" color={textColor}>
+          Instagram Users
+        </Text>
       </Box>
 
       {/* Date Range Picker */}
-      <Box border="1px solid" borderColor={borderColor} borderRadius="md" p={1} mb={1} bg={bg}>
-        <DateRangePicker 
-          setGender={setGender} 
+      <Box
+        border="1px solid"
+        borderColor={borderColor}
+        borderRadius="md"
+        p={1}
+        mb={1}
+        bg={bg}
+      >
+        <DateRangePicker
+          setGender={setGender}
           setAgeRange={(min: number, max: number) => {
             setMinAge(min);
             setMaxAge(max);
-          }} 
+          }}
         />
       </Box>
 
@@ -75,25 +98,45 @@ const MainInstagram = () => {
       ) : error ? (
         <Text color="red.500">{error}</Text>
       ) : (
-        <SimpleGrid p={1} columns={{ base: 2, sm: 2, md: 3, lg: 4 }} spacing={4} w="100%">
-          {users.slice(
-            (currentPage - 1) * USERS_PER_PAGE,
-            currentPage * USERS_PER_PAGE
-          ).map((user) => (
-            <Box key={user.id} w="100%" display="flex" justifyContent="center">
-              <UserCard user={user} />
-            </Box>
-          ))}
+        <SimpleGrid
+          p={1}
+          columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
+          spacing={4}
+          w="100%"
+        >
+          {users
+            .slice(
+              (currentPage - 1) * USERS_PER_PAGE,
+              currentPage * USERS_PER_PAGE
+            )
+            .map((user) => (
+              <Box
+                key={user.id}
+                w="100%"
+                display="flex"
+                justifyContent="center"
+              >
+                <UserCard user={user} />
+              </Box>
+            ))}
         </SimpleGrid>
       )}
 
       {/* Pagination Controls */}
       <HStack justifyContent="center" p={2} mt={4} spacing={2}>
-        <Button onClick={() => handlePageChange(currentPage - 1)} isDisabled={currentPage === 1 || isLoading}>
+        <Button
+          onClick={() => handlePageChange(currentPage - 1)}
+          isDisabled={currentPage === 1 || isLoading}
+        >
           Previous
         </Button>
-        <Text>Page {currentPage} of {totalPages || 1}</Text>
-        <Button onClick={() => handlePageChange(currentPage + 1)} isDisabled={currentPage === totalPages || isLoading}>
+        <Text>
+          Page {currentPage} of {totalPages || 1}
+        </Text>
+        <Button
+          onClick={() => handlePageChange(currentPage + 1)}
+          isDisabled={currentPage === totalPages || isLoading}
+        >
           Next
         </Button>
       </HStack>

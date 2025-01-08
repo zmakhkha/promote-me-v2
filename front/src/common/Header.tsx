@@ -56,8 +56,8 @@ const Header = () => {
   };
 
   return (
-    <Flex justify="space-between" align="center" p={4} bg={bg} h="100%">
-      <Image height={80} src={logo} alt="Logo" />
+    <Flex justify="space-between" align="center" p={3} bg={bg} h="100%">
+      <Image height={90} src={logo} alt="Logo" />
       <Flex align="center" display={{ base: "none", md: "flex" }}>
         <Tooltip label="Notifications" aria-label="Notifications">
           <Link href="/notifications">

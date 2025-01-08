@@ -26,10 +26,10 @@ const HomePage = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" bg={bg} p={4}>
+      <GridItem area="header" bg={bg} p={4} pb={6} >
         {/* Placeholder for Header */}
         {/* <h1>Header</h1> */}
-        <Header/>
+        <Header />
       </GridItem>
 
       {/* Sidebar Section */}
@@ -42,9 +42,16 @@ const HomePage = () => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem area="main" pl="2" bg={navBgColor}>
+      <GridItem
+        area="main"
+        position="sticky"
+        zIndex="1000"
+        overflowY="auto"
+        pl="2"
+        bg={navBgColor}
+      >
         {/* Placeholder for Main Content */}
-        <MainInstagram/>
+        <MainInstagram />
       </GridItem>
     </Grid>
   );
