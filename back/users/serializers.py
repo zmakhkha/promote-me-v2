@@ -36,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'username', 'email', 'password', 'first_name', 'last_name',
             'points', 'likes', 'views', 'birth_date', 'age', 'gender', 'location',
-            'bio', 'interests', 'is_online', 'snapchat', 'instagram', 'tiktok'
+            'bio', 'interests', 'is_online', 'snapchat', 'instagram', 'tiktok', 'image_url'
         ]
 
     def create(self, validated_data):
@@ -56,6 +56,7 @@ class UserSerializer(serializers.ModelSerializer):
             snapchat=validated_data['snapchat'],
             instagram=validated_data['instagram'],
             tiktok=validated_data['tiktok'],
+            image_url=validated_data['image_url'],
         )
         user.set_password(validated_data['password'])
         user.save()

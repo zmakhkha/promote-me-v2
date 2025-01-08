@@ -3,14 +3,14 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
+  Checkbox,
   Flex,
   Input,
   Radio,
   RadioGroup,
   Stack,
   Text,
-  Checkbox,
-  CheckboxGroup,
+  Textarea,
   useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
@@ -29,10 +29,11 @@ const MainRegister = () => {
     gender: "",
     location: "",
     bio: "",
-    interests: [],
+    interests: [] as string[],
     instagram: "",
     snapchat: "",
     tiktok: "",
+    image_url: "",
   });
 
   const [isClient, setIsClient] = useState(false);
@@ -51,9 +52,18 @@ const MainRegister = () => {
   };
 
   const handleNext = async () => {
+    const finalFormData = {
+      ...formData,
+      interests: formData.interests || ['Sport'], // Ensure interests is always an array
+    };
     if (step === steps.length) {
       try {
-        const response = await axios.post("/api/v1/register/", formData);
+        console.log(formData)
+        const response = await axios.post("/api/v1/register/", finalFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         console.log("✅ Registration successful:", response.data);
 
         toast({
@@ -74,6 +84,8 @@ const MainRegister = () => {
               error.response.data?.instagram ||
               error.response.data?.snapchat ||
               error.response.data?.tiktok ||
+              error.response.data?.image_url ||
+              error.response.data?.interests ||
               "An error occurred.",
             status: "error",
             duration: 5000,
@@ -93,6 +105,12 @@ const MainRegister = () => {
     setStep((prev) => prev + 1);
   };
 
+  const handlePrevious = () => {
+    if (step > 1) {
+      setStep((prev) => prev - 1);
+    }
+  };
+
   const steps = [
     {
       title: "Choose a Username",
@@ -108,7 +126,7 @@ const MainRegister = () => {
     },
     {
       title: "What's your email?",
-      description: "To create or login to your account",
+      description: "To create or login to your account.",
       key: "email",
       component: (
         <Input
@@ -146,7 +164,7 @@ const MainRegister = () => {
     },
     {
       title: "What's your last name?",
-      description: "Share your family name.",
+      description: "Your family name.",
       key: "last_name",
       component: (
         <Input
@@ -188,7 +206,7 @@ const MainRegister = () => {
     },
     {
       title: "Where are you located?",
-      description: "Provide your current city and country.",
+      description: "Let others know your region.",
       key: "location",
       component: (
         <Input
@@ -200,69 +218,118 @@ const MainRegister = () => {
     },
     {
       title: "Write a short bio",
-      description: "Tell us a bit about yourself.",
+      description: "Tell us something about yourself.",
       key: "bio",
       component: (
-        <Input
-          placeholder="Write something about you"
+        <Textarea
+          placeholder="Write a short bio"
           value={formData.bio}
           onChange={(e) => updateFormData("bio", e.target.value)}
         />
       ),
     },
     {
-      title: "Share your Instagram handle",
-      description: "Let others connect with you on Instagram.",
-      key: "instagram",
+      title: "What are your interests?",
+      description: "Select your hobbies and passions.",
+      key: "interests",
       component: (
-        <Input
-          placeholder="Enter your Instagram username"
-          value={formData.instagram}
-          onChange={(e) => updateFormData("instagram", e.target.value)}
-        />
+        <Stack spacing={2}>
+          {[
+            "Sports",
+            "Music",
+            "Traveling",
+            "Gaming",
+            "Reading",
+            "Cooking",
+            "Photography",
+            "Technology",
+          ].map((interest) => (
+            <Checkbox
+              key={interest}
+              isChecked={formData.interests.includes(interest)}
+              onChange={(e) => {
+                const updatedInterests = e.target.checked
+                  ? [...formData.interests, interest]
+                  : formData.interests.filter((i) => i !== interest);
+                updateFormData("interests", updatedInterests);
+              }}
+            >
+              {interest}
+            </Checkbox>
+          ))}
+        </Stack>
+      ),
+    },    
+
+    {
+      title: "Social Media Profiles",
+      description: "Add your social media links.",
+      key: "social_media",
+      component: (
+        <>
+          <Input
+            placeholder="Instagram username"
+            value={formData.instagram}
+            onChange={(e) => updateFormData("instagram", e.target.value)}
+          />
+          <Input
+            placeholder="Snapchat username"
+            value={formData.snapchat}
+            mt={2}
+            onChange={(e) => updateFormData("snapchat", e.target.value)}
+          />
+          <Input
+            placeholder="TikTok username"
+            value={formData.tiktok}
+            mt={2}
+            onChange={(e) => updateFormData("tiktok", e.target.value)}
+          />
+        </>
       ),
     },
     {
-      title: "Share your Snapchat handle",
-      description: "Let others connect with you on Snapchat.",
-      key: "snapchat",
+      title: "Upload Your Profile Picture",
+      description: "Choose a profile picture to represent you.",
+      key: "image_url",
       component: (
         <Input
-          placeholder="Enter your Snapchat username"
-          value={formData.snapchat}
-          onChange={(e) => updateFormData("snapchat", e.target.value)}
-        />
-      ),
-    },
-    {
-      title: "Share your TikTok handle",
-      description: "Let others connect with you on TikTok.",
-      key: "tiktok",
-      component: (
-        <Input
-          placeholder="Enter your TikTok username"
-          value={formData.tiktok}
-          onChange={(e) => updateFormData("tiktok", e.target.value)}
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            updateFormData("image_url", e.target.files?.[0] || null)
+          }
         />
       ),
     },
   ];
 
-  const currentStep = steps[step - 1];
-
   return (
-    <Flex justify="center" align="center" py={5} px={5} height="100vh">
-      <Box bg={bg} color={textColor} p={8} borderRadius="md" shadow="md">
-        <Text fontSize="2xl" fontWeight="bold">
-          {currentStep.title}
+    <Flex align="center" justify="center" minH="100vh" bg={bg}>
+      <Box
+        p={8}
+        borderWidth={1}
+        borderRadius="lg"
+        boxShadow="lg"
+        bg={bg}
+        color={textColor}
+        maxW="lg"
+        w="100%"
+      >
+        <Text fontSize="2xl" fontWeight="bold" mb={4}>
+          {steps[step - 1].title}
         </Text>
-        <Text mt={2} mb={6}>
-          {currentStep.description}
-        </Text>
-        <Box mb={6}>{currentStep.component}</Box>
-        <Button colorScheme="blue" onClick={handleNext}>
-          {step === steps.length ? "Finish" : "Next"}
-        </Button>
+        <Text mb={4}>{steps[step - 1].description}</Text>
+        <Box mb={4}>{steps[step - 1].component}</Box>
+        <Flex mt={4} justify="space-between">
+          {step > 1 && (
+            <Button onClick={handlePrevious} colorScheme="gray">
+              Previous
+            </Button>
+          )}
+          <Button onClick={handleNext} colorScheme="teal">
+            {step === steps.length ? "Submit" : "Next"}
+          </Button>
+        </Flex>
       </Box>
     </Flex>
   );
