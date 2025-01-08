@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/zakaria/work/promote-me/src/app/page.tsx"],"sourcesContent":["'use client'\n\nimport { Box, Button, Heading } from '@chakra-ui/react'\n\nexport default function Home() {\n  return (\n    <Box textAlign=\"center\" mt={10}>\n      <Heading>Welcome to Chakra UI in Next.js!</Heading>\n      <Button colorScheme=\"teal\" mt={4}>\n        Click Me\n      </Button>\n    </Box>\n  )\n}\n"],"names":[],"mappings":";;;;AAEA;AAAA;AAAA;AAFA;;;AAIe,SAAS;IACtB,qBACE,6LAAC,qLAAA,CAAA,MAAG;QAAC,WAAU;QAAS,IAAI;;0BAC1B,6LAAC,gMAAA,CAAA,UAAO;0BAAC;;;;;;0BACT,6LAAC,2LAAA,CAAA,SAAM;gBAAC,aAAY;gBAAO,IAAI;0BAAG;;;;;;;;;;;;AAKxC;KATwB"}},
-    {"offset": {"line": 51, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
-}
