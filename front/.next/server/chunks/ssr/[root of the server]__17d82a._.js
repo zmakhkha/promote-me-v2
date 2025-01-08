@@ -237,9 +237,17 @@ const MainRegister = ()=>{
             }));
     };
     const handleNext = async ()=>{
+        const finalFormData = {
+            ...formData,
+            interests: JSON.stringify(formData.interests || [
+                "Sport"
+            ])
+        };
         if (step === steps.length) {
             try {
-                const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$axios$2f$index$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post("/api/v1/register/", formData, {
+                console.log("📝 FormData before sending:");
+                console.log(finalFormData.interests);
+                const response = await __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$services$2f$axios$2f$index$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].post("/api/v1/register/", finalFormData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
@@ -257,7 +265,7 @@ const MainRegister = ()=>{
                     console.error("❌ Backend Error Response:", error.response.data);
                     toast({
                         title: "Registration Failed",
-                        description: error.response.data?.email || error.response.data?.username || error.response.data?.instagram || error.response.data?.snapchat || error.response.data?.tiktok || error.response.data?.image_url || "An error occurred.",
+                        description: error.response.data?.email || error.response.data?.username || error.response.data?.instagram || error.response.data?.snapchat || error.response.data?.tiktok || error.response.data?.image_url || error.response.data?.interests || "An error occurred.",
                         status: "error",
                         duration: 5000
                     });
@@ -291,7 +299,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("username", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 114,
+                lineNumber: 123,
                 columnNumber: 9
             }, this)
         },
@@ -306,7 +314,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("email", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 126,
+                lineNumber: 135,
                 columnNumber: 9
             }, this)
         },
@@ -321,7 +329,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("password", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 139,
+                lineNumber: 148,
                 columnNumber: 9
             }, this)
         },
@@ -335,7 +343,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("first_name", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 152,
+                lineNumber: 161,
                 columnNumber: 9
             }, this)
         },
@@ -349,7 +357,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("last_name", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 164,
+                lineNumber: 173,
                 columnNumber: 9
             }, this)
         },
@@ -364,7 +372,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("birth_date", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 176,
+                lineNumber: 185,
                 columnNumber: 9
             }, this)
         },
@@ -384,7 +392,7 @@ const MainRegister = ()=>{
                             children: "Male"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 194,
+                            lineNumber: 203,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Radio"], {
@@ -392,7 +400,7 @@ const MainRegister = ()=>{
                             children: "Female"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 195,
+                            lineNumber: 204,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$radio$2f$radio$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Radio"], {
@@ -400,18 +408,18 @@ const MainRegister = ()=>{
                             children: "Non-Binary"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 196,
+                            lineNumber: 205,
                             columnNumber: 13
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 193,
+                    lineNumber: 202,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 189,
+                lineNumber: 198,
                 columnNumber: 9
             }, this)
         },
@@ -425,7 +433,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("location", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 206,
+                lineNumber: 215,
                 columnNumber: 9
             }, this)
         },
@@ -439,7 +447,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("bio", e.target.value)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 218,
+                lineNumber: 227,
                 columnNumber: 9
             }, this)
         },
@@ -470,12 +478,12 @@ const MainRegister = ()=>{
                         children: interest
                     }, interest, false, {
                         fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 241,
+                        lineNumber: 250,
                         columnNumber: 13
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 230,
+                lineNumber: 239,
                 columnNumber: 9
             }, this)
         },
@@ -491,7 +499,7 @@ const MainRegister = ()=>{
                         onChange: (e)=>updateFormData("instagram", e.target.value)
                     }, void 0, false, {
                         fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 264,
+                        lineNumber: 273,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -501,7 +509,7 @@ const MainRegister = ()=>{
                         onChange: (e)=>updateFormData("snapchat", e.target.value)
                     }, void 0, false, {
                         fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 269,
+                        lineNumber: 278,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$input$2f$input$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Input"], {
@@ -511,7 +519,7 @@ const MainRegister = ()=>{
                         onChange: (e)=>updateFormData("tiktok", e.target.value)
                     }, void 0, false, {
                         fileName: "[project]/src/components/register/MainRegister.tsx",
-                        lineNumber: 275,
+                        lineNumber: 284,
                         columnNumber: 11
                     }, this)
                 ]
@@ -527,7 +535,7 @@ const MainRegister = ()=>{
                 onChange: (e)=>updateFormData("image_url", e.target.files?.[0] || null)
             }, void 0, false, {
                 fileName: "[project]/src/components/register/MainRegister.tsx",
-                lineNumber: 289,
+                lineNumber: 298,
                 columnNumber: 9
             }, this)
         }
@@ -554,7 +562,7 @@ const MainRegister = ()=>{
                     children: steps[step - 1].title
                 }, void 0, false, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 312,
+                    lineNumber: 321,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$typography$2f$text$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Text"], {
@@ -562,7 +570,7 @@ const MainRegister = ()=>{
                     children: steps[step - 1].description
                 }, void 0, false, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 315,
+                    lineNumber: 324,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$box$2f$box$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Box"], {
@@ -570,7 +578,7 @@ const MainRegister = ()=>{
                     children: steps[step - 1].component
                 }, void 0, false, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 316,
+                    lineNumber: 325,
                     columnNumber: 9
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$flex$2f$flex$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Flex"], {
@@ -583,7 +591,7 @@ const MainRegister = ()=>{
                             children: "Previous"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 319,
+                            lineNumber: 328,
                             columnNumber: 13
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f40$chakra$2d$ui$2f$react$2f$dist$2f$esm$2f$button$2f$button$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Button"], {
@@ -592,24 +600,24 @@ const MainRegister = ()=>{
                             children: step === steps.length ? "Submit" : "Next"
                         }, void 0, false, {
                             fileName: "[project]/src/components/register/MainRegister.tsx",
-                            lineNumber: 323,
+                            lineNumber: 332,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/register/MainRegister.tsx",
-                    lineNumber: 317,
+                    lineNumber: 326,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/register/MainRegister.tsx",
-            lineNumber: 302,
+            lineNumber: 311,
             columnNumber: 7
         }, this)
     }, void 0, false, {
         fileName: "[project]/src/components/register/MainRegister.tsx",
-        lineNumber: 301,
+        lineNumber: 310,
         columnNumber: 5
     }, this);
 };

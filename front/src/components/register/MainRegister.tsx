@@ -50,20 +50,23 @@ const MainRegister = () => {
   const updateFormData = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
-
   const handleNext = async () => {
     const finalFormData = {
       ...formData,
-      interests: formData.interests || ['Sport'], // Ensure interests is always an array
+      interests: JSON.stringify(formData.interests || ["Sport"]), // Ensure interests is sent as JSON
     };
+
     if (step === steps.length) {
       try {
-        console.log(formData)
+        console.log("📝 FormData before sending:");
+        console.log(finalFormData.interests);
+
         const response = await axios.post("/api/v1/register/", finalFormData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
+
         console.log("✅ Registration successful:", response.data);
 
         toast({
@@ -259,7 +262,7 @@ const MainRegister = () => {
           ))}
         </Stack>
       ),
-    },    
+    },
 
     {
       title: "Social Media Profiles",
