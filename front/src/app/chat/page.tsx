@@ -1,16 +1,26 @@
 "use client";
 
 import { Grid, GridItem } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MainInstagram from "@/components/instagram/mainInstagram";
 import Header from "@/common/Header";
 import MainChat from "@/components/chat/MainChat";
+import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import { useRouter } from "next/navigation";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
+  const router = useRouter();
+
+  useEffect(() => {
+    const isAuthenticated = checkAuthTokens();
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+  }, [router]);
   return (
     <Grid
       templateAreas={{
@@ -30,7 +40,7 @@ const HomePage = () => {
       <GridItem area="header" bg={bg} p={4}>
         {/* Placeholder for Header */}
         {/* <h1>Header</h1> */}
-        <Header/>
+        <Header />
       </GridItem>
 
       {/* Sidebar Section */}
@@ -45,7 +55,7 @@ const HomePage = () => {
       {/* Main Content Section */}
       <GridItem area="main" pl="2" bg={navBgColor}>
         {/* Placeholder for Main Content */}
-        <MainChat/>
+        <MainChat />
       </GridItem>
     </Grid>
   );

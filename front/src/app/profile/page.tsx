@@ -7,19 +7,24 @@ import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MainProfile from "@/components/profile/MainProfile";
 import Header from "@/common/Header";
+import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 
 const HomePage = () => {
   const router = useRouter();
   const [user, setUser] = useState<string | null>(null);
   const { bg, textColor, navBgColor } = useColorModeStyles();
-
-  useEffect(() => {
-    // Check for 'user' query parameter using URLSearchParams
+    
+    useEffect(() => {
+      // Check for 'user' query parameter using URLSearchParams
+      const isAuthenticated = checkAuthTokens();
+      if (!isAuthenticated) {
+        router.push("/login");
+      }
     const queryUser = new URLSearchParams(window.location.search).get("user");
     if (queryUser) {
       setUser(queryUser);
     }
-  }, [router.prefetch]);
+  }, [router]);
 
   if (!user) {
     return <div>Loading...</div>; // You can show a loading state or error message

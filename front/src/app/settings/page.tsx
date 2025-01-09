@@ -1,15 +1,25 @@
 "use client";
 
 import { Grid, GridItem } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MainSettings from "@/components/settings/MainSettings";
 import Header from "@/common/Header";
+import { useRouter } from "next/navigation";
+import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
+  const router = useRouter();
+
+  useEffect(() => {
+    const isAuthenticated = checkAuthTokens();
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+  }, [router]);
   return (
     <Grid
       templateAreas={{

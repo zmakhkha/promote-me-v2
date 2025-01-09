@@ -1,22 +1,41 @@
 'use client';
 import React, { useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 import "../../css/LoginPage.css";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError(null); // Clear any previous errors
 
-    if (email === "test@example.com" && password === "password123") {
-      localStorage.setItem("accessToken", "dummyAccessToken");
-      localStorage.setItem("refreshToken", "dummyRefreshToken");
-      window.location.href = "/";  
-    } else {
-      setError("Login failed. Please check your credentials and try again.");
+    try {
+      const response = await axios.post("http://localhost:8000/api/v1/login/", {
+        username, 
+        password,
+      });
+
+      const { access, refresh } = response.data;
+
+      // Store tokens in localStorage
+      localStorage.setItem("accessToken", access);
+      localStorage.setItem("refreshToken", refresh);
+
+      // Redirect to home page
+      window.location.href = "/";
+    } catch (err: any) {
+      // Handle errors gracefully
+      if (err.response?.status === 401) {
+        setError("Invalid username or password.");
+      } else if (err.response?.status === 429) {
+        setError("Too many login attempts. Please try again later.");
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -28,10 +47,10 @@ const LoginPage = () => {
           <form onSubmit={handleLogin}>
             <div className="login-input-group">
               <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                placeholder="Username" // Updated placeholder
+                value={username}
+                onChange={(e) => setUsername(e.target.value)} // Updated state setter
                 className="login-input"
                 required
               />

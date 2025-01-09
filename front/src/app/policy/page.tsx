@@ -7,6 +7,7 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
+  
 
   return (
     <Grid
