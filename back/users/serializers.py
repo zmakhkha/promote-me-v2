@@ -84,6 +84,8 @@ from rest_framework import serializers
 from .models import DefaultUser
 
 class UserSettingsSerializer(serializers.ModelSerializer):
+    # image_url = serializers.URLField(required=False)
     class Meta:
         model = DefaultUser
+        # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
         fields = ['image_url', 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']

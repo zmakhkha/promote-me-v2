@@ -18,13 +18,12 @@ import { FaInstagram, FaSnapchatGhost, FaTiktok } from "react-icons/fa";
 import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios";
-import { log } from "node:console";
-// import api from "../../utils/api";
+import getCorrectImage from "@/services/axios/getCorrectImage";
 
 interface UserData {
-  profile_image: string;
-  firstName: string;
-  lastName: string;
+  image_url: string;
+  first_name: string;
+  last_name: string;
   email: string;
   location: string;
   age: number;
@@ -39,13 +38,13 @@ interface UserData {
 }
 
 const MainSettings = () => {
-  const { bg, tiktok, borderColor, navBgColor } = useColorModeStyles();
+  const { bg, tiktok, borderColor } = useColorModeStyles();
   const toast = useToast();
 
   const [userData, setUserData] = useState<UserData>({
-    profile_image: placeholderAvatar.src,
-    firstName: "",
-    lastName: "",
+    image_url: placeholderAvatar.src,
+    first_name: "",
+    last_name: "",
     email: "",
     location: "",
     age: 0,
@@ -67,10 +66,11 @@ const MainSettings = () => {
     const fetchUserData = async () => {
       try {
         const response = await api.get("/api/v1/settings/");
-        setUserData(response.data);
-        console.log(response.data);
+        const data = response.data;
+        setUserData(data);
+        console.log(getCorrectImage(data.image_url));
         
-        setImagePreview(response.data.profile_image || placeholderAvatar.src);
+        setImagePreview(getCorrectImage(data.image_url) || placeholderAvatar.src);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -83,10 +83,7 @@ const MainSettings = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setUserData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setUserData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,10 +92,7 @@ const MainSettings = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
-        setUserData((prev) => ({
-          ...prev,
-          profile_image: reader.result as string,
-        }));
+        setUserData((prev) => ({ ...prev, image_url: reader.result as string }));
       };
       reader.readAsDataURL(file);
     }
@@ -106,7 +100,12 @@ const MainSettings = () => {
 
   const handleSaveChanges = async () => {
     try {
-      await api.put("/api/v1/settings/", userData);
+      // await api.put("/api/v1/settings/", userData);
+      api.put("/api/v1/settings/", userData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       toast({
         title: "Profile Updated",
         description: "Your profile has been successfully updated.",
@@ -141,6 +140,7 @@ const MainSettings = () => {
         <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={6}>
           Settings
         </Text>
+
         {/* Avatar Upload */}
         <Flex justify="center" align="center" direction="column" mb={4} w="full">
           <Avatar size="2xl" mb={1} src={imagePreview} />
@@ -166,17 +166,17 @@ const MainSettings = () => {
 
         {/* Personal Information */}
         <VStack spacing={4} align="start">
-          <HStack>
+          <HStack w="full">
             <Input
               placeholder="First Name"
-              name="firstName"
-              value={userData.firstName}
+              name="first_name"
+              value={userData.first_name}
               onChange={handleInputChange}
             />
             <Input
               placeholder="Last Name"
-              name="lastName"
-              value={userData.lastName}
+              name="last_name"
+              value={userData.last_name}
               onChange={handleInputChange}
             />
           </HStack>
