@@ -36,19 +36,14 @@ const Sidebar = () => {
   return (
     <>
       <Flex
-        direction={{ base: "row", md: "column" }}
+        direction="column"
         align="center"
-        justify={{ base: "space-around", md: "flex-start" }}
+        justify="flex-start"
         bg={bg}
         p={4}
-        width={{ base: "100vw", md: "100%" }}
-        height={{ base: "auto", md: "100%" }}
-        position={{ base: "fixed", md: "relative" }}
-        bottom={{ base: 0, md: "auto" }}
-        left={0}
-        zIndex={10}
-        borderTop={{ base: "1px solid", md: "none" }}
-        borderColor={{ base: "gray.200", md: "none" }}
+        width="100%"
+        height="100%"
+        position="relative"
       >
         {/* Home */}
         <Tooltip label="Home" aria-label="Home">
@@ -57,13 +52,13 @@ const Sidebar = () => {
               icon={<FaHome />}
               aria-label="Home"
               variant="ghost"
-              mb={{ base: 0, md: 2 }}
+              mb={2}
               _hover={{ color: hoverColor }}
             />
           </Link>
         </Tooltip>
 
-        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
+        <Box height="1px" width="20px" bg="gray.400" mb={2} />
 
         {/* Snapchat */}
         <Tooltip label="Snapchat" aria-label="Snapchat">
@@ -72,13 +67,13 @@ const Sidebar = () => {
               icon={<FaSnapchat />}
               aria-label="Snapchat"
               variant="ghost"
-              mb={{ base: 0, md: 2 }}
+              mb={2}
               _hover={{ color: hoverColor }}
             />
           </Link>
         </Tooltip>
 
-        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
+        <Box height="1px" width="20px" bg="gray.400" mb={2} />
 
         {/* Instagram */}
         <Tooltip label="Instagram" aria-label="Instagram">
@@ -87,13 +82,13 @@ const Sidebar = () => {
               icon={<FaInstagram />}
               aria-label="Instagram"
               variant="ghost"
-              mb={{ base: 0, md: 2 }}
+              mb={2}
               _hover={{ color: hoverColor }}
             />
           </Link>
         </Tooltip>
 
-        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
+        <Box height="1px" width="20px" bg="gray.400" mb={2} />
 
         {/* TikTok */}
         <Tooltip label="TikTok" aria-label="TikTok">
@@ -102,13 +97,13 @@ const Sidebar = () => {
               icon={<FaTiktok />}
               aria-label="TikTok"
               variant="ghost"
-              mb={{ base: 0, md: 2 }}
+              mb={2}
               _hover={{ color: hoverColor }}
             />
           </Link>
         </Tooltip>
 
-        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
+        <Box height="1px" width="20px" bg="gray.400" mb={2} />
 
         {/* Settings */}
         <Tooltip label="Settings" aria-label="Settings">
@@ -117,13 +112,13 @@ const Sidebar = () => {
               icon={<FaCog />}
               aria-label="Settings"
               variant="ghost"
-              mb={{ base: 0, md: 2 }}
+              mb={2}
               _hover={{ color: hoverColor }}
             />
           </Link>
         </Tooltip>
 
-        <Box height={{ base: "auto", md: "1px" }} width={{ base: "1px", md: "20px" }} bg="gray.400" mb={{ base: 0, md: 2 }} />
+        <Box height="1px" width="20px" bg="gray.400" mb={2} />
 
         {/* Logout */}
         <Tooltip label="Log Out" aria-label="Logout">
@@ -132,7 +127,7 @@ const Sidebar = () => {
             aria-label="Logout"
             variant="ghost"
             onClick={onOpen}
-            mb={{ base: 0, md: 2 }}
+            mb={2}
             _hover={{ color: hoverColor }}
           />
         </Tooltip>
