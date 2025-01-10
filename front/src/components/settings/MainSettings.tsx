@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Box,
   Flex,
@@ -61,6 +61,7 @@ const MainSettings = () => {
   const [imagePreview, setImagePreview] = useState<string>(
     placeholderAvatar.src
   );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -68,9 +69,9 @@ const MainSettings = () => {
         const response = await api.get("/api/v1/settings/");
         const data = response.data;
         setUserData(data);
-        console.log(getCorrectImage(data.image_url));
-        
-        setImagePreview(getCorrectImage(data.image_url) || placeholderAvatar.src);
+        setImagePreview(
+          getCorrectImage(data.image_url) || placeholderAvatar.src
+        );
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -92,7 +93,10 @@ const MainSettings = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
-        setUserData((prev) => ({ ...prev, image_url: reader.result as string }));
+        setUserData((prev) => ({
+          ...prev,
+          image_url: reader.result as string,
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -100,12 +104,22 @@ const MainSettings = () => {
 
   const handleSaveChanges = async () => {
     try {
-      // await api.put("/api/v1/settings/", userData);
-      api.put("/api/v1/settings/", userData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const formData = new FormData();
+      Object.keys(userData).forEach((key) => {
+        if (key !== "image_url") {
+          // Skip image_url because it's handled separately
+          formData.append(key, userData[key as keyof UserData] as any);
+        }
       });
+
+      if (fileInputRef.current?.files?.[0]) {
+        formData.append("image_url", fileInputRef.current.files[0]); // Send file as image_url
+      }
+
+      await api.put("/api/v1/settings/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       toast({
         title: "Profile Updated",
         description: "Your profile has been successfully updated.",
@@ -141,30 +155,33 @@ const MainSettings = () => {
           Settings
         </Text>
 
-        {/* Avatar Upload */}
-        <Flex justify="center" align="center" direction="column" mb={4} w="full">
+        <Flex
+          justify="center"
+          align="center"
+          direction="column"
+          mb={4}
+          w="full"
+        >
           <Avatar size="2xl" mb={1} src={imagePreview} />
-          <Box textAlign="center">
-            <Button
-              as="label"
-              htmlFor="file-upload"
-              colorScheme="teal"
-              cursor="pointer"
-              mt={2}
-            >
-              Choose File
-            </Button>
-            <Input
-              id="file-upload"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              style={{ display: "none" }}
-            />
-          </Box>
+          <Button
+            as="label"
+            htmlFor="file-upload"
+            colorScheme="teal"
+            cursor="pointer"
+            mt={2}
+          >
+            Choose File
+          </Button>
+          <Input
+            id="file-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            ref={fileInputRef}
+            style={{ display: "none" }}
+          />
         </Flex>
 
-        {/* Personal Information */}
         <VStack spacing={4} align="start">
           <HStack w="full">
             <Input
@@ -188,7 +205,6 @@ const MainSettings = () => {
           />
         </VStack>
 
-        {/* Social Media Links */}
         <Text mt={6} fontSize="lg" fontWeight="bold" mb={2}>
           Social Media Links
         </Text>
