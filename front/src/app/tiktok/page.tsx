@@ -52,7 +52,15 @@ const HomePage = () => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem area="main" pl="2" bg={navBgColor}>
+      {/* Main Content Section */}
+            <GridItem
+              area="main"
+              position="sticky"
+              zIndex="1000"
+              overflowY="auto"
+              pl="2"
+              bg={navBgColor}
+            >
         {/* Placeholder for Main Content */}
         <MainTiktok/>
       </GridItem>

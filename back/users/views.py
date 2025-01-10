@@ -94,7 +94,6 @@ class UserListView(generics.ListAPIView):
         age_from = self.request.query_params.get('age_from')
         age_to = self.request.query_params.get('age_to')
         gender = self.request.query_params.get('gender')
-        print(f"-------------->|{gender}|")
 
         # Filter by age range
         current_year = datetime.now().year

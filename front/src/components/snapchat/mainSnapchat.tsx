@@ -1,28 +1,56 @@
-import React, { useState } from "react";
-import { Box, Text, SimpleGrid, Button, HStack } from "@chakra-ui/react";
-import homeUsers from "@/data/homeUsers";
+"use client";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Text,
+  SimpleGrid,
+  Button,
+  HStack,
+  Spinner,
+} from "@chakra-ui/react";
 import DateRangePicker from "@/common/DateRangePicker";
-import useColorModeStyles from "@/utils/useColorModeStyles"; // Import the custom hook
-import UserCard from "../user/UserCard"; // Import UserCard component
+import useColorModeStyles from "@/utils/useColorModeStyles";
+import api from "@/services/axios";
 import SnapCard from "../user/SnapCard";
 
-const USERS_PER_PAGE = 8; // Define the number of users per page
+const USERS_PER_PAGE = 8;
 
-const MainInstagram = () => {
-  const { bg, textColor, borderColor } = useColorModeStyles(); // Use the custom hook
-  const [startDate, setStartDate] = useState<string>("");
-  const [endDate, setEndDate] = useState<string>(
-    new Date().toISOString().split("T")[0]
-  );
+const mainSnapchat = () => {
+  const { bg, textColor, borderColor } = useColorModeStyles();
+  const [users, setUsers] = useState<any[]>([]);
+  const [gender, setGender] = useState<string>("");
+  const [minAge, setMinAge] = useState<number>(13);
+  const [maxAge, setMaxAge] = useState<number>(60);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const totalPages = Math.ceil(homeUsers.length / USERS_PER_PAGE);
+  const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
 
-  // Get the users for the current page
-  const currentUsers = homeUsers.slice(
-    (currentPage - 1) * USERS_PER_PAGE,
-    currentPage * USERS_PER_PAGE
-  );
+  // Fetch users from API
+  const fetchUsers = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await api.get("/api/v1/users/", {
+        params: {
+          page: currentPage,
+          gender,
+          age_from: minAge,
+          age_to: maxAge,
+        },
+      });
+      setUsers(response.data.results || response.data);
+    } catch (err: any) {
+      setError(err.response?.data?.detail || "Failed to fetch users");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, [currentPage, gender, minAge, maxAge]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -32,7 +60,7 @@ const MainInstagram = () => {
 
   return (
     <Box p={1}>
-      {/* Title Section with Border */}
+      {/* Title Section */}
       <Box
         border="1px solid"
         borderColor={borderColor}
@@ -40,14 +68,13 @@ const MainInstagram = () => {
         p={1}
         mb={1}
         bg={bg}
-        className="title-container"
       >
         <Text fontSize="3xl" fontWeight="bold" color={textColor}>
           Snapchat Users
         </Text>
       </Box>
 
-      {/* Date Range Picker with Border */}
+      {/* Date Range Picker */}
       <Box
         border="1px solid"
         borderColor={borderColor}
@@ -55,44 +82,60 @@ const MainInstagram = () => {
         p={1}
         mb={1}
         bg={bg}
-        className="date-range-picker-container"
       >
-        <DateRangePicker setStartDate={setStartDate} setEndDate={setEndDate} />
+        <DateRangePicker
+          setGender={setGender}
+          setAgeRange={(min: number, max: number) => {
+            setMinAge(min);
+            setMaxAge(max);
+          }}
+        />
       </Box>
 
       {/* User Cards Grid */}
-      <SimpleGrid
-        p={1}
-        columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
-        spacing={4}
-        w="100%"
-      >
-        {currentUsers.map((user) => (
-          <Box
-            key={user.id}
-            w="100%"
-            display="flex"
-            justifyContent="center"
-          >
-            <SnapCard user={user} />
-          </Box>
-        ))}
-      </SimpleGrid>
+      {isLoading ? (
+        <Spinner size="xl" color={textColor} />
+      ) : error ? (
+        <Text color="red.500">{error}</Text>
+      ) : (
+        <SimpleGrid
+          p={1}
+          columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
+          spacing={4}
+          w="100%"
+        >
+          {users
+            .slice(
+              (currentPage - 1) * USERS_PER_PAGE,
+              currentPage * USERS_PER_PAGE
+            )
+            .map((user) => (
+              <Box
+                key={user.id}
+                w="100%"
+                display="flex"
+                justifyContent="center"
+              >
+                <SnapCard user={user} />
+              </Box>
+            ))}
+        </SimpleGrid>
+      )}
 
       {/* Pagination Controls */}
       <HStack justifyContent="center" p={2} mt={4} spacing={2}>
         <Button
           onClick={() => handlePageChange(currentPage - 1)}
-          isDisabled={currentPage === 1}
+          isDisabled={currentPage === 1 || isLoading}
         >
           Previous
         </Button>
         <Text>
-          Page {currentPage} of {totalPages}
+          Page {currentPage} of {totalPages || 1}
         </Text>
         <Button
           onClick={() => handlePageChange(currentPage + 1)}
-          isDisabled={currentPage === totalPages}
+          isDisabled={currentPage === totalPages || isLoading}
         >
           Next
         </Button>
@@ -101,4 +144,4 @@ const MainInstagram = () => {
   );
 };
 
-export default MainInstagram;
+export default mainSnapchat;
