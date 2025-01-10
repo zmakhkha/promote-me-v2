@@ -89,3 +89,15 @@ class UserSettingsSerializer(serializers.ModelSerializer):
         model = DefaultUser
         # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
         fields = ['image_url', 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    # image_url = serializers.URLField(required=False)
+    class Meta:
+        model = DefaultUser
+        # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
+        fields = [
+            'username', 'first_name', 'last_name',
+            'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
+            'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
+        ]

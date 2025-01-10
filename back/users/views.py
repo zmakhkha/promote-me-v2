@@ -11,7 +11,7 @@ from django.core.cache import cache
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import DefaultUser
-from .serializers import UserDetailSerializer, UserSerializer
+from .serializers import UserDetailSerializer, UserProfileSerializer, UserSerializer
 from rest_framework.exceptions import ValidationError
 
 
@@ -160,3 +160,11 @@ class UserSettingsView(APIView):
         else:
             print(serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
