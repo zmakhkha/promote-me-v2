@@ -79,3 +79,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
+
+from rest_framework import serializers
+from .models import DefaultUser
+
+class UserSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DefaultUser
+        fields = ['image_url', 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']

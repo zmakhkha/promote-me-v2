@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -19,6 +17,9 @@ import {
 import { FaInstagram, FaSnapchatGhost, FaTiktok } from "react-icons/fa";
 import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
+import api from "@/services/axios";
+import { log } from "node:console";
+// import api from "../../utils/api";
 
 interface UserData {
   profile_image: string;
@@ -65,10 +66,11 @@ const MainSettings = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("/api/user/profile");
-        const data = await response.json();
-        setUserData(data);
-        setImagePreview(data.profile_image || placeholderAvatar.src);
+        const response = await api.get("/api/v1/settings/");
+        setUserData(response.data);
+        console.log(response.data);
+        
+        setImagePreview(response.data.profile_image || placeholderAvatar.src);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -104,18 +106,7 @@ const MainSettings = () => {
 
   const handleSaveChanges = async () => {
     try {
-      const response = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update profile");
-      }
-
+      await api.put("/api/v1/settings/", userData);
       toast({
         title: "Profile Updated",
         description: "Your profile has been successfully updated.",
@@ -147,48 +138,31 @@ const MainSettings = () => {
         borderColor={borderColor}
         borderWidth="1px"
       >
-        {/* Title */}
         <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={6}>
           Settings
         </Text>
-
         {/* Avatar Upload */}
-      {/* Avatar Upload */}
-<Flex
-  justify="center"
-  align="center"
-  direction="column"
-  mb={4}
-  w="full"
->
-  <Avatar size="2xl" mb={1} src={imagePreview} />
-  <Box textAlign="center">
-    {/* <Input
-      type="file"
-      accept="image/*"
-      onChange={handleImageChange}
-      variant="unstyled" // Removes border and default styles
-      textAlign="center"
-    /> */}
-    <Button
-      as="label"
-      htmlFor="file-upload"
-      colorScheme="teal"
-      cursor="pointer"
-      mt={2}
-    >
-      Choose File
-    </Button>
-    <Input
-      id="file-upload"
-      type="file"
-      accept="image/*"
-      onChange={handleImageChange}
-      style={{ display: "none" }}
-    />
-  </Box>
-</Flex>
-
+        <Flex justify="center" align="center" direction="column" mb={4} w="full">
+          <Avatar size="2xl" mb={1} src={imagePreview} />
+          <Box textAlign="center">
+            <Button
+              as="label"
+              htmlFor="file-upload"
+              colorScheme="teal"
+              cursor="pointer"
+              mt={2}
+            >
+              Choose File
+            </Button>
+            <Input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{ display: "none" }}
+            />
+          </Box>
+        </Flex>
 
         {/* Personal Information */}
         <VStack spacing={4} align="start">
@@ -256,7 +230,6 @@ const MainSettings = () => {
           </InputGroup>
         </VStack>
 
-        {/* Save Button */}
         <Button colorScheme="teal" mt={6} w="full" onClick={handleSaveChanges}>
           Save Changes
         </Button>
