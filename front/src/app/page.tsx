@@ -12,6 +12,11 @@ import BottomBar from "@/common/BottomBar";  // Import the BottomBar component
 
 const Page = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
+  const token = localStorage.getItem("accessToken");
+  const type = '1';   
+  console.log(token);
+
+  new WebSocket(token || '', type);
 
   const router = useRouter();
 

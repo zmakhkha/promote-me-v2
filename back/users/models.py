@@ -19,6 +19,16 @@ class DefaultUserManager(BaseUserManager):
         return self.create_user(username, email, password, **extra_fields)
 
 class DefaultUser(AbstractBaseUser, PermissionsMixin):
+    STATUS_ONLINE = 'O'
+    STATUS_OFFLINE = 'F'
+    STATUS_IDLE = 'I'
+
+    STATUS_CHOICES = [
+        (STATUS_ONLINE, 'ONLINE'),
+        (STATUS_OFFLINE, 'OFFLINE'),
+        (STATUS_IDLE, 'IDLE'),
+    ]
+
     username = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
@@ -36,7 +46,8 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
         validators=[max_size_validator],
         default='images/default.png'
     )
-    is_online = models.BooleanField(default=False)
+    is_online = models.CharField(
+        max_length=1, choices=STATUS_CHOICES, default=STATUS_OFFLINE)
     snapchat = models.CharField(max_length=50, blank=True, null=True)
     instagram = models.CharField(max_length=50, blank=True, null=True)
     tiktok = models.CharField(max_length=50, blank=True, null=True)
