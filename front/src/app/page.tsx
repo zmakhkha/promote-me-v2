@@ -8,6 +8,7 @@ import Header from "@/common/Header";
 import MainHome from "@/components/home/MainHome";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import BottomBar from "@/common/BottomBar";  // Import the BottomBar component
 
 const Page = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -20,6 +21,7 @@ const Page = () => {
       router.push("/login");
     }
   }, [router]);
+
   return (
     <Grid
       templateAreas={{
@@ -37,24 +39,34 @@ const Page = () => {
     >
       {/* Header Section */}
       <GridItem area="header" bg={bg} p={4}>
-        {/* Placeholder for Header */}
-        {/* <h1>Header</h1> */}
-        <Header/>
+        <Header />
       </GridItem>
 
-      {/* Sidebar Section */}
+      {/* Sidebar Section - Only visible on larger screens */}
       <GridItem
         area="nav"
         bg={navBgColor}
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "block" }}  // Hides sidebar on small screens
       >
         <Sidebar />
       </GridItem>
 
       {/* Main Content Section */}
       <GridItem area="main" pl="2" bg={navBgColor}>
-        {/* Placeholder for Main Content */}
-        <MainHome/>
+        <MainHome />
+      </GridItem>
+
+      {/* Bottom Bar Section - Only visible on small screens */}
+      <GridItem
+        area="bottom"
+        bg={navBgColor}
+        display={{ base: "block", md: "none" }}  // Shows bottom bar on small screens only
+        position="absolute"
+        bottom="0"
+        left="0"
+        width="100%"  // Ensures the BottomBar stretches across the entire width
+      >
+        <BottomBar />  {/* Your custom BottomBar with 5 icons */}
       </GridItem>
     </Grid>
   );
