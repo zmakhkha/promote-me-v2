@@ -2,18 +2,18 @@ let socket: WebSocket | null = null;
 
 export const connectWebSocket = (token: string, type: string): void => {
   if (!socket || socket.readyState !== WebSocket.OPEN) {
-    socket = new WebSocket('ws://localhost:8000/ws/status/${token}/${type}');
+    socket = new WebSocket(`ws://localhost:2000/ws/status/${token}/${type}`);
 
     socket.onopen = () => {
-      console.log('Connected to WebSocket');
+      console.log("Connected to WebSocket");
     };
 
     socket.onclose = () => {
-      console.log('Disconnected from WebSocket');
+      console.log("Disconnected from WebSocket");
     };
 
     socket.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error("WebSocket error:", error);
     };
   }
 };
@@ -35,6 +35,6 @@ export const sendMessage = (message: Record<string, any>): void => {
   if (socket && socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify(message));
   } else {
-    console.error('WebSocket is not connected');
+    console.error("WebSocket is not connected");
   }
 };

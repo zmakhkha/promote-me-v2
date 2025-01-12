@@ -8,18 +8,19 @@ import Header from "@/common/Header";
 import MainTiktok from "@/components/tiktok/mainTiktok";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import socketConnect from "@/services/axios/socketConnect";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
-    const router = useRouter();
-  
-    useEffect(() => {
-      const isAuthenticated = checkAuthTokens();
-      if (!isAuthenticated) {
-        router.push("/login");
-      }
-    }, [router]);
+  const router = useRouter();
+  useEffect(() => {
+    const isAuthenticated = checkAuthTokens();
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+    socketConnect("1");
+  }, [router]);
   return (
     <Grid
       templateAreas={{
@@ -39,7 +40,7 @@ const HomePage = () => {
       <GridItem area="header" bg={bg} p={4}>
         {/* Placeholder for Header */}
         {/* <h1>Header</h1> */}
-        <Header/>
+        <Header />
       </GridItem>
 
       {/* Sidebar Section */}
@@ -53,16 +54,16 @@ const HomePage = () => {
 
       {/* Main Content Section */}
       {/* Main Content Section */}
-            <GridItem
-              area="main"
-              position="sticky"
-              zIndex="1000"
-              overflowY="auto"
-              pl="2"
-              bg={navBgColor}
-            >
+      <GridItem
+        area="main"
+        position="sticky"
+        zIndex="1000"
+        overflowY="auto"
+        pl="2"
+        bg={navBgColor}
+      >
         {/* Placeholder for Main Content */}
-        <MainTiktok/>
+        <MainTiktok />
       </GridItem>
     </Grid>
   );

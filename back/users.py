@@ -3,7 +3,7 @@ import random
 import faker
 
 # Global configuration
-API_URL = "http://localhost:8000/api/v1/register/"
+API_URL = "http://localhost:2000/api/v1/register/"
 GLOBAL_PASSWORD = "Pass123++"
 
 # Initialize Faker to generate random user data
@@ -28,7 +28,7 @@ def generate_random_user(i):
     points = random.randint(50, 500)
     likes = random.randint(30, 150)
     views = random.randint(100, 1000)
-    is_online = random.choice([True, False])
+    status = random.choice([True, False])
 
     return {
         "username": username,
@@ -41,7 +41,7 @@ def generate_random_user(i):
         "location": location,
         "bio": bio,
         "interests": interests,
-        "is_online": is_online,
+        "status": is_online,
         "snapchat": snapchat,
         "instagram": instagram,
         "tiktok": tiktok,

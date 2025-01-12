@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='defaultuser',
-            name='is_online',
+            name='status',
             field=models.CharField(choices=[('O', 'ONLINE'), ('F', 'OFFLINE'), ('I', 'IDLE')], default='F', max_length=1),
         ),
     ]

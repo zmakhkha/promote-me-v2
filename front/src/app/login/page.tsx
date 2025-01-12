@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
@@ -14,8 +14,8 @@ const LoginPage = () => {
     setError(null); // Clear any previous errors
 
     try {
-      const response = await axios.post("http://localhost:8000/api/v1/login/", {
-        username, 
+      const response = await axios.post("http://localhost:2000/api/v1/login/", {
+        username,
         password,
       });
 

@@ -8,23 +8,19 @@ import Header from "@/common/Header";
 import MainHome from "@/components/home/MainHome";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
-import BottomBar from "@/common/BottomBar";  // Import the BottomBar component
+import BottomBar from "@/common/BottomBar"; // Import the BottomBar component
+import { connectWebSocket } from "@/services/axios/websocketService";
+import socketConnect from "@/services/axios/socketConnect";
 
 const Page = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
-  const token = localStorage.getItem("accessToken");
-  const type = '1';   
-  console.log(token);
-
-  new WebSocket(token || '', type);
-
   const router = useRouter();
-
   useEffect(() => {
     const isAuthenticated = checkAuthTokens();
     if (!isAuthenticated) {
       router.push("/login");
     }
+    socketConnect("1");
   }, [router]);
 
   return (
@@ -51,7 +47,7 @@ const Page = () => {
       <GridItem
         area="nav"
         bg={navBgColor}
-        display={{ base: "none", md: "block" }}  // Hides sidebar on small screens
+        display={{ base: "none", md: "block" }} // Hides sidebar on small screens
       >
         <Sidebar />
       </GridItem>
@@ -65,13 +61,13 @@ const Page = () => {
       <GridItem
         area="bottom"
         bg={navBgColor}
-        display={{ base: "block", md: "none" }}  // Shows bottom bar on small screens only
+        display={{ base: "block", md: "none" }} // Shows bottom bar on small screens only
         position="absolute"
         bottom="0"
         left="0"
-        width="100%"  // Ensures the BottomBar stretches across the entire width
+        width="100%" // Ensures the BottomBar stretches across the entire width
       >
-        <BottomBar />  {/* Your custom BottomBar with 5 icons */}
+        <BottomBar /> {/* Your custom BottomBar with 5 icons */}
       </GridItem>
     </Grid>
   );

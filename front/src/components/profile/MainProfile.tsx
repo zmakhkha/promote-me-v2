@@ -15,7 +15,12 @@ import {
   TagLabel,
   Tag,
 } from "@chakra-ui/react";
-import { FaGlobe, FaInstagram, FaSnapchatGhost, FaTiktok } from "react-icons/fa";
+import {
+  FaGlobe,
+  FaInstagram,
+  FaSnapchatGhost,
+  FaTiktok,
+} from "react-icons/fa";
 import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 
@@ -41,7 +46,8 @@ interface MainProfileProps {
 }
 
 const MainProfile = ({ username }: MainProfileProps) => {
-  const { bg, tiktok, textColor, borderColor, navBgColor } = useColorModeStyles();
+  const { bg, tiktok, textColor, borderColor, navBgColor } =
+    useColorModeStyles();
 
   const [userData, setUserData] = useState<UserData>({
     image_url: placeholderAvatar.src,
@@ -60,12 +66,16 @@ const MainProfile = ({ username }: MainProfileProps) => {
     tiktok: null,
   });
 
-  const [imagePreview, setImagePreview] = useState<string>(placeholderAvatar.src);
+  const [imagePreview, setImagePreview] = useState<string>(
+    placeholderAvatar.src
+  );
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/api/v1/users/${username}/`);
+        const response = await fetch(
+          `http://localhost:2000/api/v1/users/${username}/`
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch user data");
         }

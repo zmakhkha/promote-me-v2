@@ -1,15 +1,8 @@
 from asgiref.sync import sync_to_async
-from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.db.models import F
-from channels.db import database_sync_to_async
-import jwt, json
-from django.conf import settings
-from django.shortcuts import get_object_or_404
-from django.contrib.auth import get_user_model
+import json
 
 from users.models import DefaultUser
-
 from .utils import getUser
 
 

@@ -46,7 +46,7 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
         validators=[max_size_validator],
         default='images/default.png'
     )
-    is_online = models.CharField(
+    status = models.CharField(
         max_length=1, choices=STATUS_CHOICES, default=STATUS_OFFLINE)
     snapchat = models.CharField(max_length=50, blank=True, null=True)
     instagram = models.CharField(max_length=50, blank=True, null=True)

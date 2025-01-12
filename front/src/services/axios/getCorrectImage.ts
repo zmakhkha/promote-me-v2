@@ -1,7 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const getCorrectImage = (url : String) => {
-  return 'http://localhost:8000' + url
-}
+const getCorrectImage = (url: String) => {
+  return "http://localhost:2000" + url;
+};
 
-export default getCorrectImage
+export default getCorrectImage;

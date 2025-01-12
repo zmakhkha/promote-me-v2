@@ -8,6 +8,7 @@ import Header from "@/common/Header";
 import MainSnapchat from "@/components/snapchat/mainSnapchat";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import socketConnect from "@/services/axios/socketConnect";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -18,6 +19,7 @@ const HomePage = () => {
     if (!isAuthenticated) {
       router.push("/login");
     }
+    socketConnect("1");
   }, [router]);
 
   return (
@@ -53,14 +55,14 @@ const HomePage = () => {
 
       {/* Main Content Section */}
       {/* Main Content Section */}
-            <GridItem
-              area="main"
-              position="sticky"
-              zIndex="1000"
-              overflowY="auto"
-              pl="2"
-              bg={navBgColor}
-            >
+      <GridItem
+        area="main"
+        position="sticky"
+        zIndex="1000"
+        overflowY="auto"
+        pl="2"
+        bg={navBgColor}
+      >
         {/* Placeholder for Main Content */}
         <MainSnapchat />
       </GridItem>

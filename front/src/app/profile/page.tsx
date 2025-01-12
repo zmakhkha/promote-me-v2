@@ -8,18 +8,21 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 import MainProfile from "@/components/profile/MainProfile";
 import Header from "@/common/Header";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import socketConnect from "@/services/axios/socketConnect";
 
 const HomePage = () => {
   const router = useRouter();
   const [user, setUser] = useState<string | null>(null);
   const { bg, textColor, navBgColor } = useColorModeStyles();
-    
-    useEffect(() => {
-      // Check for 'user' query parameter using URLSearchParams
-      const isAuthenticated = checkAuthTokens();
-      if (!isAuthenticated) {
-        router.push("/login");
-      }
+
+  useEffect(() => {
+    // Check for 'user' query parameter using URLSearchParams
+    const isAuthenticated = checkAuthTokens();
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+    socketConnect("1");
+
     const queryUser = new URLSearchParams(window.location.search).get("user");
     if (queryUser) {
       setUser(queryUser);

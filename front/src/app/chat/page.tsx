@@ -9,6 +9,7 @@ import Header from "@/common/Header";
 import MainChat from "@/components/chat/MainChat";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
+import socketConnect from "@/services/axios/socketConnect";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -20,6 +21,7 @@ const HomePage = () => {
     if (!isAuthenticated) {
       router.push("/login");
     }
+    socketConnect("2");
   }, [router]);
   return (
     <Grid

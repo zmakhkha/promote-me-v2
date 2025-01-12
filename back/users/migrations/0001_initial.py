@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('bio', models.TextField()),
                 ('interests', models.JSONField(default=list)),
                 ('image_url', models.URLField(blank=True, null=True)),
-                ('is_online', models.BooleanField(default=False)),
+                ('status', models.BooleanField(default=False)),
                 ('snapchat', models.CharField(blank=True, max_length=50, null=True)),
                 ('instagram', models.CharField(blank=True, max_length=50, null=True)),
                 ('tiktok', models.CharField(blank=True, max_length=50, null=True)),

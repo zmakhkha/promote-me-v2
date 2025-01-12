@@ -8,6 +8,7 @@ import MainSettings from "@/components/settings/MainSettings";
 import Header from "@/common/Header";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import socketConnect from "@/services/axios/socketConnect";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -19,6 +20,7 @@ const HomePage = () => {
     if (!isAuthenticated) {
       router.push("/login");
     }
+    socketConnect("1");
   }, [router]);
   return (
     <Grid
@@ -36,7 +38,7 @@ const HomePage = () => {
       fontWeight="bold"
     >
       <GridItem area="header" bg={bg} p={4}>
-        <Header/>
+        <Header />
       </GridItem>
 
       <GridItem
@@ -48,7 +50,7 @@ const HomePage = () => {
       </GridItem>
 
       <GridItem area="main" pl="2" bg={navBgColor}>
-        <MainSettings/>
+        <MainSettings />
       </GridItem>
     </Grid>
   );

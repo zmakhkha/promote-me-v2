@@ -36,7 +36,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'username', 'email', 'password', 'first_name', 'last_name',
             'points', 'likes', 'views', 'birth_date', 'age', 'gender', 'location',
-            'bio', 'interests', 'is_online', 'snapchat', 'instagram', 'tiktok', 'image_url'
+            'bio', 'interests', 'status', 'snapchat', 'instagram', 'tiktok', 'image_url'
         ]
 
     def create(self, validated_data):
@@ -67,7 +67,7 @@ class UserListSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
-            'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
+            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
 
@@ -76,7 +76,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = [
             'username', 'first_name', 'last_name',
-            'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
+            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
 
@@ -98,6 +98,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
         fields = [
             'username', 'first_name', 'last_name',
-            'age', 'gender', 'location', 'bio', 'interests', 'is_online', 'image_url',
+            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]

@@ -176,3 +176,10 @@ SIMPLE_JWT = {
 }
 
 ASGI_APPLICATION = 'back.asgi.application'
+
+# Channel Layers and Templates Configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}

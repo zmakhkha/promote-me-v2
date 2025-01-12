@@ -8,19 +8,19 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 import MyProfile from "@/components/profile/MyProfile";
 import Header from "@/common/Header";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import socketConnect from "@/services/axios/socketConnect";
 
 const MePage = () => {
   const router = useRouter();
   const { bg, textColor, navBgColor } = useColorModeStyles();
-    
-    useEffect(() => {
-      const isAuthenticated = checkAuthTokens();
-      if (!isAuthenticated) {
-        router.push("/login");
-      }
-  }, [router]);
 
- 
+  useEffect(() => {
+    const isAuthenticated = checkAuthTokens();
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+    socketConnect("1");
+  }, [router]);
 
   return (
     <Grid

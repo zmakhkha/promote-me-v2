@@ -8,18 +8,20 @@ import MainInstagram from "@/components/instagram/mainInstagram";
 import Header from "@/common/Header";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import socketConnect from "@/services/axios/socketConnect";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
-    const router = useRouter();
-  
-    useEffect(() => {
-      const isAuthenticated = checkAuthTokens();
-      if (!isAuthenticated) {
-        router.push("/login");
-      }
-    }, [router]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const isAuthenticated = checkAuthTokens();
+    if (!isAuthenticated) {
+      router.push("/login");
+    }
+    socketConnect("1");
+  }, [router]);
 
   return (
     <Grid
@@ -37,7 +39,7 @@ const HomePage = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" bg={bg} p={4} pb={6} >
+      <GridItem area="header" bg={bg} p={4} pb={6}>
         {/* Placeholder for Header */}
         {/* <h1>Header</h1> */}
         <Header />
