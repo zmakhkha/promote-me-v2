@@ -5,7 +5,26 @@ export const connectWebSocket = (token: string, type: string): void => {
     socket = new WebSocket(`ws://localhost:2000/ws/status/${token}/${type}`);
 
     socket.onopen = () => {
-      console.log("Connected to WebSocket");
+      console.log("status : Connected to WebSocket");
+    };
+
+    socket.onclose = () => {
+      console.log("Disconnected from WebSocket");
+    };
+
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+  }
+};
+
+
+export const randomChatConnectWebSocket = (token: string): void => {
+  if (!socket || socket.readyState !== WebSocket.OPEN) {
+    socket = new WebSocket(`ws://localhost:2000/ws/random/${token}`);
+    
+    socket.onopen = () => {
+      console.log("randomChatConnectWebSocket : Connected to WebSocket");
     };
 
     socket.onclose = () => {

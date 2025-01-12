@@ -10,19 +10,39 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import randSocketConnect from "@/services/axios/randSocketConnect";
 
 // Define the message type
 type Message = {
   text: string;
   type: "sent" | "received";
-  timestamp: string; // Add a timestamp field
+  timestamp: string;
 };
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [chatStatus, setChatStatus] = useState<string>(""); // Status of the chat (random stranger message)
+  const [tags, setTags] = useState<string[]>([]); // Tags for both users (for example, shared interests)
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Function to fetch random stranger data and tags
+  const startNewConversation = () => {
+    // Example tags shared between both users (this would come from your matching service)
+    const randomTags = ["Dogs", "puppies", "tick"];
+    setTags(randomTags);
+
+    // Simulate a stranger's info (this would be dynamic in a real app)
+    setChatStatus("You're now chatting with a random stranger!");
+
+    setMessages([]); // Clear messages for the new conversation
+  };
+
+  useEffect(() => {
+    startNewConversation(); // Start a conversation when the component mounts
+	randSocketConnect();
+  }, []);
 
   // Scroll to the bottom whenever messages are updated
   useEffect(() => {
@@ -41,7 +61,7 @@ const ChatScreen = () => {
         {
           text: inputValue,
           type: "sent",
-          timestamp: getCurrentTimestamp(), // Add timestamp when sending a message
+          timestamp: getCurrentTimestamp(),
         },
       ]);
       setInputValue("");
@@ -52,6 +72,13 @@ const ChatScreen = () => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
+    }
+  };
+
+  const handleEscPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      startNewConversation();
     }
   };
 
@@ -73,6 +100,14 @@ const ChatScreen = () => {
       justifyContent="space-between"
       height="80vh"
     >
+      {/* Chat Status */}
+      <Box mb={4}>
+        <Text fontSize="xl" fontWeight="bold">{chatStatus}</Text>
+        <Text fontSize="sm" color="gray.500">
+          You both like {tags.join(", ")}
+        </Text>
+      </Box>
+
       {/* Chat Bubbles */}
       <VStack
         spacing={4}
@@ -119,10 +154,21 @@ const ChatScreen = () => {
 
       {/* Input Area */}
       <HStack spacing={2} as="form" onSubmit={(e) => e.preventDefault()}>
+        <Button
+          colorScheme="blue"
+          onClick={startNewConversation}
+          bg={borderColor}
+          _hover={{ bg: hoverColor }}
+        >
+          New (Esc)
+        </Button>
         <Textarea
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyPress={(e) => {
+            handleKeyPress(e);
+            handleEscPress(e);
+          }}
           placeholder="Type your message..."
           size="sm"
           resize="none"
