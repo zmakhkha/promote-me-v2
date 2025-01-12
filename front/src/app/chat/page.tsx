@@ -10,6 +10,7 @@ import MainChat from "@/components/chat/MainChat";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
+import ChatScreen from "@/components/chat/ChatScreen";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -57,7 +58,8 @@ const HomePage = () => {
       {/* Main Content Section */}
       <GridItem area="main" pl="2" bg={navBgColor}>
         {/* Placeholder for Main Content */}
-        <MainChat />
+        {/* <MainChat /> */}
+        <ChatScreen/>
       </GridItem>
     </Grid>
   );

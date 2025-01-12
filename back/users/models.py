@@ -22,6 +22,7 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
     STATUS_ONLINE = 'O'
     STATUS_OFFLINE = 'F'
     STATUS_IDLE = 'I'
+    STATUS_CHAT = 'C'
 
     STATUS_CHOICES = [
         (STATUS_ONLINE, 'ONLINE'),

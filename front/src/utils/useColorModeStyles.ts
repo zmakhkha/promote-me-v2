@@ -4,10 +4,10 @@
     const { toggleColorMode } = useColorMode();
 
     // Instagram Theme Colors
-    const instagramGradient = useColorModeValue(
-      'linear(to-r, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5)',
-      'linear(to-r, #4f5bd5, #962fbf, #d62976, #fa7e1e, #feda75)'
-    );
+    // const instagramGradient = useColorModeValue(
+    //   'linear(to-r, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5)',
+    //   'linear(to-r, #4f5bd5, #962fbf, #d62976, #fa7e1e, #feda75)'
+    // );
     const instagramTextColor = useColorModeValue('#d62976', '#feda75');
     const instagramIconColor = useColorModeValue('#d62976', '#feda75');
 
@@ -26,7 +26,7 @@
       borderColor,
       hoverColor,
       navBgColor,
-      instagramGradient,
+      // instagramGradient,
       instagramTextColor,
       instagramIconColor,
       toggleColorMode,
