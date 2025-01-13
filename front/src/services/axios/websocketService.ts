@@ -81,3 +81,43 @@ export const disconnectWebSocket = (): void => {
     console.warn("[WebSocket] WebSocket is already disconnected or not initialized");
   }
 };
+
+
+const startChat = async (token: string, roomId: string) => {
+  try {
+    // Construct WebSocket URL
+    const wsUrl = `ws://localhost:2000/ws/chat/${token}/${roomId}`;
+
+    // Create WebSocket connection
+    const socket = new WebSocket(wsUrl);
+
+    // Event handler for when WebSocket connection opens
+    socket.onopen = () => {
+      console.log("[Dms Consumer]WebSocket connection established!");
+      // Optionally send any initial messages here
+    };
+
+    // Event handler for receiving messages
+    socket.onmessage = (event: MessageEvent) => {
+      const messageData = JSON.parse(event.data);
+
+      // Handle the incoming message based on your use case
+      console.log("Received message:", messageData);
+    };
+
+    // Event handler for when WebSocket connection closes
+    socket.onclose = () => {
+      console.log("WebSocket connection closed.");
+    };
+
+    // Event handler for errors
+    socket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+  } catch (error) {
+    console.error("Error starting chat:", error);
+  }
+};
+
+export default startChat;

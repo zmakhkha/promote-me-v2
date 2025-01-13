@@ -11,7 +11,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import {
+import startChat, {
   connectWebSocket,
   sendMessage,
   disconnectWebSocket,
@@ -28,6 +28,7 @@ type Message = {
 const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+  const [token, settoken] = useState<string>("");
   const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
@@ -38,6 +39,7 @@ const ChatScreen = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
+    settoken(token);
     if (!token) {
       setChatStatus("Authentication failed. Please log in.");
       return;
@@ -117,6 +119,7 @@ const ChatScreen = () => {
             }
 
             setRoomId(room_name);
+            startChat(token, room_name);
             break;
 
           case "chat_message": // Chat message from ChatConsumer

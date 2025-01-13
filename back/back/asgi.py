@@ -16,7 +16,7 @@ application = ProtocolTypeRouter({
   'websocket': URLRouter([
 	path("ws/status/<str:token>/<int:type>", StatusConsumer.as_asgi()),
 	path("ws/random/<str:token>", RandomChatConsumer.as_asgi()),
-  path("ws/chat/<int:receiver_id>/<str:token>", DmConsumer.as_asgi()),
+  path("ws/chat/<str:token>/<str:roomId>", DmConsumer.as_asgi()),
   ]
     ),
 })

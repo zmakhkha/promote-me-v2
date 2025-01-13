@@ -11,6 +11,8 @@ logger = getLogging()
 class DmConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         authorization_header = self.scope["url_route"]["kwargs"]["token"]
+        room_name = self.scope["url_route"]["kwargs"]["roomId"]
+        
         if not authorization_header:
             logger.warning("DmConsumer: connect - Connection rejected: Authorization header not found.")
             await self.close()
@@ -25,17 +27,18 @@ class DmConsumer(AsyncWebsocketConsumer):
 
         logger.info(f"DmConsumer: connect - {user.username} Connected successfully.")
         await self.accept()
-        sender_id = self.scope["user"].id
-        receiver_id = self.scope["url_route"]["kwargs"]["receiver_id"]
-        group_name = self.get_group_name(sender_id, receiver_id)
+
+        # Use the room_name for group management
+        group_name = room_name
         await self.channel_layer.group_add(group_name, self.channel_name)
 
     async def disconnect(self, close_code):
         logger.info("DmConsumer: disconnect - Disconnected from WebSocket.")
-        sender_id = self.scope['user'].id
-        receiver_id = self.scope['url_route']['kwargs']['receiver_id']
-        group_name = self.get_group_name(sender_id, receiver_id)
-        await self.channel_layer.group_discard(group_name, self.channel_name)
+        
+        # Get room name from URL kwargs
+        room_name = self.scope['url_route']['kwargs']['roomname']
+        
+        await self.channel_layer.group_discard(room_name, self.channel_name)
 
     async def receive(self, text_data):
         logger.info("DmConsumer: receive - Received message from WebSocket: %s", text_data)
@@ -45,18 +48,15 @@ class DmConsumer(AsyncWebsocketConsumer):
             if content:
                 logger.debug(f"DmConsumer: receive - Message content: {content}")
                 sender_id = self.scope['user'].id
-                receiver_id = self.scope['url_route']['kwargs']['receiver_id']
-                
-                receiver = await get_user_by_id(receiver_id)
-                sender = await get_user_by_id(sender_id)
-                if sender is None or receiver is None:
-                    logger.error("DmConsumer: receive - Sender or receiver not found.")
-                    return 
-                group_name = self.get_group_name(sender_id, receiver_id)
-                await self.save_message(sender, receiver, content)
+
+                # Save the message (receiver information is part of the room)
+                await self.save_message(sender_id, content)
                 x = datetime.datetime.now()
+
+                room_name = self.scope['url_route']['kwargs']['roomname']
+
                 await self.channel_layer.group_send(
-                    group_name,
+                    room_name,
                     {
                         'type': 'chat_message',
                         'user': self.scope['user'].username,
@@ -90,17 +90,11 @@ class DmConsumer(AsyncWebsocketConsumer):
             'message': content
         }))
 
-    def get_group_name(self, user_id1, user_id2):
-        if user_id1 is not None and user_id2 is not None:
-            return f"group_{min(user_id1, user_id2)}_{max(user_id1, user_id2)}"
-        else:
-            # Handle the case where one of the user IDs is None
-            return None
-
     @sync_to_async
-    def save_message(self, sender, receiver, content):
+    def save_message(self, sender_id, content):
         logger.info("DmConsumer: save_message - Saving new message.")
         user = settings.AUTH_USER_MODEL
-        if sender and receiver:
-            message = Message.objects.create(sender=sender, receiver=receiver, content=content)
+        # You might want to adjust the Message creation logic to save to a "group chat" table
+        if sender_id:
+            message = Message.objects.create(sender_id=sender_id, content=content)
             message.save()
