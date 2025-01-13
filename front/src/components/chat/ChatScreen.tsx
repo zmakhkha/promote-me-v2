@@ -23,6 +23,7 @@ type Message = {
   text: string;
   type: "sent" | "received" | "system";
   timestamp: string;
+  sender?: string;
 };
 
 const ChatScreen = () => {
@@ -34,8 +35,8 @@ const ChatScreen = () => {
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [user, setUser] = useState<any>(null);  // State to store the connected user
-  const [connectedUser, setConnectedUser] = useState<string>("");  // New state for connected user
+  const [user, setUser] = useState<any>(null);
+  const [connectedUser, setConnectedUser] = useState<string>("");
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
@@ -47,51 +48,53 @@ const ChatScreen = () => {
 
     const fetchUserProfile = async () => {
       try {
-        const userData = await getConnectedUser(); // Fetch the connected user's profile
-        setUser(userData); // Set the fetched data to state
+        const userData = await getConnectedUser();
+        setUser(userData);
       } catch (error) {
         console.log("Failed to load user profile.");
       }
     };
 
-    fetchUserProfile(); // Fetch the user profile on initial render
-
-    // We don't want to call connectWebSocket or randomConnectWebSocket until user is fetched
+    fetchUserProfile();
   }, []);
 
-  // Use another useEffect to handle the `connectedUser` once the `user` is available
   useEffect(() => {
     if (user) {
-      setConnectedUser(user.username); // Set the connected user after the user state is updated
+      setConnectedUser(user.username);
       connectWebSocket(localStorage.getItem("accessToken") || "", "2");
       randomConnectWebSocket(localStorage.getItem("accessToken") || "");
     }
-  }, [user]); // This will run every time the `user` state is updated
+  }, [user]);
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       try {
-        const data = JSON.parse(event.data); // Parse JSON data
+        const data = JSON.parse(event.data);
 
         switch (data.type) {
-          case "match": // RandomChatConsumer match event
+          case "match":
             setChatStatus("Connected! Start chatting.");
-            setIsConnecting(false);
+            setIsConnecting(false); // Stop the spinner
             setRoomId(data.roomId);
             break;
 
-          case "message": // Chat message from ChatConsumer
+          case "status_user":
+            console.log("Status update:", data.action);
+            break;
+
+          case "message":
             setMessages((prev) => [
               ...prev,
               {
                 text: data.message,
                 type: "received",
                 timestamp: getCurrentTimestamp(),
+                sender: data.sender,
               },
             ]);
             break;
 
-          case "system": // System message
+          case "system":
             setMessages((prev) => [
               ...prev,
               {
@@ -102,34 +105,37 @@ const ChatScreen = () => {
             ]);
             break;
 
-          case "status_user": // Status update from StatusConsumer
-            console.log("Status update:", data.action);
-            break;
-
-          case "redirect": // Redirect message from RandomChatConsumer
+          case "redirect":
             const { room_name, users } = data;
             const user1 = users.user1;
             const user2 = users.user2;
 
-            // Check if connectedUser is either user1 or user2
             if (connectedUser === user1.username) {
               setChatStatus(`Matched with ${user2.username}!`);
             } else if (connectedUser === user2.username) {
               setChatStatus(`Matched with ${user1.username}!`);
             }
+            setIsConnecting(false); // Stop the spinner
 
             setRoomId(room_name);
             startChat(token, room_name);
             break;
 
-          case "chat_message": // Chat message from ChatConsumer
+          case "chat_message":
             const { sender, message, timestamp } = data;
-            const formattedTimestamp = `${timestamp.hour}:${timestamp.minute}, ${timestamp.day}/${timestamp.month}/${timestamp.year}`;
+
+            const date = new Date(timestamp);
+            const formattedTimestamp = `${date.getHours()}:${String(
+              date.getMinutes()
+            ).padStart(2, "0")}, ${date.getDate()}/${
+              date.getMonth() + 1
+            }/${date.getFullYear()}`;
+
             setMessages((prev) => [
               ...prev,
               {
                 text: message,
-                type: "received",
+                type: connectedUser === sender ? "sent" : "received", // Determine the type based on sender
                 sender,
                 timestamp: formattedTimestamp,
               },
@@ -147,10 +153,9 @@ const ChatScreen = () => {
     window.addEventListener("message", handleMessage);
 
     return () => {
-      disconnectWebSocket();
       window.removeEventListener("message", handleMessage);
     };
-  }, [connectedUser]); // This effect depends on `connectedUser`
+  }, [connectedUser]);
 
   const getCurrentTimestamp = () => {
     const now = new Date();
@@ -159,7 +164,11 @@ const ChatScreen = () => {
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
-      sendMessage({ message: inputValue, roomId });
+      sendMessage({
+        user: connectedUser,
+        sender: connectedUser,
+        content: inputValue,
+      });
       setMessages((prev) => [
         ...prev,
         { text: inputValue, type: "sent", timestamp: getCurrentTimestamp() },
@@ -206,7 +215,7 @@ const ChatScreen = () => {
             justify={message.type === "sent" ? "flex-end" : "flex-start"}
           >
             {message.type === "received" && (
-              <Avatar size="sm" name="Received User" />
+              <Avatar size="sm" name={message.sender} />
             )}
             <Box
               bg={message.type === "sent" ? hoverColor : borderColor}

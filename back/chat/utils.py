@@ -52,3 +52,11 @@ async def getUser(authorization_header):
     except DefaultUser.DoesNotExist:
         logger.error(f"DefaultUser does not exist with ID: {user_id}")
         return None
+    
+
+async def get_user_by_username(username):
+    try:
+        user = await sync_to_async(DefaultUser.objects.get)(username=username)
+        return user
+    except DefaultUser.DoesNotExist:
+        return None

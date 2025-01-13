@@ -1,4 +1,7 @@
 let socket: WebSocket | null = null;
+let statusSocket: WebSocket | null = null;
+let randomSocket: WebSocket | null = null;
+let chatSocket: WebSocket | null = null; // This should be used globally for the chat connection
 
 /**
  * Connect to a WebSocket for a specific type and token.
@@ -7,23 +10,23 @@ let socket: WebSocket | null = null;
  */
 export const connectWebSocket = (token: string, type: string): void => {
   const url = `ws://localhost:2000/ws/status/${token}/${type}`;
-  if (!socket || socket.readyState !== WebSocket.OPEN) {
-    socket = new WebSocket(url);
+  if (!statusSocket || statusSocket.readyState !== WebSocket.OPEN) {
+    statusSocket = new WebSocket(url);
 
-    socket.onopen = () => {
+    statusSocket.onopen = () => {
       console.log(`[Status WebSocket] Connected to WebSocket: ${url}`);
     };
 
-    socket.onmessage = (event) => {
+    statusSocket.onmessage = (event) => {
       console.log("[Status WebSocket] Message received:", event.data);
       window.dispatchEvent(new MessageEvent("message", { data: event.data }));
     };
 
-    socket.onclose = () => {
+    statusSocket.onclose = () => {
       console.log("[Status WebSocket] Disconnected from WebSocket");
     };
 
-    socket.onerror = (error) => {
+    statusSocket.onerror = (error) => {
       console.error("[Status WebSocket] WebSocket error:", error);
     };
   }
@@ -35,45 +38,32 @@ export const connectWebSocket = (token: string, type: string): void => {
  */
 export const randomConnectWebSocket = (token: string): void => {
   const url = `ws://localhost:2000/ws/random/${token}`;
-  if (!socket || socket.readyState !== WebSocket.OPEN) {
-    socket = new WebSocket(url);
+  if (!randomSocket || randomSocket.readyState !== WebSocket.OPEN) {
+    randomSocket = new WebSocket(url);
 
-    socket.onopen = () => {
+    randomSocket.onopen = () => {
       console.log(`[Random WebSocket] Connected to WebSocket: ${url}`);
     };
 
-    socket.onmessage = (event) => {
+    randomSocket.onmessage = (event) => {
       console.log("[Random WebSocket] Message received:", event.data);
       window.dispatchEvent(new MessageEvent("message", { data: event.data }));
     };
 
-    socket.onclose = () => {
+    randomSocket.onclose = () => {
       console.log("[Random WebSocket] Disconnected from WebSocket");
     };
 
-    socket.onerror = (error) => {
+    randomSocket.onerror = (error) => {
       console.error("[Random WebSocket] WebSocket error:", error);
     };
   }
 };
 
 /**
- * Send a message through the WebSocket connection.
- * @param message - The message object to send.
- */
-export const sendMessage = (message: Record<string, any>): void => {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    console.log("[WebSocket] Sending message:", message);
-    socket.send(JSON.stringify(message));
-  } else {
-    console.error("[WebSocket] Cannot send message, WebSocket is not connected");
-  }
-};
-
-/**
  * Disconnect the WebSocket connection if it is open.
  */
-export const disconnectWebSocket = (): void => {
+export const disconnectWebSocket = (socket: WebSocket | null): void => {
   if (socket && socket.readyState === WebSocket.OPEN) {
     console.log("[WebSocket] Closing connection");
     socket.close();
@@ -82,23 +72,22 @@ export const disconnectWebSocket = (): void => {
   }
 };
 
-
-const startChat = async (token: string, roomId: string) => {
+const startChat = async (token: string, roomId: string): Promise<void> => {
   try {
     // Construct WebSocket URL
     const wsUrl = `ws://localhost:2000/ws/chat/${token}/${roomId}`;
 
-    // Create WebSocket connection
-    const socket = new WebSocket(wsUrl);
+    // Use the global `chatSocket` to store the chat WebSocket connection
+    chatSocket = new WebSocket(wsUrl);
 
     // Event handler for when WebSocket connection opens
-    socket.onopen = () => {
-      console.log("[Dms Consumer]WebSocket connection established!");
+    chatSocket.onopen = () => {
+      console.log("[Dms Consumer] WebSocket connection established!");
       // Optionally send any initial messages here
     };
 
     // Event handler for receiving messages
-    socket.onmessage = (event: MessageEvent) => {
+    chatSocket.onmessage = (event: MessageEvent) => {
       const messageData = JSON.parse(event.data);
 
       // Handle the incoming message based on your use case
@@ -106,12 +95,12 @@ const startChat = async (token: string, roomId: string) => {
     };
 
     // Event handler for when WebSocket connection closes
-    socket.onclose = () => {
-      console.log("WebSocket connection closed.");
+    chatSocket.onclose = () => {
+      console.log("[Dms Consumer] WebSocket connection closed.");
     };
 
     // Event handler for errors
-    socket.onerror = (error) => {
+    chatSocket.onerror = (error) => {
       console.error("WebSocket error:", error);
     };
 
@@ -121,3 +110,35 @@ const startChat = async (token: string, roomId: string) => {
 };
 
 export default startChat;
+
+/**
+ * Send a message through the WebSocket connection.
+ * @param message - The message object to send.
+ */
+export const sendMessage = async (message: Record<string, any>): Promise<void> => {
+  if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+    try {
+      const content = message?.content;  // Ensure 'content' is part of the message
+      if (!content) {
+        throw new Error("Message content is missing");
+      }
+
+      console.log("[WebSocket] Sending message:", message);
+
+      // Include the necessary fields such as user, timestamp, etc.
+      const formattedMessage = {
+        user: message.user || "default_user",  // You can set user here or from context
+        sender: message.sender || "default_sender",  // Similarly, set sender if not provided
+        timestamp: new Date().toISOString(),  // Using ISO string for timestamp
+        content: content,
+      };
+      console.log('++++++++++++++++++', formattedMessage);
+      chatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message
+    } catch (error) {
+      console.error("[WebSocket] Error sending message:", error);
+    }
+  } else {
+    console.error("[WebSocket] Cannot send message, WebSocket is not connected");
+  }
+};
+

@@ -4,7 +4,7 @@ from asgiref.sync import sync_to_async
 from .models import Message
 import datetime
 import json
-from .utils import get_user_by_id, getUser, getLogging
+from .utils import getUser, getLogging, get_user_by_username
 
 logger = getLogging()
 
@@ -12,7 +12,6 @@ class DmConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         authorization_header = self.scope["url_route"]["kwargs"]["token"]
         room_name = self.scope["url_route"]["kwargs"]["roomId"]
-        
         if not authorization_header:
             logger.warning("DmConsumer: connect - Connection rejected: Authorization header not found.")
             await self.close()
@@ -36,31 +35,41 @@ class DmConsumer(AsyncWebsocketConsumer):
         logger.info("DmConsumer: disconnect - Disconnected from WebSocket.")
         
         # Get room name from URL kwargs
-        room_name = self.scope['url_route']['kwargs']['roomname']
+        room_name = self.scope['url_route']['kwargs']['roomId']
         
         await self.channel_layer.group_discard(room_name, self.channel_name)
 
     async def receive(self, text_data):
-        logger.info("DmConsumer: receive - Received message from WebSocket: %s", text_data)
+        print("DmConsumer: receive - Received message from WebSocket: %s", text_data)
         try:
             message_data = json.loads(text_data)
             content = message_data.get('content')
             if content:
                 logger.debug(f"DmConsumer: receive - Message content: {content}")
-                sender_id = self.scope['user'].id
+                sender = self.scope['user']
+                room_name = self.scope['url_route']['kwargs']['roomId']
 
-                # Save the message (receiver information is part of the room)
-                await self.save_message(sender_id, content)
+                # Get receiver username from the room_name
+                receiver_username = self.get_receiver_username(room_name, sender.username)
+
+                # Get receiver's user object
+                receiver = await get_user_by_username(receiver_username)
+                if receiver is None:
+                    logger.warning(f"DmConsumer: receive - Receiver {receiver_username} not found.")
+                    return
+
+                # Save the message (sender and receiver are now available)
+                await self.save_message(sender.id, receiver.id, content, room_name)  # Pass room_name explicitly
+                
+                # Get current timestamp
                 x = datetime.datetime.now()
-
-                room_name = self.scope['url_route']['kwargs']['roomname']
 
                 await self.channel_layer.group_send(
                     room_name,
                     {
                         'type': 'chat_message',
-                        'user': self.scope['user'].username,
-                        'sender': self.scope['user'].id,
+                        'user': sender.username,
+                        'sender': sender.id,
                         'timestamp': {
                             'year': x.year,
                             'month': x.month,
@@ -91,10 +100,24 @@ class DmConsumer(AsyncWebsocketConsumer):
         }))
 
     @sync_to_async
-    def save_message(self, sender_id, content):
-        logger.info("DmConsumer: save_message - Saving new message.")
-        user = settings.AUTH_USER_MODEL
-        # You might want to adjust the Message creation logic to save to a "group chat" table
-        if sender_id:
-            message = Message.objects.create(sender_id=sender_id, content=content)
-            message.save()
+    def save_message(self, sender, receiver, content, room_name):
+        # Save the message with both sender and receiver and the room name
+        Message.objects.create(
+            sender_id=sender,
+            receiver_id=receiver,
+            content=content,
+            room_name=room_name  # Use the room_name explicitly
+        )
+
+    def get_receiver_username(self, room_name, sender_username):
+        """
+        Given a room name like 'room_timestamp_username1_username2', extract the
+        receiver's username by identifying which one is not the sender.
+        """
+        # Extract usernames from the room_name
+        _, _, username1, username2 = room_name.split("_")
+        
+        # Determine which username is the sender and which is the receiver
+        if username1 == sender_username:
+            return username2
+        return username1
