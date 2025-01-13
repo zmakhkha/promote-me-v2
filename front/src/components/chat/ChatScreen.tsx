@@ -11,7 +11,12 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import { connectWebSocket, sendMessage, disconnectWebSocket } from "@/services/axios/websocketService";
+import {
+  connectWebSocket,
+  sendMessage,
+  disconnectWebSocket,
+  randomConnectWebSocket,
+} from "@/services/axios/websocketService";
 
 type Message = {
   text: string;
@@ -22,11 +27,14 @@ type Message = {
 const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
+  const [chatStatus, setChatStatus] = useState<string>(
+    "Waiting for a connection..."
+  );
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const connectedUser = "frankday";
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
@@ -35,35 +43,85 @@ const ChatScreen = () => {
       return;
     }
 
-    connectWebSocket(token, "random");
-
+    connectWebSocket(token, "2");
+    randomConnectWebSocket(token);
     const handleMessage = (event: MessageEvent) => {
       try {
-        const data = event.data;
-        console.log('------------------');
-        console.log(data);
-        console.log('------------------');
-        
+        const data = JSON.parse(event.data); // Parse JSON data
+        // console.log("------------------");
+        // console.log("----------------------->|--------", typeof(data));
+        // console.log("------------------");
+
         switch (data.type) {
-          case "match":
+          case "match": // RandomChatConsumer match event
             setChatStatus("Connected! Start chatting.");
             setIsConnecting(false);
             setRoomId(data.roomId);
             break;
-          case "message":
+
+          case "message": // Chat message from ChatConsumer
             setMessages((prev) => [
               ...prev,
-              { text: data.message, type: "received", timestamp: getCurrentTimestamp() },
+              {
+                text: data.message,
+                type: "received",
+                timestamp: getCurrentTimestamp(),
+              },
             ]);
             break;
-          case "system":
+
+          case "system": // System message
             setMessages((prev) => [
               ...prev,
-              { text: data.message, type: "system", timestamp: getCurrentTimestamp() },
+              {
+                text: data.message,
+                type: "system",
+                timestamp: getCurrentTimestamp(),
+              },
             ]);
             break;
+
+          case "status_user": // Status update from StatusConsumer
+            console.log("Status update:", data.action);
+            // Optionally handle the status update in the UI
+            break;
+
+          // case "redirect": // Redirect message from RandomChatConsumer
+          //   const { room_name, partner } = data;
+          //   setChatStatus(`Matched with ${partner.username}!`);
+          //   setRoomId(room_name);
+          //   break;
+          case "redirect": // Redirect message from RandomChatConsumer
+          const { room_name, users } = data;
+          const user1 = users.user1;
+          const user2 = users.user2;
+
+          // Check if connectedUser is either user1 or user2
+          if (connectedUser === user1.username) {
+            setChatStatus(`Matched with ${user2.username}!`);
+          } else if (connectedUser === user2.username) {
+            setChatStatus(`Matched with ${user1.username}!`);
+          }
+
+          setRoomId(room_name);
+          break;
+
+          case "chat_message": // Chat message from ChatConsumer
+            const { sender, message, timestamp } = data;
+            const formattedTimestamp = `${timestamp.hour}:${timestamp.minute}, ${timestamp.day}/${timestamp.month}/${timestamp.year}`;
+            setMessages((prev) => [
+              ...prev,
+              {
+                text: message,
+                type: "received",
+                sender,
+                timestamp: formattedTimestamp,
+              },
+            ]);
+            break;
+
           default:
-            console.error("Unknown message type:", data.type);
+            console.error("Unknown message type:", data);
         }
       } catch (error) {
         console.error("Failed to parse WebSocket message:", event.data, error);
@@ -118,7 +176,9 @@ const ChatScreen = () => {
       height="80vh"
     >
       <Box mb={4} textAlign="center">
-        <Text fontSize="xl" fontWeight="bold">{chatStatus}</Text>
+        <Text fontSize="xl" fontWeight="bold">
+          {chatStatus}
+        </Text>
         {isConnecting && <Spinner mt={4} />}
       </Box>
 
@@ -131,8 +191,13 @@ const ChatScreen = () => {
         flexGrow={1}
       >
         {messages.map((message, index) => (
-          <HStack key={index} justify={message.type === "sent" ? "flex-end" : "flex-start"}>
-            {message.type === "received" && <Avatar size="sm" name="Received User" />}
+          <HStack
+            key={index}
+            justify={message.type === "sent" ? "flex-end" : "flex-start"}
+          >
+            {message.type === "received" && (
+              <Avatar size="sm" name="Received User" />
+            )}
             <Box
               bg={message.type === "sent" ? hoverColor : borderColor}
               color={message.type === "sent" ? "white" : textColor}

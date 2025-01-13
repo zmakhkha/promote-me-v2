@@ -8,7 +8,7 @@ from .utils import getUser
 
 class StatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("[Socket Connection] Attempting to connect...")
+        print("[Status Socket Connection] Attempting to connect...")
         authorization_header = self.scope["url_route"]["kwargs"]["token"]
         if not authorization_header:
             await self.close()
@@ -17,7 +17,7 @@ class StatusConsumer(AsyncWebsocketConsumer):
         user = await getUser(authorization_header)
         print('user->', user)
         if user is None:
-            print("[Socket Connection] Connection rejected: User not found.")
+            print("[Status Socket Connection] Connection rejected: User not found.")
             await self.close()
             return
 
@@ -43,14 +43,14 @@ class StatusConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        print(f"[Socket Connection] DefaultUser {user.id} ({user.username}) connected with status: {status_message}")
+        print(f"[Status Socket Connection] DefaultUser {user.id} ({user.username}) connected with status: {status_message}")
 
     async def disconnect(self, close_code):
         user = self.scope.get("user")
         if user:
             user.status = DefaultUser.STATUS_OFFLINE
             await sync_to_async(user.save)(update_fields=['status'])
-            #print(f"[Socket Connection] DefaultUser {user.id} ({user.username}) disconnected.")
+            print(f"[Status Socket Connection] DefaultUser {user.id} ({user.username}) disconnected.")
         await self.channel_layer.group_send(
             'status_group',
             {
