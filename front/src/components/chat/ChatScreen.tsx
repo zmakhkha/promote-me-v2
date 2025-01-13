@@ -17,6 +17,7 @@ import {
   disconnectWebSocket,
   randomConnectWebSocket,
 } from "@/services/axios/websocketService";
+import { getConnectedUser } from "@/services/axios/getConnectedUser";
 
 type Message = {
   text: string;
@@ -27,14 +28,13 @@ type Message = {
 const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [chatStatus, setChatStatus] = useState<string>(
-    "Waiting for a connection..."
-  );
+  const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const connectedUser = "frankday";
+  const [user, setUser] = useState<any>(null);  // State to store the connected user
+  const [connectedUser, setConnectedUser] = useState<string>("");  // New state for connected user
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
@@ -43,14 +43,33 @@ const ChatScreen = () => {
       return;
     }
 
-    connectWebSocket(token, "2");
-    randomConnectWebSocket(token);
+    const fetchUserProfile = async () => {
+      try {
+        const userData = await getConnectedUser(); // Fetch the connected user's profile
+        setUser(userData); // Set the fetched data to state
+      } catch (error) {
+        console.log("Failed to load user profile.");
+      }
+    };
+
+    fetchUserProfile(); // Fetch the user profile on initial render
+
+    // We don't want to call connectWebSocket or randomConnectWebSocket until user is fetched
+  }, []);
+
+  // Use another useEffect to handle the `connectedUser` once the `user` is available
+  useEffect(() => {
+    if (user) {
+      setConnectedUser(user.username); // Set the connected user after the user state is updated
+      connectWebSocket(localStorage.getItem("accessToken") || "", "2");
+      randomConnectWebSocket(localStorage.getItem("accessToken") || "");
+    }
+  }, [user]); // This will run every time the `user` state is updated
+
+  useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data); // Parse JSON data
-        // console.log("------------------");
-        // console.log("----------------------->|--------", typeof(data));
-        // console.log("------------------");
 
         switch (data.type) {
           case "match": // RandomChatConsumer match event
@@ -83,28 +102,22 @@ const ChatScreen = () => {
 
           case "status_user": // Status update from StatusConsumer
             console.log("Status update:", data.action);
-            // Optionally handle the status update in the UI
             break;
 
-          // case "redirect": // Redirect message from RandomChatConsumer
-          //   const { room_name, partner } = data;
-          //   setChatStatus(`Matched with ${partner.username}!`);
-          //   setRoomId(room_name);
-          //   break;
           case "redirect": // Redirect message from RandomChatConsumer
-          const { room_name, users } = data;
-          const user1 = users.user1;
-          const user2 = users.user2;
+            const { room_name, users } = data;
+            const user1 = users.user1;
+            const user2 = users.user2;
 
-          // Check if connectedUser is either user1 or user2
-          if (connectedUser === user1.username) {
-            setChatStatus(`Matched with ${user2.username}!`);
-          } else if (connectedUser === user2.username) {
-            setChatStatus(`Matched with ${user1.username}!`);
-          }
+            // Check if connectedUser is either user1 or user2
+            if (connectedUser === user1.username) {
+              setChatStatus(`Matched with ${user2.username}!`);
+            } else if (connectedUser === user2.username) {
+              setChatStatus(`Matched with ${user1.username}!`);
+            }
 
-          setRoomId(room_name);
-          break;
+            setRoomId(room_name);
+            break;
 
           case "chat_message": // Chat message from ChatConsumer
             const { sender, message, timestamp } = data;
@@ -134,13 +147,7 @@ const ChatScreen = () => {
       disconnectWebSocket();
       window.removeEventListener("message", handleMessage);
     };
-  }, []);
-
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages]);
+  }, [connectedUser]); // This effect depends on `connectedUser`
 
   const getCurrentTimestamp = () => {
     const now = new Date();
