@@ -5,48 +5,83 @@ import {
   HStack,
   Avatar,
   Button,
-  Textarea,
   Text,
+  Spinner,
+  Textarea,
   useColorModeValue,
 } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import randSocketConnect from "@/services/axios/randSocketConnect";
+import { connectWebSocket, sendMessage, disconnectWebSocket } from "@/services/axios/websocketService";
 
-// Define the message type
 type Message = {
   text: string;
-  type: "sent" | "received";
+  type: "sent" | "received" | "system";
   timestamp: string;
 };
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [chatStatus, setChatStatus] = useState<string>(""); // Status of the chat (random stranger message)
-  const [tags, setTags] = useState<string[]>([]); // Tags for both users (for example, shared interests)
+  const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
+  const [isConnecting, setIsConnecting] = useState<boolean>(true);
+  const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Function to fetch random stranger data and tags
-  const startNewConversation = () => {
-    // Example tags shared between both users (this would come from your matching service)
-    const randomTags = ["Dogs", "puppies", "tick"];
-    setTags(randomTags);
-
-    // Simulate a stranger's info (this would be dynamic in a real app)
-    setChatStatus("You're now chatting with a random stranger!");
-
-    setMessages([]); // Clear messages for the new conversation
-  };
-
   useEffect(() => {
-    startNewConversation(); // Start a conversation when the component mounts
-	randSocketConnect();
+    const token = localStorage.getItem("accessToken") || "";
+    if (!token) {
+      setChatStatus("Authentication failed. Please log in.");
+      return;
+    }
+
+    connectWebSocket(token, "random");
+
+    const handleMessage = (event: MessageEvent) => {
+      try {
+        const data = event.data;
+        console.log('------------------');
+        console.log(data);
+        console.log('------------------');
+        
+        switch (data.type) {
+          case "match":
+            setChatStatus("Connected! Start chatting.");
+            setIsConnecting(false);
+            setRoomId(data.roomId);
+            break;
+          case "message":
+            setMessages((prev) => [
+              ...prev,
+              { text: data.message, type: "received", timestamp: getCurrentTimestamp() },
+            ]);
+            break;
+          case "system":
+            setMessages((prev) => [
+              ...prev,
+              { text: data.message, type: "system", timestamp: getCurrentTimestamp() },
+            ]);
+            break;
+          default:
+            console.error("Unknown message type:", data.type);
+        }
+      } catch (error) {
+        console.error("Failed to parse WebSocket message:", event.data, error);
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      disconnectWebSocket();
+      window.removeEventListener("message", handleMessage);
+    };
   }, []);
 
-  // Scroll to the bottom whenever messages are updated
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   const getCurrentTimestamp = () => {
@@ -56,29 +91,12 @@ const ChatScreen = () => {
 
   const handleSendMessage = () => {
     if (inputValue.trim()) {
+      sendMessage({ message: inputValue, roomId });
       setMessages((prev) => [
         ...prev,
-        {
-          text: inputValue,
-          type: "sent",
-          timestamp: getCurrentTimestamp(),
-        },
+        { text: inputValue, type: "sent", timestamp: getCurrentTimestamp() },
       ]);
       setInputValue("");
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
-  const handleEscPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Escape") {
-      e.preventDefault();
-      startNewConversation();
     }
   };
 
@@ -90,7 +108,6 @@ const ChatScreen = () => {
       borderRadius="lg"
       p={8}
       boxShadow="lg"
-      textAlign="center"
       borderColor={borderColor}
       borderWidth="1px"
       mx="auto"
@@ -100,15 +117,11 @@ const ChatScreen = () => {
       justifyContent="space-between"
       height="80vh"
     >
-      {/* Chat Status */}
-      <Box mb={4}>
+      <Box mb={4} textAlign="center">
         <Text fontSize="xl" fontWeight="bold">{chatStatus}</Text>
-        <Text fontSize="sm" color="gray.500">
-          You both like {tags.join(", ")}
-        </Text>
+        {isConnecting && <Spinner mt={4} />}
       </Box>
 
-      {/* Chat Bubbles */}
       <VStack
         spacing={4}
         align="stretch"
@@ -118,14 +131,8 @@ const ChatScreen = () => {
         flexGrow={1}
       >
         {messages.map((message, index) => (
-          <HStack
-            key={index}
-            justify={message.type === "sent" ? "flex-end" : "flex-start"}
-            spacing={2}
-          >
-            {message.type === "received" && (
-              <Avatar size="sm" name="Received User" src="/path/to/image.jpg" />
-            )}
+          <HStack key={index} justify={message.type === "sent" ? "flex-end" : "flex-start"}>
+            {message.type === "received" && <Avatar size="sm" name="Received User" />}
             <Box
               bg={message.type === "sent" ? hoverColor : borderColor}
               color={message.type === "sent" ? "white" : textColor}
@@ -134,53 +141,26 @@ const ChatScreen = () => {
               borderRadius="lg"
               maxWidth="70%"
               boxShadow="sm"
-              position="relative"
             >
               <Text>{message.text}</Text>
-              <Text
-                fontSize="xs"
-                color={message.type === "sent" ? "gray.300" : "gray.600"}
-                mt={1}
-                textAlign="right"
-              >
+              <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">
                 {message.timestamp}
               </Text>
             </Box>
           </HStack>
         ))}
-        {/* Empty div for scrolling */}
         <div ref={messagesEndRef} />
       </VStack>
 
-      {/* Input Area */}
-      <HStack spacing={2} as="form" onSubmit={(e) => e.preventDefault()}>
-        <Button
-          colorScheme="blue"
-          onClick={startNewConversation}
-          bg={borderColor}
-          _hover={{ bg: hoverColor }}
-        >
-          New (Esc)
-        </Button>
+      <HStack spacing={2}>
         <Textarea
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyPress={(e) => {
-            handleKeyPress(e);
-            handleEscPress(e);
-          }}
           placeholder="Type your message..."
           size="sm"
           resize="none"
-          borderColor={borderColor}
-          _focus={{ borderColor: hoverColor }}
         />
-        <Button
-          colorScheme="pink"
-          onClick={handleSendMessage}
-          bg={hoverColor}
-          _hover={{ bg: textColor }}
-        >
+        <Button colorScheme="pink" onClick={handleSendMessage}>
           Send
         </Button>
       </HStack>

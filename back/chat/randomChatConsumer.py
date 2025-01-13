@@ -1,128 +1,71 @@
-from asgiref.sync import sync_to_async
-from channels.generic.websocket import AsyncWebsocketConsumer
 import json
-from users.models import DefaultUser
-from .utils import get_user
-
+import time
+from asyncio import Queue
+from channels.generic.websocket import AsyncWebsocketConsumer
+from .utils import getUser
+from asgiref.sync import async_to_sync
 
 class RandomChatConsumer(AsyncWebsocketConsumer):
-    user_queue = []  # Queue to manage users waiting for a chat
+    user_queue = Queue()  # Queue to hold unmatched users
 
     async def connect(self):
-        print("[Random Chat] Attempting to connect...")
-
-        # Extract the token from the URL
-        authorization_header = self.scope["url_route"]["kwargs"].get("token")
-
-        if not authorization_header:
-            print("[Random Chat] No token provided.")
+        token = self.scope["url_route"]["kwargs"].get("token")
+        if not token:
             await self.close()
             return
 
-        # Authenticate the user
-        user = await get_user(authorization_header)
+        user = await getUser(token)
         if user is None:
-            print("[Random Chat] Invalid or unauthorized user.")
             await self.close()
             return
 
         self.scope["user"] = user
-        self.chat_partner = None
-
-        # Add the user to the queue and attempt to pair them
-        await self.add_to_queue(user)
         await self.accept()
 
+        # Add user to queue
+        await self.user_queue.put(user)
+        await self.try_match_users()
+
     async def disconnect(self, close_code):
-        user = self.scope.get("user")
+        # Remove user from the queue on disconnect
+        user = self.scope["user"]
+        await self.remove_user_from_queue(user)
 
-        # Remove the user from the queue and notify their chat partner
-        if user:
-            await self.remove_from_queue(user)
-            if self.chat_partner:
-                await self.channel_layer.group_send(
-                    f"chat_{self.chat_partner.id}",
-                    {
-                        "type": "chat.message",
-                        "message": "Your chat partner has disconnected.",
-                        "sender": "system",
-                    },
-                )
-                await self.channel_layer.group_discard(
-                    f"chat_{self.chat_partner.id}", self.channel_name
-                )
-                self.chat_partner = None
+    async def try_match_users(self):
+        # Attempt to match users when the queue has at least two users
+        if self.user_queue.qsize() >= 2:
+            user1 = await self.user_queue.get()
+            user2 = await self.user_queue.get()
 
-        await self.channel_layer.group_discard(f"chat_{user.id}", self.channel_name)
-        print(f"[Random Chat] User {user.id} disconnected.")
+            # Create a unique room name
+            timestamp = int(time.time())
+            room_name = f"room_{timestamp}_{user1.username}_{user2.username}"
 
-    async def receive(self, text_data):
-        data = json.loads(text_data)
-        message = data.get("message", "")
+            # Notify both users about the room
+            await self.send_room_notification(user1, room_name, user2)
+            await self.send_room_notification(user2, room_name, user1)
 
-        if self.chat_partner:
-            # Send the message to the chat partner
-            await self.channel_layer.group_send(
-                f"chat_{self.chat_partner.id}",
-                {
-                    "type": "chat.message",
-                    "message": message,
-                    "sender": self.scope["user"].username,
-                },
-            )
-        else:
-            await self.send(
-                text_data=json.dumps(
-                    {"type": "error", "message": "No chat partner available."}
-                )
-            )
-
-    async def chat_message(self, event):
-        # Broadcast the chat message to the WebSocket
+    async def send_room_notification(self, user, room_name, partner):
+        # Send room redirection message
+        await self.channel_layer.group_add(room_name, self.channel_name)
         await self.send(
             text_data=json.dumps(
                 {
-                    "type": "chat.message",
-                    "message": event["message"],
-                    "sender": event["sender"],
+                    "type": "redirect",
+                    "room_name": room_name,
+                    "partner": {
+                        "username": partner.username,
+                        "id": partner.id,
+                    },
                 }
             )
         )
 
-    @classmethod
-    async def add_to_queue(cls, user):
-        cls.user_queue.append(user)
-        print(f"[Random Chat] User {user.id} added to the queue.")
-        await cls.pair_users()
-
-    @classmethod
-    async def remove_from_queue(cls, user):
-        if user in cls.user_queue:
-            cls.user_queue.remove(user)
-            print(f"[Random Chat] User {user.id} removed from the queue.")
-
-    @classmethod
-    async def pair_users(cls):
-        if len(cls.user_queue) >= 2:
-            user1 = cls.user_queue.pop(0)
-            user2 = cls.user_queue.pop(0)
-            await cls.create_chat_room(user1, user2)
-
-    @staticmethod
-    async def create_chat_room(user1, user2):
-        # Assign users to each other's chat groups
-        await RandomChatConsumer.add_user_to_group(user1, user2)
-        await RandomChatConsumer.add_user_to_group(user2, user1)
-
-        print(
-            f"[Random Chat] Chat room created between User {user1.id} and User {user2.id}."
-        )
-
-    @staticmethod
-    async def add_user_to_group(user, partner):
-        group_name = f"chat_{user.id}"
-        await sync_to_async(DefaultUser.objects.filter(id=user.id).update)(
-            chat_partner=partner
-        )
-        await RandomChatConsumer.channel_layer.group_add(group_name, f"chat_{partner.id}")
-        print(f"[Random Chat] User {user.id} joined group {group_name}.")
+    async def remove_user_from_queue(self, user):
+        # Remove user from the queue if they disconnect
+        temp_queue = Queue()
+        while not self.user_queue.empty():
+            queued_user = await self.user_queue.get()
+            if queued_user != user:
+                await temp_queue.put(queued_user)
+        self.user_queue = temp_queue

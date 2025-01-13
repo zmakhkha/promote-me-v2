@@ -7,6 +7,17 @@ from users.models import DefaultUser
 import jwt
 
 
+import logging 
+
+
+def getLogging():
+    logging.basicConfig(filename="message.log", 
+                    format='%(asctime)s: %(levelname)s: %(message)s', 
+                    level=logging.INFO) 
+    return(logging)
+
+logger = getLogging()
+
 
 @sync_to_async
 def get_user_by_id(user_id):
@@ -14,12 +25,12 @@ def get_user_by_id(user_id):
         obj =  DefaultUser.objects.get(id=user_id)
         return obj
     except DefaultUser.DoesNotExist:
-        # logger.error(f"DefaultUser does not exist with ID: {user_id}")
+        logger.error(f"DefaultUser does not exist with ID: {user_id}")
         return None
 
 async def getUser(authorization_header):
     if not authorization_header:
-        # logger.error("Connection rejected: Authorization header not found.")
+        logger.error("Connection rejected: Authorization header not found.")
         return None
 
     token = authorization_header
@@ -33,11 +44,11 @@ async def getUser(authorization_header):
     except IndexError:
         return None
     except jwt.ExpiredSignatureError:
-        # logger.error("Connection rejected: Token expired.")
+        logger.error("Connection rejected: Token expired.")
         return None
     except jwt.InvalidTokenError:
-        # logger.error("Connection rejected: Invalid token.")
+        logger.error("Connection rejected: Invalid token.")
         return None
     except DefaultUser.DoesNotExist:
-        # logger.error(f"DefaultUser does not exist with ID: {user_id}")
+        logger.error(f"DefaultUser does not exist with ID: {user_id}")
         return None
