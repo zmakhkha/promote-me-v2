@@ -41,6 +41,8 @@ class RandomChatConsumer(AsyncWebsocketConsumer):
             timestamp = int(time.time())
             room_name = f"room_{timestamp}_{user1.username}_{user2.username}"
 
+            print(f"the user {user1} and {user2} are trying to match.")
+
             # Notify both users about the room
             await self.send_room_notification(user1, room_name, user2)
             await self.send_room_notification(user2, room_name, user1)

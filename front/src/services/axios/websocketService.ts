@@ -61,7 +61,7 @@
 let socket: WebSocket | null = null;
 
 export const connectWebSocket = (token: string, type: string): void => {
-  const url = `ws://localhost:2000/ws/${type}/${token}`;
+  const url = `ws://localhost:2000/ws/status/${token}/${type}`;
   if (!socket || socket.readyState !== WebSocket.OPEN) {
     socket = new WebSocket(url);
 
