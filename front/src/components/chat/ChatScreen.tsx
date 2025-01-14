@@ -27,16 +27,18 @@ type Message = {
 };
 
 const ChatScreen = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [sentMessages, setSentMessages] = useState<Message[]>([]);
+  const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [token, settoken] = useState<string>("");
-  const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
+  const [chatStatus, setChatStatus] = useState<string>(
+    "Waiting for a connection..."
+  );
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<any>(null);
-  const [connectedUser, setConnectedUser] = useState<string>("");
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
@@ -60,9 +62,9 @@ const ChatScreen = () => {
 
   useEffect(() => {
     if (user) {
-      setConnectedUser(user.username);
-      connectWebSocket(localStorage.getItem("accessToken") || "", "2");
-      randomConnectWebSocket(localStorage.getItem("accessToken") || "");
+      const token = localStorage.getItem("accessToken");
+      connectWebSocket(token || "", "2");
+      randomConnectWebSocket(token || "");
     }
   }, [user]);
 
@@ -70,58 +72,27 @@ const ChatScreen = () => {
     const handleMessage = (event: MessageEvent) => {
       try {
         const data = JSON.parse(event.data);
+        console.log("------------------->[", data,"]");
 
         switch (data.type) {
-          case "match":
-            setChatStatus("Connected! Start chatting.");
-            setIsConnecting(false); // Stop the spinner
-            setRoomId(data.roomId);
-            break;
-
-          case "status_user":
-            console.log("Status update:", data.action);
-            break;
-
-          case "message":
-            setMessages((prev) => [
-              ...prev,
-              {
-                text: data.message,
-                type: "received",
-                timestamp: getCurrentTimestamp(),
-                sender: data.sender,
-              },
-            ]);
-            break;
-
-          case "system":
-            setMessages((prev) => [
-              ...prev,
-              {
-                text: data.message,
-                type: "system",
-                timestamp: getCurrentTimestamp(),
-              },
-            ]);
-            break;
 
           case "redirect":
             const { room_name, users } = data;
             const user1 = users.user1;
             const user2 = users.user2;
 
-            if (connectedUser === user1.username) {
+            if (user.username === user1.username) {
               setChatStatus(`Matched with ${user2.username}!`);
-            } else if (connectedUser === user2.username) {
+            } else if (user.username === user2.username) {
               setChatStatus(`Matched with ${user1.username}!`);
             }
             setIsConnecting(false); // Stop the spinner
-
             setRoomId(room_name);
             startChat(token, room_name);
             break;
 
           case "chat_message":
+            console.log("ana hnaaaaaaaaaaaaaaaaaaaaaaaaaa");
             const { sender, message, timestamp } = data;
 
             const date = new Date(timestamp);
@@ -131,19 +102,36 @@ const ChatScreen = () => {
               date.getMonth() + 1
             }/${date.getFullYear()}`;
 
-            setMessages((prev) => [
-              ...prev,
-              {
-                text: message,
-                type: connectedUser === sender ? "sent" : "received", // Determine the type based on sender
-                sender,
-                timestamp: formattedTimestamp,
-              },
-            ]);
+            if (user.id === sender) {
+              // Add to sentMessages if sender is the current user
+              setSentMessages((prev) => [
+                ...prev,
+                {
+                  text: message,
+                  type: "sent", // Mark as "sent" for current user's messages
+                  sender,
+                  timestamp: formattedTimestamp,
+                },
+              ]);
+              console.log(sentMessages);
+            } else {
+              // Add to receivedMessages if sender is not the current user
+              setReceivedMessages((prev) => [
+                ...prev,
+                {
+                  text: message,
+                  type: "received", // Mark as "received" for other user's messages
+                  sender,
+                  timestamp: formattedTimestamp,
+                },
+              ]);
+              console.log(receivedMessages);
+            }
             break;
 
           default:
-            console.error("Unknown message type:", data);
+            // console.error("Unknown message type:", data);
+            console.log("message : ", data);
         }
       } catch (error) {
         console.error("Failed to parse WebSocket message:", event.data, error);
@@ -155,7 +143,7 @@ const ChatScreen = () => {
     return () => {
       window.removeEventListener("message", handleMessage);
     };
-  }, [connectedUser]);
+  }, [user]);
 
   const getCurrentTimestamp = () => {
     const now = new Date();
@@ -163,16 +151,12 @@ const ChatScreen = () => {
   };
 
   const handleSendMessage = () => {
-    if (inputValue.trim()) {
+    if (inputValue && inputValue.trim()) {
       sendMessage({
-        user: connectedUser,
-        sender: connectedUser,
+        user: user.username,
+        sender: user.id,
         content: inputValue,
       });
-      setMessages((prev) => [
-        ...prev,
-        { text: inputValue, type: "sent", timestamp: getCurrentTimestamp() },
-      ]);
       setInputValue("");
     }
   };
@@ -209,17 +193,12 @@ const ChatScreen = () => {
         overflowY="auto"
         flexGrow={1}
       >
-        {messages.map((message, index) => (
-          <HStack
-            key={index}
-            justify={message.type === "sent" ? "flex-end" : "flex-start"}
-          >
-            {message.type === "received" && (
-              <Avatar size="sm" name={message.sender} />
-            )}
+        {/* Render sent messages */}
+        {sentMessages.map((message, index) => (
+          <HStack key={index} justify="flex-end">
             <Box
-              bg={message.type === "sent" ? hoverColor : borderColor}
-              color={message.type === "sent" ? "white" : textColor}
+              bg={hoverColor}
+              color="white"
               px={4}
               py={2}
               borderRadius="lg"
@@ -233,6 +212,28 @@ const ChatScreen = () => {
             </Box>
           </HStack>
         ))}
+
+        {/* Render received messages */}
+        {receivedMessages.map((message, index) => (
+          <HStack key={index} justify="flex-start">
+            <Avatar size="sm" name={message.sender} />
+            <Box
+              bg={borderColor}
+              color={textColor}
+              px={4}
+              py={2}
+              borderRadius="lg"
+              maxWidth="70%"
+              boxShadow="sm"
+            >
+              <Text>{message.text}</Text>
+              <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">
+                {message.timestamp}
+              </Text>
+            </Box>
+          </HStack>
+        ))}
+
         <div ref={messagesEndRef} />
       </VStack>
 

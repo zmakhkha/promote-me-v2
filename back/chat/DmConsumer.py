@@ -93,6 +93,7 @@ class DmConsumer(AsyncWebsocketConsumer):
 
         # Send the message to the WebSocket
         await self.send(text_data=json.dumps({
+            "type": "chat_message",
             'user': sender,
             'sender': sender_id,
             'timestamp': timestamp,

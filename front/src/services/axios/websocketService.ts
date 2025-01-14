@@ -91,7 +91,9 @@ const startChat = async (token: string, roomId: string): Promise<void> => {
       const messageData = JSON.parse(event.data);
 
       // Handle the incoming message based on your use case
-      console.log("Received message:", messageData);
+      window.dispatchEvent(new MessageEvent("message", { data: event.data }));
+
+      // console.log("[Dms Consumer] Received message:", messageData);
     };
 
     // Event handler for when WebSocket connection closes
@@ -132,7 +134,7 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
         timestamp: new Date().toISOString(),  // Using ISO string for timestamp
         content: content,
       };
-      console.log('++++++++++++++++++', formattedMessage);
+      // console.log('++++++++++++++++++', formattedMessage);
       chatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message
     } catch (error) {
       console.error("[WebSocket] Error sending message:", error);

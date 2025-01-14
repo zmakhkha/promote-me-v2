@@ -97,7 +97,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = DefaultUser
         # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
         fields = [
-            'username', 'first_name', 'last_name',
+            'id', 'username', 'first_name', 'last_name',
             'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
