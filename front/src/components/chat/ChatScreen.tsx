@@ -29,7 +29,9 @@ const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [token, setToken] = useState<string>("");
-  const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
+  const [chatStatus, setChatStatus] = useState<string>(
+    "Waiting for a connection..."
+  );
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
@@ -87,39 +89,48 @@ const ChatScreen = () => {
             const { room_name, users } = data;
             const user1 = users.user1;
             const user2 = users.user2;
-
-            if (user.username === user1.username) {
-              setChatStatus(`Matched with ${user2.username}!`);
-            } else if (user.username === user2.username) {
-              setChatStatus(`Matched with ${user1.username}!`);
+            if (
+              user.username === user1.username ||
+              user.username === user2.username
+            ) {
+              if (user.username === user1.username) {
+                setChatStatus(`Matched with ${user2.username}!`);
+              } else if (user.username === user2.username) {
+                setChatStatus(`Matched with ${user1.username}!`);
+              }
+              setIsConnecting(false);
+              setRoomId(room_name);
+              startChat(token, room_name);
             }
-            setIsConnecting(false);
-            setRoomId(room_name);
-            startChat(token, room_name);
             break;
 
           case "chat_message":
             const { sender, message, timestamp } = data;
-            console.log('timestamp -->|', timestamp);
+            console.log("timestamp -->|", timestamp);
             const formattedTimestamp = `${timestamp.hour}:${timestamp.hour}`;
 
-            // Add received message
-            setMessages((prev) => [
-              ...prev,
-              {
-                text: message,
-                type: user.id === sender ? "sent" : "received",
-                sender: user.id === sender ? user.username : data.user,
-                timestamp: formattedTimestamp,
-              },
-            ]);
+            if (data.roomId == roomId) {
+              setMessages((prev) => [
+                ...prev,
+                {
+                  text: message,
+                  type: user.id === sender ? "sent" : "received",
+                  sender: user.id === sender ? user.username : data.user,
+                  timestamp: formattedTimestamp,
+                },
+              ]);
+            }
             break;
 
           default:
             console.log("Unknown message type:", data);
         }
       } catch (error) {
-        console.log("-->|Failed to parse WebSocket message:", event.data, error);
+        console.log(
+          "-->|Failed to parse WebSocket message:",
+          event.data,
+          error
+        );
       }
     };
 
@@ -143,7 +154,9 @@ const ChatScreen = () => {
   };
 
   // Sort messages by timestamp before rendering
-  const sortedMessages = [...messages].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  const sortedMessages = [...messages].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
   return (
     <Box
       maxW="lg"
@@ -177,8 +190,13 @@ const ChatScreen = () => {
         flexGrow={1}
       >
         {sortedMessages.map((message, index) => (
-          <HStack key={index} justify={message.type === "sent" ? "flex-end" : "flex-start"}>
-            {message.type === "received" && <Avatar size="sm" name={message.sender} />}
+          <HStack
+            key={index}
+            justify={message.type === "sent" ? "flex-end" : "flex-start"}
+          >
+            {message.type === "received" && (
+              <Avatar size="sm" name={message.sender} />
+            )}
             <Box
               bg={message.type === "sent" ? hoverColor : borderColor}
               color={message.type === "sent" ? "white" : textColor}
@@ -190,7 +208,12 @@ const ChatScreen = () => {
             >
               <Text fontWeight="bold">{message.sender}</Text>
               <Text>{message.text}</Text>
-              <Text fontSize="xs" color="gray.500" mt={1} textAlign={message.type === "sent" ? "right" : "left"}>
+              <Text
+                fontSize="xs"
+                color="gray.500"
+                mt={1}
+                textAlign={message.type === "sent" ? "right" : "left"}
+              >
                 {message.timestamp}
               </Text>
             </Box>
