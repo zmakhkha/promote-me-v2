@@ -61,13 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "type": "chat_message",
                     "message": content,
                     "sender": sender.username,
-                    "timestamp": {
-                        "year": timestamp.year,
-                        "month": timestamp.month,
-                        "day": timestamp.day,
-                        "hour": timestamp.hour,
-                        "minute": timestamp.minute,
-                    },
+                    "timestamp": timestamp
                 },
             )
         except json.JSONDecodeError:
