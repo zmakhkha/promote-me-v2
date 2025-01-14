@@ -14,7 +14,6 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 import startChat, {
   connectWebSocket,
   sendMessage,
-  disconnectWebSocket,
   randomConnectWebSocket,
 } from "@/services/axios/websocketService";
 import { getConnectedUser } from "@/services/axios/getConnectedUser";
@@ -30,10 +29,8 @@ const ChatScreen = () => {
   const [sentMessages, setSentMessages] = useState<Message[]>([]);
   const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [token, settoken] = useState<string>("");
-  const [chatStatus, setChatStatus] = useState<string>(
-    "Waiting for a connection..."
-  );
+  const [token, setToken] = useState<string>("");
+  const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
@@ -42,7 +39,7 @@ const ChatScreen = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
-    settoken(token);
+    setToken(token);
     if (!token) {
       setChatStatus("Authentication failed. Please log in.");
       return;
@@ -70,9 +67,6 @@ const ChatScreen = () => {
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      console.log("---------->>|");
-      console.log("---------->>|", event.data);
-      console.log("---------->>|");
       if (!event.data || event.data === "{}") {
         console.error("Received an empty WebSocket message:", event.data);
         return;
@@ -84,36 +78,9 @@ const ChatScreen = () => {
         switch (data.type) {
           case "match":
             setChatStatus("Connected! Start chatting.");
-            setIsConnecting(false); // Stop the spinner
+            setIsConnecting(false);
             setRoomId(data.roomId);
             break;
-
-          // case "status_user":
-          //   console.log("Status update:", data.action);
-          //   break;
-
-          // case "message":
-          //   setReceivedMessages((prev) => [
-          //     ...prev,
-          //     {
-          //       text: data.message,
-          //       type: "received", // Always "received" since it's coming from the server
-          //       timestamp: getCurrentTimestamp(),
-          //       sender: data.sender,
-          //     },
-          //   ]);
-          //   break;
-
-          // case "system":
-          //   setReceivedMessages((prev) => [
-          //     ...prev,
-          //     {
-          //       text: data.message,
-          //       type: "system",
-          //       timestamp: getCurrentTimestamp(),
-          //     },
-          //   ]);
-          //   break;
 
           case "redirect":
             const { room_name, users } = data;
@@ -125,46 +92,37 @@ const ChatScreen = () => {
             } else if (user.username === user2.username) {
               setChatStatus(`Matched with ${user1.username}!`);
             }
-            setIsConnecting(false); // Stop the spinner
+            setIsConnecting(false);
             setRoomId(room_name);
             startChat(token, room_name);
             break;
 
           case "chat_message":
-            console.log("ana hnaaaaaaaaaaaaaaaaaaaaaaaaaa");
             const { sender, message, timestamp } = data;
-
             const date = new Date(timestamp);
-            const formattedTimestamp = `${date.getHours()}:${String(
-              date.getMinutes()
-            ).padStart(2, "0")}, ${date.getDate()}/${
-              date.getMonth() + 1
-            }/${date.getFullYear()}`;
+            console.log('timestamp -->|', timestamp);
+            const formattedTimestamp = `${timestamp.hour}:${timestamp.minute}`;
 
             if (user.id === sender) {
-              // Add to sentMessages if sender is the current user
               setSentMessages((prev) => [
                 ...prev,
                 {
                   text: message,
-                  type: "sent", // Mark as "sent" for current user's messages
-                  sender,
+                  type: "sent",
+                  sender: user.username,
                   timestamp: formattedTimestamp,
                 },
               ]);
-              console.log("---|", sentMessages);
             } else {
-              // Add to receivedMessages if sender is not the current user
               setReceivedMessages((prev) => [
                 ...prev,
                 {
                   text: message,
-                  type: "received", // Mark as "received" for other user's messages
-                  sender,
+                  type: "received",
+                  sender: data.user,
                   timestamp: formattedTimestamp,
                 },
               ]);
-              console.log("---|", receivedMessages);
             }
             break;
 
@@ -182,11 +140,6 @@ const ChatScreen = () => {
       window.removeEventListener("message", handleMessage);
     };
   }, [user]);
-
-  const getCurrentTimestamp = () => {
-    const now = new Date();
-    return now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  };
 
   const handleSendMessage = () => {
     if (inputValue && inputValue.trim()) {
@@ -231,7 +184,6 @@ const ChatScreen = () => {
         overflowY="auto"
         flexGrow={1}
       >
-        {/* Render sent messages */}
         {sentMessages.map((message, index) => (
           <HStack key={index} justify="flex-end">
             <Box
@@ -243,6 +195,7 @@ const ChatScreen = () => {
               maxWidth="70%"
               boxShadow="sm"
             >
+              <Text fontWeight="bold">{message.sender}</Text>
               <Text>{message.text}</Text>
               <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">
                 {message.timestamp}
@@ -251,7 +204,6 @@ const ChatScreen = () => {
           </HStack>
         ))}
 
-        {/* Render received messages */}
         {receivedMessages.map((message, index) => (
           <HStack key={index} justify="flex-start">
             <Avatar size="sm" name={message.sender} />
@@ -264,6 +216,7 @@ const ChatScreen = () => {
               maxWidth="70%"
               boxShadow="sm"
             >
+              <Text fontWeight="bold">{message.sender}</Text>
               <Text>{message.text}</Text>
               <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">
                 {message.timestamp}
