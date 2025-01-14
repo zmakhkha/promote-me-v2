@@ -113,6 +113,16 @@ const startChat = async (token: string, roomId: string): Promise<void> => {
 
 export default startChat;
 
+ // Disconnect all WebSockets
+ export const disconnectAll = async () => {
+  disconnectWebSocket(chatSocket);
+  disconnectWebSocket(statusSocket);
+  disconnectWebSocket(randomSocket);
+  
+  // Optionally wait for disconnection or perform any cleanup here
+  // console.log("Disconnected all WebSockets.");
+};
+
 /**
  * Send a message through the WebSocket connection.
  * @param message - The message object to send.

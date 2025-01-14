@@ -15,6 +15,7 @@ import startChat, {
   connectWebSocket,
   sendMessage,
   randomConnectWebSocket,
+  disconnectAll,
 } from "@/services/axios/websocketService";
 import { getConnectedUser } from "@/services/axios/getConnectedUser";
 
@@ -141,6 +142,32 @@ const ChatScreen = () => {
     };
   }, [user]);
 
+  const resetChatAndReconnectWebSockets = () => {
+    // Disconnect existing WebSockets
+    disconnectAll();
+
+    // Reset states
+    setMessages([]);
+    setInputValue("");
+    setChatStatus("Waiting for a connection...");
+    setIsConnecting(true);
+    setRoomId(null);
+
+    // Reconnect WebSockets
+    connectWebSocket(token || "", "2");
+    randomConnectWebSocket(token || "");
+    
+    // Optionally reconnect chat socket if roomId is available
+    if (roomId) {
+      startChat(token || "", roomId);
+    }
+    
+    // Reset the user state if needed
+    // setUser(null); // Uncomment if you want to reset the user state as well
+  };
+
+  
+
   // Handle sending messages
   const handleSendMessage = () => {
     if (inputValue && inputValue.trim()) {
@@ -225,6 +252,10 @@ const ChatScreen = () => {
       </VStack>
 
       <HStack spacing={2}>
+        {/* New (Esc) Button */}
+        <Button colorScheme="blue" onClick={resetChatAndReconnectWebSockets}>
+          New (Esc)
+        </Button>
         <Textarea
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
