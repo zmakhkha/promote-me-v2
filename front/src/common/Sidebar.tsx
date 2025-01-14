@@ -15,7 +15,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { FaHome, FaCog } from "react-icons/fa";
+import { FaHome, FaCog, FaComments } from "react-icons/fa"; // Import FaComments here
 import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
 import { useRouter } from "next/navigation";
@@ -51,6 +51,21 @@ const Sidebar = () => {
             <IconButton
               icon={<FaHome />}
               aria-label="Home"
+              variant="ghost"
+              mb={2}
+              _hover={{ color: hoverColor }}
+            />
+          </Link>
+        </Tooltip>
+
+        <Box height="1px" width="20px" bg="gray.400" mb={2} />
+
+        {/* Chat */}
+        <Tooltip label="Chat" aria-label="Chat">
+          <Link href="/chat">
+            <IconButton
+              icon={<FaComments />}
+              aria-label="Chat"
               variant="ghost"
               mb={2}
               _hover={{ color: hoverColor }}

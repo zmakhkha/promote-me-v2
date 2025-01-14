@@ -67,6 +67,7 @@ class DmConsumer(AsyncWebsocketConsumer):
                 await self.channel_layer.group_send(
                     room_name,
                     {
+                        'room_name' : room_name,
                         'type': 'chat_message',
                         'user': sender.username,
                         'sender': sender.id,
@@ -86,6 +87,7 @@ class DmConsumer(AsyncWebsocketConsumer):
             logger.error("DmConsumer: receive - Failed to parse received message as JSON.")
 
     async def chat_message(self, event):
+        room_name = event['room_name']
         content = event['content']
         sender = event['user']
         sender_id = event['sender']
@@ -93,7 +95,8 @@ class DmConsumer(AsyncWebsocketConsumer):
 
         # Send the message to the WebSocket
         await self.send(text_data=json.dumps({
-            "type": "chat_message",
+            'type': 'chat_message',
+            'room_name' : room_name,
             'user': sender,
             'sender': sender_id,
             'timestamp': timestamp,

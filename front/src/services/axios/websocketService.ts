@@ -14,16 +14,16 @@ export const connectWebSocket = (token: string, type: string): void => {
     statusSocket = new WebSocket(url);
 
     statusSocket.onopen = () => {
-      console.log(`[Status WebSocket] Connected to WebSocket: ${url}`);
+      // console.log(`[Status WebSocket] Connected to WebSocket: ${url}`);
     };
 
     statusSocket.onmessage = (event) => {
-      console.log("[Status WebSocket] Message received:", event.data);
+      // console.log("[Status WebSocket] Message received:", event.data);
       window.dispatchEvent(new MessageEvent("message", { data: event.data }));
     };
 
     statusSocket.onclose = () => {
-      console.log("[Status WebSocket] Disconnected from WebSocket");
+      // console.log("[Status WebSocket] Disconnected from WebSocket");
     };
 
     statusSocket.onerror = (error) => {
@@ -42,16 +42,16 @@ export const randomConnectWebSocket = (token: string): void => {
     randomSocket = new WebSocket(url);
 
     randomSocket.onopen = () => {
-      console.log(`[Random WebSocket] Connected to WebSocket: ${url}`);
+      // console.log(`[Random WebSocket] Connected to WebSocket: ${url}`);
     };
 
     randomSocket.onmessage = (event) => {
-      console.log("[Random WebSocket] Message received:", event.data);
+      // console.log("[Random WebSocket] Message received:", event.data);
       window.dispatchEvent(new MessageEvent("message", { data: event.data }));
     };
 
     randomSocket.onclose = () => {
-      console.log("[Random WebSocket] Disconnected from WebSocket");
+      // console.log("[Random WebSocket] Disconnected from WebSocket");
     };
 
     randomSocket.onerror = (error) => {
@@ -65,7 +65,7 @@ export const randomConnectWebSocket = (token: string): void => {
  */
 export const disconnectWebSocket = (socket: WebSocket | null): void => {
   if (socket && socket.readyState === WebSocket.OPEN) {
-    console.log("[WebSocket] Closing connection");
+    // console.log("[WebSocket] Closing connection");
     socket.close();
   } else {
     console.warn("[WebSocket] WebSocket is already disconnected or not initialized");
@@ -82,7 +82,7 @@ const startChat = async (token: string, roomId: string): Promise<void> => {
 
     // Event handler for when WebSocket connection opens
     chatSocket.onopen = () => {
-      console.log("[Dms Consumer] WebSocket connection established!");
+      // console.log("[Dms Consumer] WebSocket connection established!");
       // Optionally send any initial messages here
     };
 
@@ -98,7 +98,7 @@ const startChat = async (token: string, roomId: string): Promise<void> => {
 
     // Event handler for when WebSocket connection closes
     chatSocket.onclose = () => {
-      console.log("[Dms Consumer] WebSocket connection closed.");
+      // console.log("[Dms Consumer] WebSocket connection closed.");
     };
 
     // Event handler for errors
@@ -125,7 +125,7 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
         throw new Error("Message content is missing");
       }
 
-      console.log("[WebSocket] Sending message:", message);
+      // console.log("[WebSocket] Sending message:", message);
 
       // Include the necessary fields such as user, timestamp, etc.
       const formattedMessage = {
