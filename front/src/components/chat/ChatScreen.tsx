@@ -26,8 +26,7 @@ type Message = {
 };
 
 const ChatScreen = () => {
-  const [sentMessages, setSentMessages] = useState<Message[]>([]);
-  const [receivedMessages, setReceivedMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [token, setToken] = useState<string>("");
   const [chatStatus, setChatStatus] = useState<string>("Waiting for a connection...");
@@ -37,6 +36,7 @@ const ChatScreen = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<any>(null);
 
+  // Fetch user profile and token
   useEffect(() => {
     const token = localStorage.getItem("accessToken") || "";
     setToken(token);
@@ -57,14 +57,15 @@ const ChatScreen = () => {
     fetchUserProfile();
   }, []);
 
+  // Connect WebSocket on user change
   useEffect(() => {
     if (user) {
-      const token = localStorage.getItem("accessToken");
       connectWebSocket(token || "", "2");
       randomConnectWebSocket(token || "");
     }
   }, [user]);
 
+  // Handle incoming WebSocket messages
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (!event.data || event.data === "{}") {
@@ -99,31 +100,19 @@ const ChatScreen = () => {
 
           case "chat_message":
             const { sender, message, timestamp } = data;
-            const date = new Date(timestamp);
             console.log('timestamp -->|', timestamp);
-            const formattedTimestamp = `${timestamp.hour}:${timestamp.minute}`;
+            const formattedTimestamp = `${timestamp.hour}:${timestamp.hour}`;
 
-            if (user.id === sender) {
-              setSentMessages((prev) => [
-                ...prev,
-                {
-                  text: message,
-                  type: "sent",
-                  sender: user.username,
-                  timestamp: formattedTimestamp,
-                },
-              ]);
-            } else {
-              setReceivedMessages((prev) => [
-                ...prev,
-                {
-                  text: message,
-                  type: "received",
-                  sender: data.user,
-                  timestamp: formattedTimestamp,
-                },
-              ]);
-            }
+            // Add received message
+            setMessages((prev) => [
+              ...prev,
+              {
+                text: message,
+                type: user.id === sender ? "sent" : "received",
+                sender: user.id === sender ? user.username : data.user,
+                timestamp: formattedTimestamp,
+              },
+            ]);
             break;
 
           default:
@@ -141,6 +130,7 @@ const ChatScreen = () => {
     };
   }, [user]);
 
+  // Handle sending messages
   const handleSendMessage = () => {
     if (inputValue && inputValue.trim()) {
       sendMessage({
@@ -152,6 +142,8 @@ const ChatScreen = () => {
     }
   };
 
+  // Sort messages by timestamp before rendering
+  const sortedMessages = [...messages].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   return (
     <Box
       maxW="lg"
@@ -184,11 +176,12 @@ const ChatScreen = () => {
         overflowY="auto"
         flexGrow={1}
       >
-        {sentMessages.map((message, index) => (
-          <HStack key={index} justify="flex-end">
+        {sortedMessages.map((message, index) => (
+          <HStack key={index} justify={message.type === "sent" ? "flex-end" : "flex-start"}>
+            {message.type === "received" && <Avatar size="sm" name={message.sender} />}
             <Box
-              bg={hoverColor}
-              color="white"
+              bg={message.type === "sent" ? hoverColor : borderColor}
+              color={message.type === "sent" ? "white" : textColor}
               px={4}
               py={2}
               borderRadius="lg"
@@ -197,34 +190,14 @@ const ChatScreen = () => {
             >
               <Text fontWeight="bold">{message.sender}</Text>
               <Text>{message.text}</Text>
-              <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">
+              <Text fontSize="xs" color="gray.500" mt={1} textAlign={message.type === "sent" ? "right" : "left"}>
                 {message.timestamp}
               </Text>
             </Box>
           </HStack>
         ))}
 
-        {receivedMessages.map((message, index) => (
-          <HStack key={index} justify="flex-start">
-            <Avatar size="sm" name={message.sender} />
-            <Box
-              bg={borderColor}
-              color={textColor}
-              px={4}
-              py={2}
-              borderRadius="lg"
-              maxWidth="70%"
-              boxShadow="sm"
-            >
-              <Text fontWeight="bold">{message.sender}</Text>
-              <Text>{message.text}</Text>
-              <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">
-                {message.timestamp}
-              </Text>
-            </Box>
-          </HStack>
-        ))}
-
+        {/* Reference div for scrolling */}
         <div ref={messagesEndRef} />
       </VStack>
 
