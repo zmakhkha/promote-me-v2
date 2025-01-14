@@ -70,11 +70,50 @@ const ChatScreen = () => {
 
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
+      console.log("---------->>|");
+      console.log("---------->>|", event.data);
+      console.log("---------->>|");
+      if (!event.data || event.data === "{}") {
+        console.error("Received an empty WebSocket message:", event.data);
+        return;
+      }
       try {
         const data = JSON.parse(event.data);
-        console.log("------------------->[", data,"]");
+        console.log("------------------->[", data, "]");
 
         switch (data.type) {
+          case "match":
+            setChatStatus("Connected! Start chatting.");
+            setIsConnecting(false); // Stop the spinner
+            setRoomId(data.roomId);
+            break;
+
+          // case "status_user":
+          //   console.log("Status update:", data.action);
+          //   break;
+
+          // case "message":
+          //   setReceivedMessages((prev) => [
+          //     ...prev,
+          //     {
+          //       text: data.message,
+          //       type: "received", // Always "received" since it's coming from the server
+          //       timestamp: getCurrentTimestamp(),
+          //       sender: data.sender,
+          //     },
+          //   ]);
+          //   break;
+
+          // case "system":
+          //   setReceivedMessages((prev) => [
+          //     ...prev,
+          //     {
+          //       text: data.message,
+          //       type: "system",
+          //       timestamp: getCurrentTimestamp(),
+          //     },
+          //   ]);
+          //   break;
 
           case "redirect":
             const { room_name, users } = data;
@@ -113,7 +152,7 @@ const ChatScreen = () => {
                   timestamp: formattedTimestamp,
                 },
               ]);
-              console.log(sentMessages);
+              console.log("---|", sentMessages);
             } else {
               // Add to receivedMessages if sender is not the current user
               setReceivedMessages((prev) => [
@@ -125,13 +164,12 @@ const ChatScreen = () => {
                   timestamp: formattedTimestamp,
                 },
               ]);
-              console.log(receivedMessages);
+              console.log("---|", receivedMessages);
             }
             break;
 
           default:
-            // console.error("Unknown message type:", data);
-            console.log("message : ", data);
+            console.log("Unknown message type:", data);
         }
       } catch (error) {
         console.error("Failed to parse WebSocket message:", event.data, error);
