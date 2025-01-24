@@ -4,12 +4,12 @@ from django.urls import path,re_path
 from channels.routing import ProtocolTypeRouter, URLRouter
 
 import os
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'back.settings')
 django_asgi_app = get_asgi_application()
 
 from chat.DmConsumer import DmConsumer
 from chat.randomChatConsumer import RandomChatConsumer
 from chat.statusConsumer import StatusConsumer
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myChat.settings')
 
 application = ProtocolTypeRouter({
   'http': get_asgi_application(),

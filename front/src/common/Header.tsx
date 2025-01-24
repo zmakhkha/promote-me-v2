@@ -29,6 +29,9 @@ import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 import Image from "next/image";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import { Console } from "console";
+import api from "@/services/axios";
+
 
 // Dynamically load the burger menu with SSR disabled
 const MobileMenu = dynamic(() => import("./MobileMenu"), { ssr: false });
@@ -43,8 +46,20 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const cancelRef = React.useRef();
 
+
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get("/api/v1/profile/");
+      console.log("[Header] [fetchUsers]", response);
+      setUsername(response.data.first_name);
+
+    } catch (err: any) {
+      console.log("[Header] [fetchUsers] There was an error.")
+    }
+  };
+
   useEffect(() => {
-    // Fetch user data here if needed
+    fetchUsers();
   }, []);
 
   const onOpen = () => setIsOpen(true);
