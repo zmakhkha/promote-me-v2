@@ -56,19 +56,6 @@ const Page = () => {
       <GridItem area="main" pl="2" bg={navBgColor}>
         <MainHome />
       </GridItem>
-
-      {/* Bottom Bar Section - Only visible on small screens */}
-      <GridItem
-        area="bottom"
-        bg={navBgColor}
-        display={{ base: "block", md: "none" }} // Shows bottom bar on small screens only
-        position="absolute"
-        bottom="0"
-        left="0"
-        width="100%" // Ensures the BottomBar stretches across the entire width
-      >
-        <BottomBar /> {/* Your custom BottomBar with 5 icons */}
-      </GridItem>
     </Grid>
   );
 };
