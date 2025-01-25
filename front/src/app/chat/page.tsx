@@ -1,6 +1,6 @@
 "use client";
 
-import { Grid, GridItem } from "@chakra-ui/react";
+import { Flex, Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
@@ -56,10 +56,17 @@ const HomePage = () => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem area="main" pl="2" bg={navBgColor}>
+      <GridItem area="main" pl="2" bg={navBgColor} >
         {/* Placeholder for Main Content */}
-        {/* <MainChat /> */}
-        <ChatScreen/>
+        <Flex
+          direction="column"
+          align="center"
+          justify="center"
+          height="100%"
+          width="100%"
+        >
+          <ChatScreen />
+        </Flex>
       </GridItem>
     </Grid>
   );
