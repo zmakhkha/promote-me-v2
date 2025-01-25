@@ -39,7 +39,7 @@ const Page = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" bg={bg} p={4}>
+      <GridItem area="header" >
         <Header />
       </GridItem>
 
@@ -53,7 +53,7 @@ const Page = () => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem area="main" pl="2" bg={navBgColor}>
+      <GridItem area="main" pl="1" bg={navBgColor}>
         <MainHome />
       </GridItem>
     </Grid>
