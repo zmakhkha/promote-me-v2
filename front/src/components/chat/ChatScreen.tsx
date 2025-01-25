@@ -1,4 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import dynamic from "next/dynamic";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
+import { Smile } from "lucide-react";
 import {
   Box,
   VStack,
@@ -7,8 +10,7 @@ import {
   Button,
   Text,
   Spinner,
-  Textarea,
-  useColorModeValue,
+  Input,
 } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import startChat, {
@@ -33,11 +35,36 @@ const ChatScreen = () => {
   const [chatStatus, setChatStatus] = useState<string>(
     "Waiting for a connection..."
   );
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<any>(null);
+  const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+
+  // Reference for emoji picker container
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+  // Close emoji picker on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        emojiPickerRef.current &&
+        !emojiPickerRef.current.contains(event.target as Node)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showEmojiPicker]);
 
   // Fetch user profile and token
   useEffect(() => {
@@ -187,10 +214,28 @@ const ChatScreen = () => {
     }
   };
 
+  const addEmoji = (emojiObject: { emoji: string }) => {
+    setInputValue((prev) => prev + emojiObject.emoji);
+  };
+
   // Sort messages by timestamp before rendering
   const sortedMessages = [...messages].sort(
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
+
+  const escFunction = useCallback((event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      resetChatAndReconnectWebSockets();
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    };
+  }, [escFunction]);
   return (
     <Box
       maxW="lg"
@@ -217,16 +262,21 @@ const ChatScreen = () => {
 
       <VStack
         spacing={4}
+        border="2px"
+        borderColor={"blue.400"}
         align="stretch"
         mb={4}
         maxHeight="calc(100% - 100px)"
         overflowY="auto"
         flexGrow={1}
+        p={2}
       >
         {sortedMessages.map((message, index) => (
           <HStack
             key={index}
             justify={message.type === "sent" ? "flex-end" : "flex-start"}
+            align="flex-end"
+            spacing={2}
           >
             {message.type === "received" && (
               <Avatar size="sm" name={message.sender} />
@@ -236,20 +286,18 @@ const ChatScreen = () => {
               color={message.type === "sent" ? "white" : textColor}
               px={4}
               py={2}
-              borderRadius="lg"
+              borderRadius={12}
               maxWidth="70%"
               boxShadow="sm"
+              display="flex"
+              flexDirection="column"
+              pt={1}
+              pb={0}
             >
-              <Text fontWeight="bold" fontSize={14}>
-                {message.sender}
+              <Text fontWeight={400} fontSize="md" wordBreak="break-word">
+                {message.text}
               </Text>
-              <Text fontSize={12}>{message.text}</Text>
-              <Text
-                fontSize="xs"
-                color="gray.500"
-                mt={1}
-                textAlign={message.type === "sent" ? "right" : "left"}
-              >
+              <Text fontSize="xs" color="gray.400" textAlign="right" pb={0}>
                 {message.timestamp}
               </Text>
             </Box>
@@ -260,24 +308,42 @@ const ChatScreen = () => {
         <div ref={messagesEndRef} />
       </VStack>
 
-      <HStack spacing={2}>
-        {/* New (Esc) Button */}
-        <Button colorScheme="blue" onClick={resetChatAndReconnectWebSockets}>
-          New (Esc)
+      <HStack height={10} spacing={2} position="relative">
+        <Button
+          height={10}
+          colorScheme="pink"
+          onClick={resetChatAndReconnectWebSockets}
+        >
+          Esc
         </Button>
-        <Textarea
+        <Input
+          height={10}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Type your message..."
           size="sm"
-          resize="none"
           onKeyPress={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault(); // Prevent adding a new line
+              e.preventDefault();
               handleSendMessage();
             }
           }}
         />
+        <Button height={10} colorScheme="blue" onClick={toggleEmojiPicker}>
+          <Smile />
+        </Button>
+
+        {/* Emoji Picker */}
+        {showEmojiPicker && (
+          <Box
+            position="absolute"
+            bottom="50px"
+            zIndex="10"
+            ref={emojiPickerRef}
+          >
+            <EmojiPicker onEmojiClick={addEmoji} />
+          </Box>
+        )}
         <Button colorScheme="pink" onClick={handleSendMessage}>
           Send
         </Button>

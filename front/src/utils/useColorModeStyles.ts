@@ -18,13 +18,17 @@
     const borderColor = useColorModeValue('gray.300', 'gray.600');
     const hoverColor = useColorModeValue('#fa7e1e', '#d62976');
     const navBgColor = useColorModeValue('gray.100', 'gray.600');
+    const systemMessageColor = useColorModeValue('blue.100', 'blue.900');
 
-    return {
+
+
+return {
       bg,
-      tiktok,
       textColor,
-      borderColor,
       hoverColor,
+      borderColor,
+      systemMessageColor,
+      tiktok,
       navBgColor,
       // instagramGradient,
       instagramTextColor,
