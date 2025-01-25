@@ -16,6 +16,7 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import {
+  FaCommentDots,
   FaGlobe,
   FaInstagram,
   FaSnapchatGhost,
@@ -127,6 +128,20 @@ const MainProfile = ({ username }: MainProfileProps) => {
           <FaGlobe />
           <Text>{userData.location || "Location not specified"}</Text>
         </HStack>
+
+        {/* Start Chat Button */}
+        <Flex justify="center" mb={4}>
+          <IconButton
+            aria-label="Start Chat"
+            icon={<FaCommentDots />}
+            colorScheme="teal"
+            onClick={() => alert(`Starting chat with ${userData.first_name}`)}
+            size="lg"
+            variant="solid"
+          >
+            Start Chat
+          </IconButton>
+        </Flex>
 
         <Divider borderColor={borderColor} mb={2} />
 

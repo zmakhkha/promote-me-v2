@@ -68,6 +68,15 @@ const ChatScreen = () => {
     }
   }, [user]);
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  // Scroll to bottom whenever the messages array changes
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   // Handle incoming WebSocket messages
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
@@ -156,17 +165,15 @@ const ChatScreen = () => {
     // Reconnect WebSockets
     connectWebSocket(token || "", "2");
     randomConnectWebSocket(token || "");
-    
+
     // Optionally reconnect chat socket if roomId is available
     if (roomId) {
       startChat(token || "", roomId);
     }
-    
+
     // Reset the user state if needed
     // setUser(null); // Uncomment if you want to reset the user state as well
   };
-
-  
 
   // Handle sending messages
   const handleSendMessage = () => {
@@ -233,8 +240,10 @@ const ChatScreen = () => {
               maxWidth="70%"
               boxShadow="sm"
             >
-              <Text fontWeight="bold">{message.sender}</Text>
-              <Text>{message.text}</Text>
+              <Text fontWeight="bold" fontSize={14}>
+                {message.sender}
+              </Text>
+              <Text fontSize={12}>{message.text}</Text>
               <Text
                 fontSize="xs"
                 color="gray.500"
@@ -262,6 +271,12 @@ const ChatScreen = () => {
           placeholder="Type your message..."
           size="sm"
           resize="none"
+          onKeyPress={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault(); // Prevent adding a new line
+              handleSendMessage();
+            }
+          }}
         />
         <Button colorScheme="pink" onClick={handleSendMessage}>
           Send
