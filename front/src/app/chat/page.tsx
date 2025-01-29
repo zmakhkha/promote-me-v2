@@ -40,7 +40,7 @@ const HomePage = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" bg={bg} p={4}>
+      <GridItem area="header" position="sticky" top="0" zIndex="10" bg={bg}>
         {/* Placeholder for Header */}
         {/* <h1>Header</h1> */}
         <Header />
@@ -56,7 +56,7 @@ const HomePage = () => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem area="main" pl="2" bg={navBgColor} >
+      <GridItem area="main" pl="2" bg={navBgColor}>
         {/* Placeholder for Main Content */}
         <Flex
           direction="column"

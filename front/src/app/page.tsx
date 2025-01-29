@@ -8,8 +8,6 @@ import Header from "@/common/Header";
 import MainHome from "@/components/home/MainHome";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
-import BottomBar from "@/common/BottomBar"; // Import the BottomBar component
-import { connectWebSocket } from "@/services/axios/websocketService";
 import socketConnect from "@/services/axios/socketConnect";
 
 const Page = () => {
@@ -39,7 +37,7 @@ const Page = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" >
+      <GridItem area="header" position="sticky" top="0" zIndex="10" bg={bg}>
         <Header />
       </GridItem>
 

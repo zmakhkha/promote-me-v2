@@ -38,7 +38,7 @@ const MePage = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" bg={bg} p={4}>
+      <GridItem area="header" position="sticky" top="0" zIndex="10" bg={bg}>
         <Header />
       </GridItem>
 

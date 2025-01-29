@@ -66,13 +66,12 @@ const BigMenu = () => {
       justify="space-between"
       px={10}
       align="center"
-      pb={4}
+      pt={1}
       bg={bg}
-      border={1}
+      height="60px"
       borderColor="red"
-      minHeight="80px"
     >
-      <Image height={50} src={logo} alt="Logo" />
+      <Image height={60} src={logo} alt="Logo" />
       <Flex
         justify="space-between"
         px={3}
@@ -81,7 +80,6 @@ const BigMenu = () => {
         bg={bg}
         border={1}
         borderColor="red"
-        minHeight="80px"
       >
         <Flex align="center">
           <Tooltip label="Notifications" aria-label="Notifications">
