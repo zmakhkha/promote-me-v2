@@ -1,108 +1,190 @@
-import React, { useState } from "react";
-import { Flex, IconButton, Link, useDisclosure, useColorMode } from "@chakra-ui/react";
-import { HamburgerIcon, MoonIcon, SunIcon, CloseIcon } from "@chakra-ui/icons";
+"use client";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Flex,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Tooltip,
+  Link,
+  AlertDialog,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  Button,
+  useColorMode,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+} from "@chakra-ui/react";
+import { HamburgerIcon, MoonIcon, SunIcon, BellIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
-import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
-
+import { HiDocumentText } from "react-icons/hi";
+import { MdPrivacyTip } from "react-icons/md";
+import Image from "next/image";
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
-import Image from "next/image";
+import useColorModeStyles from "@/utils/useColorModeStyles";
+import api from "@/services/axios";
 
 const MobileMenu = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const logo = colorMode === "light" ? logoLight : logoDark;
+  const { bg } = useColorModeStyles();
+
+  const [username, setUsername] = useState("User");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await api.get("/api/v1/profile/");
+        setUsername(response.data.first_name);
+      } catch (error) {
+        console.error("[MobileMenu] Error fetching user data.");
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
-    <Flex direction="column" position="relative" height="100vh">
-      {/* Header with Logo and Burger Menu */}
-      <Flex justify="space-between" align="center" px={4} py={2} bg={colorMode === "light" ? "gray.200" : "gray.800"} position="relative">
-        <Image src={logo} alt="Logo" height={40} />
-        <IconButton
-          icon={<HamburgerIcon />}
-          aria-label="Open Menu"
-          variant="ghost"
-          onClick={onOpen}
-          size="lg"
-          color={colorMode === "light" ? "black" : "white"}
-        />
-      </Flex>
+    <Flex
+      as="header"
+      justify="space-between"
+      align="center"
+      px={4}
+      height="60px"
+      bg={bg}
+      boxShadow="sm"
+    >
+      {/* Logo */}
+      <Image
+        height={40}
+        width={100}
+        src={logo}
+        alt="Logo"
+        style={{ objectFit: "contain" }}
+      />
 
-      {/* Mobile Menu Drawer */}
-      {isOpen && (
-        <Flex
-          direction="column"
-          position="fixed"
-          top={0}
-          left={0}
-          width="100%"
-          height="100vh"
-          bg={colorMode === "light" ? "gray.100" : "gray.700"}
-          zIndex={999}
-          p={4}
-          align="flex-start"
-          boxShadow="xl"
-        >
-          {/* Close Button */}
-          <IconButton
-            icon={<CloseIcon />}
-            aria-label="Close Menu"
-            variant="ghost"
-            onClick={onClose}
-            size="lg"
-            color={colorMode === "light" ? "black" : "white"}
-            alignSelf="flex-end"
-            mb={4}
-          />
+      {/* Burger Menu */}
+      <IconButton
+        icon={<HamburgerIcon />}
+        aria-label="Open Menu"
+        variant="ghost"
+        onClick={() => setIsDrawerOpen(true)}
+      />
 
-          {/* Profile Link */}
-          <Link href="/profile" w="full" py={2} textAlign="left" _hover={{ bg: colorMode === "light" ? "gray.200" : "gray.600" }}>
-            <FaUser /> Profile
-          </Link>
+      {/* Full-Screen Drawer Menu */}
+      <Drawer
+        isOpen={isDrawerOpen}
+        placement="right"
+        onClose={() => setIsDrawerOpen(false)}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader>Menu</DrawerHeader>
+          <DrawerBody>
+            <Flex direction="column" gap={4}>
+              <Link href="/profile">
+                <Button
+                  leftIcon={<FaUser />}
+                  variant="ghost"
+                  justifyContent="flex-start"
+                  w="full"
+                >
+                  Profile
+                </Button>
+              </Link>
+              <Link href="/notifications">
+                <Button
+                  leftIcon={<BellIcon />}
+                  variant="ghost"
+                  justifyContent="flex-start"
+                  w="full"
+                >
+                  Notifications
+                </Button>
+              </Link>
+              <Link href="/termsofservice">
+                <Button
+                  leftIcon={<HiDocumentText />}
+                  variant="ghost"
+                  justifyContent="flex-start"
+                  w="full"
+                >
+                  Terms of Service
+                </Button>
+              </Link>
+              <Link href="/privacypolicy">
+                <Button
+                  leftIcon={<MdPrivacyTip />}
+                  variant="ghost"
+                  justifyContent="flex-start"
+                  w="full"
+                >
+                  Privacy Policy
+                </Button>
+              </Link>
+              <Button
+                leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+                onClick={toggleColorMode}
+                variant="ghost"
+                justifyContent="flex-start"
+              >
+                {colorMode === "light" ? "Dark Mode" : "Light Mode"}
+              </Button>
+              <Button
+                leftIcon={<IoLogOut />}
+                colorScheme="red"
+                onClick={() => setIsLogoutOpen(true)}
+                variant="ghost"
+                justifyContent="flex-start"
+              >
+                Log Out
+              </Button>
+            </Flex>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
 
-          {/* Instagram Link */}
-          <Link href="/instagram" w="full" py={2} textAlign="left" _hover={{ bg: colorMode === "light" ? "gray.200" : "gray.600" }}>
-            <FaInstagram /> Instagram
-          </Link>
-
-          {/* Snapchat Link */}
-          <Link href="/snapchat" w="full" py={2} textAlign="left" _hover={{ bg: colorMode === "light" ? "gray.200" : "gray.600" }}>
-            <FaSnapchat /> Snapchat
-          </Link>
-
-          {/* Tiktok Link */}
-          <Link href="/tiktok" w="full" py={2} textAlign="left" _hover={{ bg: colorMode === "light" ? "gray.200" : "gray.600" }}>
-            <FaTiktok /> Tiktok
-          </Link>
-
-          {/* Logout Link */}
-          <Link
-            onClick={() => {
-              console.log("Logging out");
-              // Add logout logic here
-              onClose();
-            }}
-            w="full"
-            py={2}
-            textAlign="left"
-            _hover={{ bg: colorMode === "light" ? "gray.200" : "gray.600" }}
-          >
-            <IoLogOut /> Log Out
-          </Link>
-
-          {/* Dark/Light Mode Switcher */}
-          <Flex justify="center" mt={4}>
-            <IconButton
-              icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-              aria-label="Toggle Dark/Light Mode"
-              variant="ghost"
-              onClick={toggleColorMode}
-              size="lg"
-            />
-          </Flex>
-        </Flex>
-      )}
+      {/* Logout Confirmation Dialog */}
+      <AlertDialog
+        isOpen={isLogoutOpen}
+        onClose={() => setIsLogoutOpen(false)}
+        leastDestructiveRef={cancelRef}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Confirm Logout
+            </AlertDialogHeader>
+            <AlertDialogBody>Are you sure you want to log out?</AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={() => setIsLogoutOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => console.log("Logged out")}
+                ml={3}
+              >
+                Log Out
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Flex>
   );
 };
