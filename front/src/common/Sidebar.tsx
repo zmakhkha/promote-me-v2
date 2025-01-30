@@ -62,7 +62,7 @@ const Sidebar = () => {
 
         {/* Chat */}
         <Tooltip label="Chat" aria-label="Chat">
-          <Link href="/chat">
+          <Link href="/chat/random">
             <IconButton
               icon={<FaComments />}
               aria-label="Chat"

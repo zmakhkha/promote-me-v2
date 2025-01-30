@@ -2,12 +2,39 @@ let socket: WebSocket | null = null;
 let statusSocket: WebSocket | null = null;
 let randomSocket: WebSocket | null = null;
 let chatSocket: WebSocket | null = null; // This should be used globally for the chat connection
+let directChatSocket: WebSocket | null = null; // This should be used globally for the chat connection
 
 /**
  * Connect to a WebSocket for a specific type and token.
  * @param token - The user token.
  * @param type - The type of WebSocket connection.
  */
+
+export const connectDirectChat = (token: string, receiverId: string): void => {
+  const wsUrl = `ws://localhost:2000/ws/direct/${token}/${receiverId}`;
+
+  if (!directChatSocket || directChatSocket.readyState !== WebSocket.OPEN) {
+    directChatSocket = new WebSocket(wsUrl);
+
+    directChatSocket.onopen = () => {
+      console.log(`[Direct Chat] Connected to WebSocket: ${wsUrl}`);
+    };
+
+    directChatSocket.onmessage = (event) => {
+      console.log("[Direct Chat] Message received:", event.data);
+      window.dispatchEvent(new MessageEvent("message", { data: event.data }));
+    };
+
+    directChatSocket.onclose = () => {
+      console.log("[Direct Chat] WebSocket disconnected.");
+    };
+
+    directChatSocket.onerror = (error) => {
+      console.error("[Direct Chat] WebSocket error:", error);
+    };
+  }
+};
+
 export const connectWebSocket = (token: string, type: string): void => {
   const url = `ws://localhost:2000/ws/status/${token}/${type}`;
   if (!statusSocket || statusSocket.readyState !== WebSocket.OPEN) {
@@ -144,7 +171,7 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
         timestamp: new Date().toISOString(),  // Using ISO string for timestamp
         content: content,
       };
-      // console.log('++++++++++++++++++', formattedMessage);
+      console.log('++++++++++++++++++', formattedMessage);
       chatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message
     } catch (error) {
       console.error("[WebSocket] Error sending message:", error);
@@ -154,3 +181,6 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
   }
 };
 
+export const generateRoomName = (username1: string, username2: string): string => {
+  return `room_dm_${[username1, username2].sort().join("_")}`;
+};

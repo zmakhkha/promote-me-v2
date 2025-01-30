@@ -14,6 +14,7 @@ import {
   useColorModeValue,
   TagLabel,
   Tag,
+  Link,
 } from "@chakra-ui/react";
 import {
   FaCommentDots,
@@ -26,6 +27,7 @@ import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 
 interface UserData {
+  username: string;
   image_url: string;
   first_name: string;
   last_name: string;
@@ -52,6 +54,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
 
   const [userData, setUserData] = useState<UserData>({
     image_url: placeholderAvatar.src,
+    username: "",
     first_name: "Loading...",
     last_name: "",
     age: null,
@@ -131,16 +134,21 @@ const MainProfile = ({ username }: MainProfileProps) => {
 
         {/* Start Chat Button */}
         <Flex justify="center" mb={4}>
-          <IconButton
-            aria-label="Start Chat"
-            icon={<FaCommentDots />}
-            colorScheme="teal"
-            onClick={() => alert(`Starting chat with ${userData.first_name}`)}
-            size="lg"
-            variant="solid"
+          <Link
+            href={`/chat/${userData.username}`}
+            // color={hoverColor}
+            textDecoration="underline"
           >
-            Start Chat
-          </IconButton>
+            <IconButton
+              aria-label="Start Chat"
+              icon={<FaCommentDots />}
+              colorScheme="teal"
+              size="lg"
+              variant="solid"
+            >
+              Start Chat
+            </IconButton>
+          </Link>
         </Flex>
 
         <Divider borderColor={borderColor} mb={2} />

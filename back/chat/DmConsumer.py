@@ -119,6 +119,7 @@ class DmConsumer(AsyncWebsocketConsumer):
         receiver's username by identifying which one is not the sender.
         """
         # Extract usernames from the room_name
+        print(f"---------------------->|{room_name}|")
         _, _, username1, username2 = room_name.split("_")
         
         # Determine which username is the sender and which is the receiver

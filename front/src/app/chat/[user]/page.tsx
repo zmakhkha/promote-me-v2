@@ -4,15 +4,17 @@ import { Flex, Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import MainInstagram from "@/components/instagram/mainInstagram";
 import Header from "@/common/Header";
-import MainChat from "@/components/chat/MainChat";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
-import ChatScreen from "@/components/chat/ChatScreen";
+import DmScreen from "@/components/chat/DmScreen";
+type Props = {
+  user: string;
+};
 
-const HomePage = () => {
+const page = ({ params }: { params: Props }) => {
+  const { user } = params;
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
   const router = useRouter();
@@ -65,11 +67,12 @@ const HomePage = () => {
           height="100%"
           width="100%"
         >
-          <ChatScreen />
+          <DmScreen user={user} />
+          {/* welcode {user} */}
         </Flex>
       </GridItem>
     </Grid>
   );
 };
 
-export default HomePage;
+export default page;
