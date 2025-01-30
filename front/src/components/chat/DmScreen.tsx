@@ -15,11 +15,10 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 import startChat, {
   connectWebSocket,
   sendMessage,
-  randomConnectWebSocket,
-  disconnectAll,
   generateRoomName,
 } from "@/services/axios/websocketService";
 import { getConnectedUser } from "@/services/axios/getConnectedUser";
+import api from "@/services/axios/api";
 
 type Message = {
   text: string;
@@ -31,18 +30,36 @@ type Props = {
   user: string;
 };
 const DmScreen = ({ user }: Props) => {
+  const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+  const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
   const [token, setToken] = useState<string>("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [roomId, setRoomId] = useState<string | null>(null);
-  const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [userData, setUserData] = useState<any>(null);
-  const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
-
-  // Reference for emoji picker container
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const fetchOldMessages = async () => {
+      try {
+        const response = await api.get(`/api/v1/messages/${user}/`);
+        const formattedMessages = response.data.map((msg: any) => ({
+          text: msg.content,
+          type: msg.sender === userData?.id ? "sent" : "received",
+          sender: msg.sender === userData?.id ? userData.username : user,
+          timestamp: msg.timestamp,
+        }));
+        setMessages(formattedMessages);
+      } catch (error) {
+        console.error("Failed to fetch old messages:", error);
+      }
+    };
+    if (userData) {
+      fetchOldMessages();
+    }
+  }, [user, userData]);
 
   // Close emoji picker on outside click
   useEffect(() => {
@@ -90,6 +107,8 @@ const DmScreen = ({ user }: Props) => {
   // Connect WebSocket on user change
   useEffect(() => {
     if (user) {
+    const token = localStorage.getItem("accessToken") || "";
+
       connectWebSocket(token || "", "2");
     }
   }, [user]);
@@ -112,33 +131,34 @@ const DmScreen = ({ user }: Props) => {
       }
       try {
         const data = JSON.parse(event.data);
-        console.log("------------------->[", data, "]");
+        // console.log("------------------->[", data, "]");
 
         switch (data.type) {
           case "chat_message":
             const { sender, message, timestamp } = data;
-            console.log("timestamp -->|", timestamp);
+            // console.log("timestamp -->|", timestamp);
             const formattedTimestamp = `${timestamp.hour}:${timestamp.hour}`;
-              setMessages((prev) => [
-                ...prev,
-                {
-                  text: message,
-                  type: userData.id === sender ? "sent" : "received",
-                  sender: userData.id === sender ? userData.username : data.user,
-                  timestamp: formattedTimestamp,
-                },
-              ]);
+            setMessages((prev) => [
+              ...prev,
+              {
+                text: message,
+                type: userData.id === sender ? "sent" : "received",
+                sender: userData.id === sender ? userData.username : data.user,
+                timestamp: formattedTimestamp,
+              },
+            ]);
             break;
 
           default:
             console.log("Unknown message type:", data);
         }
       } catch (error) {
-        console.log(
-          "-->|Failed to parse WebSocket message:",
-          event.data,
-          error
-        );
+        // console.log(
+        //   "-->|Failed to parse WebSocket message:",
+        //   event.data,
+        //   error
+        // );
+        return;
       }
     };
 
@@ -148,7 +168,6 @@ const DmScreen = ({ user }: Props) => {
       window.removeEventListener("message", handleMessage);
     };
   }, [userData, roomId]);
-
 
   // Handle sending messages
   const handleSendMessage = () => {
@@ -171,7 +190,6 @@ const DmScreen = ({ user }: Props) => {
     (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
 
- 
   return (
     <Box
       maxW="lg"
@@ -191,7 +209,7 @@ const DmScreen = ({ user }: Props) => {
     >
       <Box mb={4} textAlign="center">
         <Text fontSize="xl" fontWeight="bold">
-          Chating with {user} 
+          Chating with {user}
         </Text>
       </Box>
 
@@ -206,6 +224,7 @@ const DmScreen = ({ user }: Props) => {
         flexGrow={1}
         p={2}
       >
+        {}
         {sortedMessages.map((message, index) => (
           <HStack
             key={index}
