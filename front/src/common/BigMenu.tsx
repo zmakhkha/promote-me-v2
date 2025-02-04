@@ -71,7 +71,9 @@ const BigMenu = () => {
       height="60px"
       borderColor="red"
     >
-      <Image height={60} src={logo} alt="Logo" />
+      <Link href="/">
+        <Image height={60} src={logo} alt="Logo" />
+      </Link>
       <Flex
         justify="space-between"
         px={3}

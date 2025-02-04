@@ -49,7 +49,14 @@ const HomePage = () => {
         <Sidebar />
       </GridItem>
 
-      <GridItem area="main" pl="2" bg={navBgColor}>
+      <GridItem
+        area="main"
+        position="sticky"
+        zIndex="1000"
+        overflowY="auto"
+        pl="2"
+        bg={navBgColor}
+      >
         <MainSettings />
       </GridItem>
     </Grid>

@@ -100,7 +100,7 @@ const mainSnapchat = () => {
       ) : (
         <SimpleGrid
           p={1}
-          columns={{ base: 2, sm: 2, md: 3, lg: 4 }}
+          columns={{ base: 1, sm: 1, md: 3, lg: 4 }}
           spacing={4}
           w="100%"
         >

@@ -25,13 +25,14 @@ const Page = () => {
     <Grid
       templateAreas={{
         base: `"header"
-               "main"`,
+           "main"`,
         md: `"header header"
-             "nav main"`,
+         "nav main"`,
       }}
       gridTemplateRows={{ base: "auto 1fr", md: "50px 1fr" }}
       gridTemplateColumns={{ base: "1fr", md: "50px 1fr" }}
-      height="100vh"
+      minHeight="100vh" // Changed from height="100vh"
+      overflow="hidden" // Prevent any unwanted scroll
       gap="0.5"
       color={textColor}
       fontWeight="bold"
@@ -51,7 +52,14 @@ const Page = () => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem area="main" pl="1" bg={navBgColor}>
+      <GridItem
+        area="main"
+        position="sticky"
+        zIndex="1000"
+        overflowY="auto"
+        pl="2"
+        bg={navBgColor}
+      >
         <MainHome />
       </GridItem>
     </Grid>

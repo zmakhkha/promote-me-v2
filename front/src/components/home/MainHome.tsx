@@ -47,7 +47,7 @@ const MainHome: React.FC = () => {
         </Text>
         {/* SEO Optimized Text Section */}
         <Box
-        //   border="1px solid"
+          //   border="1px solid"
           borderColor={borderColor}
           borderRadius="md"
           p={4}
@@ -90,6 +90,7 @@ const MainHome: React.FC = () => {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          flexWrap="wrap"
           mb={4}
           bg={bg}
         >
@@ -97,34 +98,49 @@ const MainHome: React.FC = () => {
             leftIcon={<FaInstagram />}
             colorScheme="pink"
             onClick={() => handlePlatformClick("Instagram")}
-            mx={2}
+            mx={1}
+            // px={2}
+            flex="1"
+            minWidth="120px"
+            mt={{ base: 2, md: 0 }}
           >
-            Instagram users
+            <Text>Instagram users</Text>
           </Button>
           <Button
             leftIcon={<FaSnapchat />}
             colorScheme="yellow"
             onClick={() => handlePlatformClick("Snapchat")}
             mx={2}
+            flex="1"
+            minWidth="120px"
+            mt={{ base: 2, md: 0 }}
           >
-            Snapchat users
+            <Text>Snapchat users</Text>
           </Button>
           <Button
             leftIcon={<FaTiktok />}
             colorScheme="green"
             onClick={() => handlePlatformClick("TikTok")}
             mx={2}
+            flex="1"
+            minWidth="120px"
+            mt={{ base: 2, md: 0 }}
           >
             TikTok users
           </Button>
         </Box>
-		<Text align="center">Or</Text>
+
+        <Text align="center">Or</Text>
         {/* Display Random Chat Button */}
         <Box textAlign="center" mb={4}>
           <Button
             leftIcon={<FaComment />}
             colorScheme="blue"
             onClick={handleRandomChat}
+            mx={2}
+            flex="1"
+            minWidth="200px"
+            mt={{ base: 2, md: 0 }}
           >
             Chat Randomly
           </Button>

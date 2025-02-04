@@ -18,9 +18,14 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/react";
 import { HamburgerIcon, MoonIcon, SunIcon, BellIcon } from "@chakra-ui/icons";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaHome, FaComments, FaCog } from "react-icons/fa";
+import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
 import { HiDocumentText } from "react-icons/hi";
 import { MdPrivacyTip } from "react-icons/md";
@@ -51,6 +56,9 @@ const MobileMenu = () => {
     };
     fetchUser();
   }, []);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const onOpen = () => setIsOpen(true);
 
   return (
     <Flex
@@ -63,21 +71,59 @@ const MobileMenu = () => {
       boxShadow="sm"
     >
       {/* Logo */}
-      <Image
-        height={40}
-        width={100}
-        src={logo}
-        alt="Logo"
-        style={{ objectFit: "contain" }}
-      />
+      <Link href="/">
+        <Image
+          height={40}
+          width={100}
+          src={logo}
+          alt="Logo"
+          style={{ objectFit: "contain" }}
+        />
+      </Link>
 
-      {/* Burger Menu */}
-      <IconButton
-        icon={<HamburgerIcon />}
-        aria-label="Open Menu"
-        variant="ghost"
-        onClick={() => setIsDrawerOpen(true)}
-      />
+      <Flex justify="space-between" bg={bg}>
+        <Link href="/notifications">
+          <Button
+            leftIcon={<BellIcon />}
+            variant="ghost"
+            justifyContent="flex-start"
+            w="full"
+          ></Button>
+        </Link>
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            icon={<FaUser />}
+            aria-label="Profile"
+            variant="ghost"
+          />
+          <MenuList>
+            <MenuItem>Welcome {username}</MenuItem>
+            <MenuItem icon={<FaUser />}>
+              <Link href="/profile">Profile</Link>
+            </MenuItem>
+            <MenuItem icon={<HiDocumentText />}>
+              <Link href="/termsofservice">Terms of Service</Link>
+            </MenuItem>
+            <MenuItem icon={<MdPrivacyTip />}>
+              <Link href="/privacypolicy">Privacy Policy</Link>
+            </MenuItem>
+            <MenuItem
+              onClick={onOpen}
+              icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}
+            >
+              Log Out
+            </MenuItem>
+          </MenuList>
+        </Menu>
+        {/* Burger Menu */}
+        <IconButton
+          icon={<HamburgerIcon />}
+          aria-label="Open Menu"
+          variant="ghost"
+          onClick={() => setIsDrawerOpen(true)}
+        />
+      </Flex>
 
       {/* Full-Screen Drawer Menu */}
       <Drawer
@@ -91,46 +137,67 @@ const MobileMenu = () => {
           <DrawerHeader>Menu</DrawerHeader>
           <DrawerBody>
             <Flex direction="column" gap={4}>
-              <Link href="/profile">
+              <Link href="/">
                 <Button
-                  leftIcon={<FaUser />}
+                  leftIcon={<FaHome />}
                   variant="ghost"
                   justifyContent="flex-start"
                   w="full"
                 >
-                  Profile
+                  Home
                 </Button>
               </Link>
-              <Link href="/notifications">
+              <Link href="/chat/random">
                 <Button
-                  leftIcon={<BellIcon />}
+                  leftIcon={<FaComments />}
                   variant="ghost"
                   justifyContent="flex-start"
                   w="full"
                 >
-                  Notifications
+                  Chat
                 </Button>
               </Link>
-              <Link href="/termsofservice">
+              <Link href="/snapchat">
                 <Button
-                  leftIcon={<HiDocumentText />}
+                  leftIcon={<FaSnapchat />}
                   variant="ghost"
                   justifyContent="flex-start"
                   w="full"
                 >
-                  Terms of Service
+                  Snapchat
                 </Button>
               </Link>
-              <Link href="/privacypolicy">
+              <Link href="/instagram">
                 <Button
-                  leftIcon={<MdPrivacyTip />}
+                  leftIcon={<FaInstagram />}
                   variant="ghost"
                   justifyContent="flex-start"
                   w="full"
                 >
-                  Privacy Policy
+                  Instagram
                 </Button>
               </Link>
+              <Link href="/tiktok">
+                <Button
+                  leftIcon={<FaTiktok />}
+                  variant="ghost"
+                  justifyContent="flex-start"
+                  w="full"
+                >
+                  TikTok
+                </Button>
+              </Link>
+              <Link href="/settings">
+                <Button
+                  leftIcon={<FaCog />}
+                  variant="ghost"
+                  justifyContent="flex-start"
+                  w="full"
+                >
+                  Settings
+                </Button>
+              </Link>
+             
               <Button
                 leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
                 onClick={toggleColorMode}
@@ -171,7 +238,7 @@ const MobileMenu = () => {
               </Button>
               <Button
                 colorScheme="red"
-                onClick={() => console.log("Logged out")}
+                onClick={() => setIsLogoutOpen(false)}
                 ml={3}
               >
                 Log Out

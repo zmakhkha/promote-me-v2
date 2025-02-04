@@ -68,7 +68,7 @@ const UserCard = ({ user }: Props) => {
         as={Link}
         // href={`/profile/${user.username}`}
         // href={`/profile/${user.username}`}
-        href={`/profile/${user.username}`}
+        href={`/profile?user/${user.username}`}
         height={imageSize}
         width="100%"
         overflow="hidden"
