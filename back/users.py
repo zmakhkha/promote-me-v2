@@ -41,7 +41,7 @@ def generate_random_user(i):
         "location": location,
         "bio": bio,
         "interests": interests,
-        "status": is_online,
+        "status": status,
         "snapchat": snapchat,
         "instagram": instagram,
         "tiktok": tiktok,

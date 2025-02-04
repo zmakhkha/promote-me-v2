@@ -1,27 +1,31 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { Grid, GridItem } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Flex, Grid, GridItem } from "@chakra-ui/react";
+import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import MyProfile from "@/components/profile/MyProfile";
 import Header from "@/common/Header";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
+import MainProfile from "@/components/profile/MainProfile";
+type Props = {
+  user: string;
+};
 
-const MePage = () => {
-  const router = useRouter();
+const page = ({ params }: { params: Props }) => {
+  const { user } = params;
   const { bg, textColor, navBgColor } = useColorModeStyles();
+
+  const router = useRouter();
 
   useEffect(() => {
     const isAuthenticated = checkAuthTokens();
     if (!isAuthenticated) {
       router.push("/login");
     }
-    socketConnect("1");
+    socketConnect("2");
   }, [router]);
-
   return (
     <Grid
       templateAreas={{
@@ -52,12 +56,19 @@ const MePage = () => {
       </GridItem>
 
       {/* Main Content Section */}
-      <GridItem area="main" pl="2" bg={navBgColor}>
-        {/* Pass the user query parameter to MyProfile as a prop */}
-        <MyProfile />
+      <GridItem
+        area="main"
+        position="sticky"
+        zIndex="1000"
+        overflowY="auto"
+        pl="2"
+        bg={navBgColor}
+      >
+        {/* Pass the user query parameter to MainProfile as a prop */}
+        <MainProfile username={user} />
       </GridItem>
     </Grid>
   );
 };
 
-export default MePage;
+export default page;

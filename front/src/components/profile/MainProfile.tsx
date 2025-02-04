@@ -156,35 +156,68 @@ const MainProfile = ({ username }: MainProfileProps) => {
         {/* Social Media Icons */}
         <HStack justify="center" spacing={4} mb={2}>
           {userData.instagram && (
-            <IconButton
-              aria-label="Instagram"
-              icon={<FaInstagram />}
-              onClick={() => window.open(userData.instagram!, "_blank")}
-              colorScheme="pink"
-              variant="ghost"
-            />
+            <Link
+              href={`https://www.instagram.com/${userData.instagram}`}
+              isExternal
+              color="blue.400"
+              fontWeight="medium"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              gap={2}
+              _hover={{ textDecoration: "underline" }}
+            >
+              <IconButton
+                aria-label="Instagram"
+                icon={<FaInstagram />}
+                colorScheme="pink"
+                variant="ghost"
+              />
+            </Link>
           )}
           {userData.snapchat && (
-            <IconButton
-              aria-label="Snapchat"
-              icon={<FaSnapchatGhost />}
-              onClick={() => window.open(userData.snapchat!, "_blank")}
-              colorScheme="yellow"
-              variant="ghost"
-            />
+            <Link
+              href={`https://snapchat.com/add/${userData.instagram}`}
+              isExternal
+              color="blue.400"
+              fontWeight="medium"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              gap={2}
+              _hover={{ textDecoration: "underline" }}
+            >
+              <IconButton
+                aria-label="Snapchat"
+                icon={<FaSnapchatGhost />}
+                colorScheme="yellow"
+                variant="ghost"
+              />
+            </Link>
           )}
           {userData.tiktok && (
-            <IconButton
-              aria-label="TikTok"
-              icon={<FaTiktok />}
-              onClick={() => window.open(userData.tiktok!, "_blank")}
-              color={tiktok}
-              bg="transparent"
-              _hover={{
-                bg: useColorModeValue("gray.200", "gray.700"),
-              }}
-              variant="ghost"
-            />
+            <Link
+              href={`https://www.tiktok.com/@${userData.instagram}`}
+              isExternal
+              color="blue.400"
+              fontWeight="medium"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              gap={2}
+              _hover={{ textDecoration: "underline" }}
+            >
+              <IconButton
+                aria-label="Tiktok"
+                icon={<FaTiktok />}
+                color={tiktok}
+                bg="transparent"
+                _hover={{
+                  bg: useColorModeValue("gray.200", "gray.700"),
+                }}
+                variant="ghost"
+              />
+            </Link>
           )}
         </HStack>
 

@@ -17,7 +17,6 @@ import {
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdLocationOff } from "react-icons/md";
 import { FaInstagram } from "react-icons/fa";
-import { log } from "console";
 
 interface HomeUser {
   id: number;
@@ -69,7 +68,7 @@ const UserCard = ({ user }: Props) => {
         as={Link}
         // href={`/profile/${user.username}`}
         // href={`/profile/${user.username}`}
-        href={`/profile?user=${user.username}`}
+        href={`/profile/${user.username}`}
         height={imageSize}
         width="100%"
         overflow="hidden"

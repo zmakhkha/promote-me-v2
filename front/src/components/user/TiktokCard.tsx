@@ -12,12 +12,10 @@ import {
   Divider,
   Link,
   Flex,
-  Spacer,
 } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdLocationOff } from "react-icons/md";
-import { FaInstagram } from "react-icons/fa";
-import { log } from "console";
+import { FaTiktok } from "react-icons/fa";
 
 interface HomeUser {
   id: number;
@@ -69,7 +67,7 @@ const TiktokCard = ({ user }: Props) => {
         as={Link}
         // href={`/profile/${user.username}`}
         // href={`/profile/${user.username}`}
-        href={`/profile?user=${user.username}`}
+        href={`/profile/${user.username}`}
         height={imageSize}
         width="100%"
         overflow="hidden"
@@ -174,7 +172,7 @@ const TiktokCard = ({ user }: Props) => {
           gap={2}
           _hover={{ textDecoration: "underline" }}
         >
-          <FaInstagram />
+          <FaTiktok />
           View Tiktok
         </Link>
       </Box>
