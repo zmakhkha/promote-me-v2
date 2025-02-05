@@ -25,6 +25,7 @@ import {
 } from "react-icons/fa";
 import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
+import api from "@/services/axios/api";
 
 interface UserData {
   username: string;
@@ -74,18 +75,13 @@ const MainProfile = ({ username }: MainProfileProps) => {
     placeholderAvatar.src
   );
 
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:2000/api/v1/users/${username}/`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch user data");
-        }
-        const data = await response.json();
-        setUserData(data);
-        setImagePreview(data.image_url || placeholderAvatar.src);
+        const response = await api.get(`/api/v1/users/${username}/`);
+        setUserData(response.data);
+        setImagePreview(response.data.image_url || placeholderAvatar.src);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }

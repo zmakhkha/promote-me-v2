@@ -1,0 +1,70 @@
+version: "3"
+
+services:
+  back-end:
+    build: ./back
+    ports:
+      - "2000:2000"
+    container_name: backend
+    volumes:
+      - ./back:/code
+    depends_on:
+      - data
+    networks:
+      - promote
+    restart: unless-stopped
+
+  data:
+    container_name: database
+    image: postgres
+    volumes:
+      - data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    env_file:
+      - back/.env
+    networks:
+      - promote
+    restart: unless-stopped
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    ports:
+      - "8080:8080"
+    networks:
+      - promote
+    restart: unless-stopped
+
+  fron-tend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    image: frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - back-end
+    env_file:
+      - .env
+    networks:
+      - promote
+    restart: unless-stopped
+
+
+
+
+networks:
+  promote:
+  devops:
+
+volumes:
+  data:
+  esdata:
+  prometheus-data: {}
+  alertmanager-data: {}
+  grafana-data: {}

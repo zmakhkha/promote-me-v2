@@ -1,3 +1,4 @@
+const WS_URL = process.env.WS_URL
 let socket: WebSocket | null = null;
 let statusSocket: WebSocket | null = null;
 let randomSocket: WebSocket | null = null;
@@ -36,6 +37,7 @@ export const connectDirectChat = (token: string, receiverId: string): void => {
 };
 
 export const connectWebSocket = (token: string, type: string): void => {
+  console.log('-------------------hahua----------------------------------', WS_URL);
   const url = `ws://localhost:2000/ws/status/${token}/${type}`;
   if (!statusSocket || statusSocket.readyState !== WebSocket.OPEN) {
     statusSocket = new WebSocket(url);
