@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import api from "@/services/axios";
+import api from "@/services/axios/api";
 import SnapCard from "../user/SnapCard";
 
 const USERS_PER_PAGE = 8;

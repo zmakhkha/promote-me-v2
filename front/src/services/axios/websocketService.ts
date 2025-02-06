@@ -1,4 +1,4 @@
-const WS_URL = process.env.WS_URL
+import {SOCKET_URL} from '@/utils/config'
 let socket: WebSocket | null = null;
 let statusSocket: WebSocket | null = null;
 let randomSocket: WebSocket | null = null;
@@ -12,7 +12,7 @@ let directChatSocket: WebSocket | null = null; // This should be used globally f
  */
 
 export const connectDirectChat = (token: string, receiverId: string): void => {
-  const wsUrl = `ws://localhost:2000/ws/direct/${token}/${receiverId}`;
+  const wsUrl = `${SOCKET_URL}ws/direct/${token}/${receiverId}`;
 
   if (!directChatSocket || directChatSocket.readyState !== WebSocket.OPEN) {
     directChatSocket = new WebSocket(wsUrl);
@@ -37,8 +37,7 @@ export const connectDirectChat = (token: string, receiverId: string): void => {
 };
 
 export const connectWebSocket = (token: string, type: string): void => {
-  console.log('-------------------hahua----------------------------------', WS_URL);
-  const url = `ws://localhost:2000/ws/status/${token}/${type}`;
+  const url = `${SOCKET_URL}ws/status/${token}/${type}`;
   if (!statusSocket || statusSocket.readyState !== WebSocket.OPEN) {
     statusSocket = new WebSocket(url);
 
@@ -66,7 +65,7 @@ export const connectWebSocket = (token: string, type: string): void => {
  * @param token - The user token.
  */
 export const randomConnectWebSocket = (token: string): void => {
-  const url = `ws://localhost:2000/ws/random/${token}`;
+  const url = `${SOCKET_URL}ws/random/${token}`;
   if (!randomSocket || randomSocket.readyState !== WebSocket.OPEN) {
     randomSocket = new WebSocket(url);
 
@@ -104,7 +103,7 @@ export const disconnectWebSocket = (socket: WebSocket | null): void => {
 const startChat = async (token: string, roomId: string): Promise<void> => {
   try {
     // Construct WebSocket URL
-    const wsUrl = `ws://localhost:2000/ws/chat/${token}/${roomId}`;
+    const wsUrl = `${SOCKET_URL}ws/chat/${token}/${roomId}`;
 
     // Use the global `chatSocket` to store the chat WebSocket connection
     chatSocket = new WebSocket(wsUrl);

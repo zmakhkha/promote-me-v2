@@ -28,7 +28,7 @@ import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 import Image from "next/image";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import api from "@/services/axios";
+import api from "@/services/axios/api";
 
 const BigMenu = () => {
   const { colorMode } = useColorMode();

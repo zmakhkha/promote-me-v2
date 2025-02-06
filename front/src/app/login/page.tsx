@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 // import axios from "api";
-import api from "@/services/axios";
+import api from "@/services/axios/api";
 
 import "../../css/LoginPage.css";
-import { API_URL } from '@/utils/config';
+import { API_URL } from "@/utils/config";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");

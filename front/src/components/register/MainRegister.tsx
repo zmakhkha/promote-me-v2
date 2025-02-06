@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import axios from "../../services/axios";
+import axios from "../../services/axios/api";
 
 const MainRegister = () => {
   const [step, setStep] = useState(1);

@@ -1,8 +1,7 @@
-import React from "react";
-
+import {API_URL_IMG} from '@/utils/config'
 
 const getCorrectImage = (url: String) => {
-  return "http://localhost:2000" + url;
+  return API_URL_IMG + url;
 };
 
 export default getCorrectImage;

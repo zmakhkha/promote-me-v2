@@ -24,7 +24,7 @@ import {
 } from "react-icons/fa";
 import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
-import api from "@/services/axios";
+import api from "@/services/axios/api";
 import getCorrectImage from "@/services/axios/getCorrectImage";
 
 interface UserData {

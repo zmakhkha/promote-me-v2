@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_URL } from "@/utils/config";
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:2000/",
+  baseURL: API_URL,
 });
 
 // Add an interceptor to include the access token in every request
@@ -14,6 +15,22 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Add an interceptor to handle responses
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Clear the invalid token and redirect to the login page
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   }
 );

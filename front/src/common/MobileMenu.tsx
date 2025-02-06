@@ -33,7 +33,7 @@ import Image from "next/image";
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import api from "@/services/axios";
+import api from "@/services/axios/api";
 
 const MobileMenu = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -197,7 +197,7 @@ const MobileMenu = () => {
                   Settings
                 </Button>
               </Link>
-             
+
               <Button
                 leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
                 onClick={toggleColorMode}

@@ -11,7 +11,7 @@ import {
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import UserCard from "../user/UserCard";
-import api from "@/services/axios";
+import api from "@/services/axios/api";
 
 const USERS_PER_PAGE = 8;
 
