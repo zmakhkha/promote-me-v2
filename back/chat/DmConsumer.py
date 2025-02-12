@@ -83,11 +83,22 @@ class DmConsumer(AsyncWebsocketConsumer):
                         'content': content
                     }
                 )
+                await self.channel_layer.group_send(
+                "update",
+                    {
+                        "type": "chat_update",
+                    }
+                )
             else:
                 logger.warning("DmConsumer: receive - Received message is empty or does not contain content.")
         except json.JSONDecodeError:
             logger.error("DmConsumer: receive - Failed to parse received message as JSON.")
 
+    async def chat_update(self, event):
+        await self.send(text_data=json.dumps({
+            "event": "chat_update"
+        }))
+    
     async def chat_message(self, event):
         room_name = event['room_name']
         content = event['content']

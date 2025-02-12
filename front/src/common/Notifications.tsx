@@ -2,9 +2,22 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Box, IconButton, Badge, VStack, Text, Menu, MenuButton, MenuList, MenuItem, Divider, useDisclosure } from "@chakra-ui/react";
+import {
+  Box,
+  IconButton,
+  Badge,
+  VStack,
+  Text,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Divider,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { FiInbox } from "react-icons/fi";
 import api from "@/services/axios/api";
+import { SOCKET_URL } from "@/utils/config";
 
 interface Message {
   id: number;
@@ -16,22 +29,55 @@ interface Message {
 
 const Notifications = () => {
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
   const router = useRouter();
   const { isOpen, onToggle, onClose } = useDisclosure(); // Control dropdown state
 
+  const fetchNotifications = async () => {
+    try {
+      const response = await api.get("/api/v1/messages-notifications/");
+      setUnseenMessages(response.data.unseen_messages || []);
+    } catch (error) {
+      console.error("Error fetching unseen messages:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchNotifications = async () => {
+    fetchNotifications();
+
+    const token = localStorage.getItem("accessToken") || "";
+    const newSocket = new WebSocket(`${SOCKET_URL}ws/chat/${token}/update`);
+
+    newSocket.onopen = () => {
+      console.log("Connected to global update WebSocket");
+    };
+
+    newSocket.onmessage = (event: MessageEvent) => {
       try {
-        const response = await api.get("/api/v1/messages-notifications/");
-        setUnseenMessages(response.data.unseen_messages || []);
-		console.log("----------",response.data.unseen_messages)
+        const data = JSON.parse(event.data);
+        if (data.event === "chat_update") {
+          fetchNotifications();
+        }
       } catch (error) {
-        console.error("Error fetching unseen messages:", error);
+        console.error("Error parsing WebSocket message:", error);
       }
     };
 
-    fetchNotifications();
-  }, []);
+    newSocket.onerror = (event: Event) => {
+      console.error("WebSocket error:", event);
+    };
+
+    newSocket.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+      setSocket(null);
+    };
+  }, []); // Only runs once on mount
 
   return (
     <Menu isOpen={isOpen} onClose={onClose}>
@@ -58,7 +104,9 @@ const Notifications = () => {
 
       <MenuList minW="250px" p={2}>
         {unseenMessages.length === 0 ? (
-          <Text textAlign="center" color="gray.500">No new messages</Text>
+          <Text textAlign="center" color="gray.500">
+            No new messages
+          </Text>
         ) : (
           <VStack align="stretch" spacing={1}>
             {unseenMessages.map((msg) => (
@@ -74,7 +122,9 @@ const Notifications = () => {
               >
                 <Text fontWeight="bold">{msg.sender_username}:</Text>
                 <Text fontSize="sm" isTruncated>
-                  {msg.content.length > 30 ? `${msg.content.slice(0, 30)}...` : msg.content}
+                  {msg.content.length > 30
+                    ? `${msg.content.slice(0, 30)}...`
+                    : msg.content}
                 </Text>
               </MenuItem>
             ))}
