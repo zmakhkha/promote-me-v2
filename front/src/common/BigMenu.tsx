@@ -29,6 +29,7 @@ import logoDark from "../../public/logo-dark.png";
 import Image from "next/image";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
+import Notifications from "./Notifications";
 
 const BigMenu = () => {
   const { colorMode } = useColorMode();
@@ -84,8 +85,7 @@ const BigMenu = () => {
         borderColor="red"
       >
         <Flex align="center">
-          <Tooltip label="Notifications" aria-label="Notifications">
-            <Link href="/notifications">
+            {/* <Link href="/notifications">
               <IconButton
                 icon={<BellIcon />}
                 aria-label="Notifications"
@@ -93,8 +93,8 @@ const BigMenu = () => {
                 _hover={{ color: hoverColor }}
                 mr={4}
               />
-            </Link>
-          </Tooltip>
+            </Link> */}
+            <Notifications/>
           <Menu>
             <MenuButton
               as={IconButton}

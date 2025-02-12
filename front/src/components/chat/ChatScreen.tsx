@@ -338,7 +338,7 @@ const ChatScreen = () => {
           <Box
             position="absolute"
             bottom="50px"
-            zIndex="10"
+            zIndex="2"
             ref={emojiPickerRef}
           >
             <EmojiPicker onEmojiClick={addEmoji} />

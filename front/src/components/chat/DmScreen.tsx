@@ -107,7 +107,7 @@ const DmScreen = ({ user }: Props) => {
   // Connect WebSocket on user change
   useEffect(() => {
     if (user) {
-    const token = localStorage.getItem("accessToken") || "";
+      const token = localStorage.getItem("accessToken") || "";
 
       connectWebSocket(token || "", "2");
     }
@@ -272,7 +272,7 @@ const DmScreen = ({ user }: Props) => {
           <Box
             position="absolute"
             bottom="50px"
-            zIndex="10"
+            zIndex="2"
             ref={emojiPickerRef}
           >
             <EmojiPicker onEmojiClick={addEmoji} />

@@ -35,7 +35,7 @@ const HomePage = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" position="sticky" top="0" zIndex="10" bg={bg}>
+      <GridItem area="header" position="sticky" top="0" zIndex="2" bg={bg}>
         {/* Placeholder for Header */}
         <h1>Header</h1>
       </GridItem>

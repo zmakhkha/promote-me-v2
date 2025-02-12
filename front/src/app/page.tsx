@@ -38,7 +38,7 @@ const Page = () => {
       fontWeight="bold"
     >
       {/* Header Section */}
-      <GridItem area="header" position="sticky" top="0" zIndex="10" bg={bg}>
+      <GridItem area="header" position="sticky" top="0" zIndex="1001" bg={bg}>
         <Header />
       </GridItem>
 
@@ -55,7 +55,7 @@ const Page = () => {
       <GridItem
         area="main"
         position="sticky"
-        zIndex="1000"
+        zIndex="1"
         overflowY="auto"
         pl="2"
         bg={navBgColor}

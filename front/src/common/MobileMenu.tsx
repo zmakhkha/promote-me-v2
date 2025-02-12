@@ -34,6 +34,7 @@ import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
+import Notifications from "./Notifications";
 
 const MobileMenu = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -82,14 +83,16 @@ const MobileMenu = () => {
       </Link>
 
       <Flex justify="space-between" bg={bg}>
-        <Link href="/notifications">
+        {/* <Link href="/notifications">
           <Button
             leftIcon={<BellIcon />}
             variant="ghost"
             justifyContent="flex-start"
             w="full"
           ></Button>
-        </Link>
+        </Link> */}
+        <Notifications />
+
         <Menu>
           <MenuButton
             as={IconButton}

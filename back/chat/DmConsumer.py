@@ -27,6 +27,8 @@ class DmConsumer(AsyncWebsocketConsumer):
         logger.info(f"DmConsumer: connect - {user.username} Connected successfully.")
         await self.accept()
 
+        await self.mark_messages_as_seen(room_name, user)
+
         # Use the room_name for group management
         group_name = room_name
         await self.channel_layer.group_add(group_name, self.channel_name)
@@ -110,7 +112,7 @@ class DmConsumer(AsyncWebsocketConsumer):
             sender_id=sender,
             receiver_id=receiver,
             content=content,
-            room_name=room_name  # Use the room_name explicitly
+            room_name=room_name
         )
 
     def get_receiver_username(self, room_name, sender_username):
@@ -126,3 +128,10 @@ class DmConsumer(AsyncWebsocketConsumer):
         if username1 == sender_username:
             return username2
         return username1
+
+    @sync_to_async
+    def mark_messages_as_seen(self, room_name, user):
+        # Mark only the messages where the user is the receiver and they are not already seen
+        print(f"{room_name}------{user}")
+        Message.objects.filter(room_name=room_name, receiver=user, is_seen=False).update(is_seen=True)
+        
