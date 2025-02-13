@@ -185,3 +185,5 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
 export const generateRoomName = (username1: string, username2: string): string => {
   return `room_dm_${[username1, username2].sort().join("_")}`;
 };
+
+
