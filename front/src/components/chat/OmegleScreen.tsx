@@ -32,7 +32,7 @@ const OmegleScreen = () => {
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const [activeUsers, setActiveUsers] = useState<number>(500);
-  const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
+  const { bg, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 

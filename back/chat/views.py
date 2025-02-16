@@ -80,3 +80,17 @@ class DeleteAllMessages(APIView):
         Message.objects.all().delete()
         
         return Response({"message": "All messages have been deleted."}, status=status.HTTP_204_NO_CONTENT)
+    
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+from .models import OmegleChatUser
+from .serializers import OmegleChatUserSerializer
+
+class OnlineUsersAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        online_users = OmegleChatUser.objects.filter(is_online=True)
+        serializer = OmegleChatUserSerializer(online_users, many=True)
+        return Response(serializer.data)

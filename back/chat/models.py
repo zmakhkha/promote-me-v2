@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils.timezone import now
 
 user = settings.AUTH_USER_MODEL
 
@@ -13,3 +14,14 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message from {self.sender} to {self.receiver} in room {self.room_name} at {self.timestamp}"
+
+class OmegleChatUser(models.Model):
+    username = models.CharField(max_length=150, unique=True)
+    ip_address = models.GenericIPAddressField()
+    country = models.CharField(max_length=100, default="Unknown")
+    tags = models.JSONField(default=list)  # Stores tags as a list
+    created_at = models.DateTimeField(default=now)
+    is_online = models.BooleanField(default=True)  # Tracks online status
+
+    def __str__(self):
+        return f"{self.username} ({'Online' if self.is_online else 'Offline'})"

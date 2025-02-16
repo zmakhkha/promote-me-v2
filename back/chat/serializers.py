@@ -14,3 +14,11 @@ class MessageNotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ["id", "sender_username", "content", "timestamp",]
+
+from rest_framework import serializers
+from .models import OmegleChatUser
+
+class OmegleChatUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OmegleChatUser
+        fields = ["id", "username", "country", "tags"]
