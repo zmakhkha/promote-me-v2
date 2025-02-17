@@ -13,7 +13,7 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
         self.name = self.scope['url_route']['kwargs']['name']
         self.age = self.scope['url_route']['kwargs']['age']
         timestamp = int(time.time())
-        self.username = f"{timestamp}_{self.ip}"  # Unique username
+        self.username = f"{timestamp}-{self.ip}"  # Unique username
         self.user_id = f"{self.name}_{self.age}_{self.ip}"
         self.room_group_name = None
         waiting_users.append(self)
@@ -89,7 +89,7 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
                 {
                     "type": "match_made",
                     "message": "You have been matched!",
-                    "room_link": f"/chat/{room_name}",
+                    "roomId": f"{room_name}",
                 },
             )
         else:
@@ -100,4 +100,4 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
 
     async def match_made(self, event):
         # Send a message to both users that they have been matched
-        await self.send(text_data=json.dumps({"message": event["message"], "room_link": event["room_link"], "type": "match"}))
+        await self.send(text_data=json.dumps({"message": event["message"], "roomId": event["roomId"], "type": "match"}))
