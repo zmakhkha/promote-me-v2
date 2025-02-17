@@ -4,7 +4,7 @@ let statusSocket: WebSocket | null = null;
 let randomSocket: WebSocket | null = null;
 let chatSocket: WebSocket | null = null; // This should be used globally for the chat connection
 let directChatSocket: WebSocket | null = null; // This should be used globally for the chat connection
-
+let omegleSocket: WebSocket | null = null;
 /**
  * Connect to a WebSocket for a specific type and token.
  * @param token - The user token.
@@ -83,6 +83,35 @@ export const randomConnectWebSocket = (token: string): void => {
     };
 
     randomSocket.onerror = (error) => {
+      console.error("[Random WebSocket] WebSocket error:", error);
+    };
+  }
+};
+
+
+/**
+ * Connect to a random match WebSocket for a specific token.
+ * @param token - The user token.
+ */
+export const OmegleConnectWebSocket = (token: string, ip: string, name: string, age: number): void => {
+  const url = `${SOCKET_URL}ws/omegle/${ip}/${name}/${age}`;
+  if (!omegleSocket || omegleSocket.readyState !== WebSocket.OPEN) {
+    omegleSocket = new WebSocket(url);
+
+    omegleSocket.onopen = () => {
+      console.log(`[Omegle WebSocket] Connected to WebSocket: ${url}`);
+    };
+
+    omegleSocket.onmessage = (event) => {
+      // console.log("[Random WebSocket] Message received:", event.data);
+      window.dispatchEvent(new MessageEvent("message", { data: event.data }));
+    };
+
+    omegleSocket.onclose = () => {
+      // console.log("[Random WebSocket] Disconnected from WebSocket");
+    };
+
+    omegleSocket.onerror = (error) => {
       console.error("[Random WebSocket] WebSocket error:", error);
     };
   }

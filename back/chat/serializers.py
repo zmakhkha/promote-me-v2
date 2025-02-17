@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Message
+from .models import Message, OmegleChatUser
 
 class MessageSerializer(serializers.ModelSerializer):
     timestamp = serializers.DateTimeField(format="%H:%M")
@@ -15,10 +15,8 @@ class MessageNotificationSerializer(serializers.ModelSerializer):
         model = Message
         fields = ["id", "sender_username", "content", "timestamp",]
 
-from rest_framework import serializers
-from .models import OmegleChatUser
 
 class OmegleChatUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = OmegleChatUser
-        fields = ["id", "username", "country", "tags"]
+        fields = ['user_id', 'username', 'name', 'age', 'ip', 'is_online', 'created_at']

@@ -72,13 +72,3 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
             today = date.today()
             return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
         return None
-    
-class OmegleChatUser(models.Model):
-    username = models.CharField(max_length=150)
-    ip_address = models.GenericIPAddressField()
-    country = models.CharField(max_length=100)
-    tags = models.JSONField(default=list)  # Stores tags as a list
-    created_at = models.DateTimeField(default=now)
-
-    def __str__(self):
-        return f"{self.username} ({self.ip_address})"

@@ -11,6 +11,7 @@ from chat.DirectChatConsumer import DirectChatConsumer
 from chat.DmConsumer import DmConsumer
 from chat.randomChatConsumer import RandomChatConsumer
 from chat.statusConsumer import StatusConsumer
+from chat.OmegleChatConsumer import OmegleChatConsumer
 
 application = ProtocolTypeRouter({
   'http': get_asgi_application(),
@@ -19,6 +20,7 @@ application = ProtocolTypeRouter({
 	path("ws/random/<str:token>", RandomChatConsumer.as_asgi()),
   path("ws/chat/<str:token>/<str:roomId>", DmConsumer.as_asgi()),
   path("ws/direct/<str:token>/<str:user>", DirectChatConsumer.as_asgi()),
+  path("ws/omegle/<str:ip>/<str:name>/<str:age>", OmegleChatConsumer.as_asgi()),
   # path("ws/chat/<str:token>/<str:roomId>", DmConsumer.as_asgi()),
   ]
     ),

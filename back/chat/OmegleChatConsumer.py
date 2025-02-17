@@ -1,104 +1,103 @@
 import json
 import random
+import time
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.db import database_sync_to_async
-from django.utils.timezone import now
-from .models import OmegleChatUser
 
-# Global list for waiting users
+# Global list for waiting users, which will store the connection object itself
 waiting_users = []
 
 class OmegleChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.user_id = self.channel_name  # Unique ID for anonymous users
-        self.room_group_name = None  # Room name initialization
-        await self.accept()
+        # Extract user details from the URL
+        self.ip = self.scope['url_route']['kwargs']['ip']
+        self.name = self.scope['url_route']['kwargs']['name']
+        self.age = self.scope['url_route']['kwargs']['age']
+        timestamp = int(time.time())
+        self.username = f"{timestamp}_{self.ip}"  # Unique username
+        self.user_id = f"{self.name}_{self.age}_{self.ip}"
+        self.room_group_name = None
+        waiting_users.append(self)
 
-        # Save user in DB
-        await self.add_user_to_db()
+        # Accept the WebSocket connection
+        await self.accept()
 
         # Try matching users
         await self.match_users()
 
     async def disconnect(self, close_code):
-        # Remove user from waiting list
+        # Remove user from waiting list if they were there
         if self in waiting_users:
             waiting_users.remove(self)
 
-        # Notify partner and cleanup
+        # If the user is in a room, notify the partner of the disconnection
         if self.room_group_name:
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "partner_disconnected", "message": "Your chat partner has disconnected."},
             )
+            # Discard the user from the room group
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
-        # Mark user as offline
-        await self.mark_user_offline()
 
     async def receive(self, text_data):
         data = json.loads(text_data)
         message = data.get("message")
 
         if self.room_group_name and message:
+            # Forward the message to the other user in the same chat room
             await self.channel_layer.group_send(
                 self.room_group_name,
                 {"type": "chat_message", "message": message, "sender": self.user_id},
             )
 
     async def chat_message(self, event):
+        # Send the message to the current WebSocket connection
         await self.send(text_data=json.dumps({"message": event["message"], "sender": event["sender"]}))
 
     async def partner_disconnected(self, event):
+        # Notify the user that their partner has disconnected
         await self.send(text_data=json.dumps({"message": event["message"], "type": "disconnect"}))
-        self.room_group_name = None  # Reset room name
+        self.room_group_name = None
 
     async def match_users(self):
-        """Fetch online users and create a chat room."""
-        online_users = await self.get_online_users()
-        
-        if len(online_users) < 2:
+        print('[match_users]= tried to match user with list containing : ', len(waiting_users))
+        """Match users from the waiting list to create a chat room."""
+        # If there are fewer than 2 users, wait for another user to connect
+        if len(waiting_users) < 2:
             if self not in waiting_users:
-                waiting_users.append(self)  # Add to queue if no match found
+                waiting_users.append(self)
             return
 
-        # Pick two random users
-        user1, user2 = random.sample(online_users, 2)
+        # Ensure there are at least two users in waiting_users before attempting to match
+        if len(waiting_users) >= 2:
+            user1, user2 = random.sample(waiting_users, 2)
+            print(f"[match_users] matched [{user1.username}] with [{user2.username}]")
 
-        room_name = f"chat_{user1.username}_{user2.username}"
+            # Create a unique room name for the chat
+            room_name = f"chat_{user1.username}_{user2.username}"
 
-        user1.room_group_name = room_name
-        user2.room_group_name = room_name
+            # Set the room group for both users
+            user1.room_group_name = room_name
+            user2.room_group_name = room_name
 
-        # Add both users to the chat room
-        await self.channel_layer.group_add(room_name, user1.channel_name)
-        await self.channel_layer.group_add(room_name, user2.channel_name)
+            # Add both users to the same chat room
+            await self.channel_layer.group_add(room_name, user1.channel_name)
+            await self.channel_layer.group_add(room_name, user2.channel_name)
 
-        # Notify users about their match
-        await self.channel_layer.group_send(
-            room_name,
-            {
-                "type": "match_made",
-                "message": f"Room created: {room_name}",
-                "room_link": f"/chat/{room_name}",
-            },
-        )
+            # Notify both users that they have been matched
+            await self.channel_layer.group_send(
+                room_name,
+                {
+                    "type": "match_made",
+                    "message": "You have been matched!",
+                    "room_link": f"/chat/{room_name}",
+                },
+            )
+        else:
+            # If there are fewer than 2 users, add the current user to the waiting list
+            if self not in waiting_users:
+                waiting_users.append(self)
+                print(f"connected users: {len(waiting_users)}")
 
     async def match_made(self, event):
-        """Notify the user about their match and room link."""
+        # Send a message to both users that they have been matched
         await self.send(text_data=json.dumps({"message": event["message"], "room_link": event["room_link"], "type": "match"}))
-
-    @database_sync_to_async
-    def get_online_users(self):
-        """Fetch online users from the database."""
-        return list(OmegleChatUser.objects.filter(is_online=True))
-
-    @database_sync_to_async
-    def add_user_to_db(self):
-        """Mark user as online."""
-        OmegleChatUser.objects.update_or_create(username=self.user_id, defaults={"is_online": True})
-
-    @database_sync_to_async
-    def mark_user_offline(self):
-        """Mark user as offline."""
-        OmegleChatUser.objects.filter(username=self.user_id).update(is_online=False)

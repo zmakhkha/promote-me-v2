@@ -3,7 +3,7 @@
 import { Flex } from "@chakra-ui/react";
 import React from "react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import OmegleScreen from "@/components/chat/OmegleScreen";
+import OmegleScreen from "@/components/chat/OmegleChatScreen";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();

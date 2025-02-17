@@ -16,12 +16,18 @@ class Message(models.Model):
         return f"Message from {self.sender} to {self.receiver} in room {self.room_name} at {self.timestamp}"
 
 class OmegleChatUser(models.Model):
-    username = models.CharField(max_length=150, unique=True)
-    ip_address = models.GenericIPAddressField()
-    country = models.CharField(max_length=100, default="Unknown")
-    tags = models.JSONField(default=list)  # Stores tags as a list
-    created_at = models.DateTimeField(default=now)
-    is_online = models.BooleanField(default=True)  # Tracks online status
+    user_id = models.CharField(max_length=255, unique=True)
+    username = models.CharField(max_length=255, unique=True)  # Unique username based on timestamp and IP
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    ip = models.GenericIPAddressField()
+    is_online = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = f"{int(now().timestamp())}_{self.ip}"
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.username} ({'Online' if self.is_online else 'Offline'})"
+        return f"{self.name} ({self.age}) - {self.ip} ({'Online' if self.is_online else 'Offline'})"
