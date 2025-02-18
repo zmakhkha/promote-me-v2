@@ -13,13 +13,12 @@ import {
   Input,
 } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import startChat, {
-  connectWebSocket,
-  sendMessage,
+import {
+  startOmegleChat,
+  sendOmegleMessage,
   OmegleConnectWebSocket,
   disconnectAll,
 } from "@/services/axios/websocketService";
-import { getConnectedUser } from "@/services/axios/getConnectedUser";
 
 type Message = {
   text: string;
@@ -31,7 +30,6 @@ type Message = {
 const OmegleChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [token, setToken] = useState<string>("");
   const [chatStatus, setChatStatus] = useState<string>("Please enter your details...");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
@@ -91,7 +89,7 @@ const OmegleChatScreen = () => {
       setChatStatus("Connecting...");
 
       // Connect WebSocket with the IP address
-      OmegleConnectWebSocket(token || "", ip, name, age);
+      OmegleConnectWebSocket(ip, name, age);
     }
   };
 
@@ -120,6 +118,8 @@ const OmegleChatScreen = () => {
             setChatStatus("Connected! Start chatting.");
             setIsConnecting(false);
             setRoomId(data.roomId);
+            console.log("[roomId ++++++++++++++++++++++++], --->", data);
+            startOmegleChat(data.roomId);
             break;
 
           case "redirect":
@@ -137,7 +137,7 @@ const OmegleChatScreen = () => {
               }
               setIsConnecting(false);
               setRoomId(room_name);
-              startChat(token, room_name);
+              startOmegleChat(room_name);
             }
             break;
 
@@ -189,16 +189,16 @@ const OmegleChatScreen = () => {
     setRoomId(null);
 
     // Reconnect WebSocket
-    OmegleConnectWebSocket(token || "", ip, name, age);
+    OmegleConnectWebSocket(ip, name, age);
 
     if (roomId) {
-      startChat(token || "", roomId);
+      startOmegleChat(roomId);
     }
   };
 
   const handleSendMessage = () => {
     if (inputValue && inputValue.trim()) {
-      sendMessage({
+      sendOmegleMessage({
         user: user.username,
         sender: user.id,
         content: inputValue,

@@ -14,15 +14,7 @@ class DmOmegleConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         room_name = self.scope["url_route"]["kwargs"]["roomId"]
 
-        # # Generate a random username for non-authenticated users
-        # guest_username = f"guest_{self.generate_random_string(8)}"
-        # self.scope["user"] = {"username": guest_username}
-        # self.scope['user']
-
-        # logger.info(f"DmOmegleConsumer: connect - {guest_username} Connected successfully.")
         await self.accept()
-
-
         # Use the room_name for group management
         group_name = room_name
         await self.channel_layer.group_add(group_name, self.channel_name)
@@ -45,10 +37,7 @@ class DmOmegleConsumer(AsyncWebsocketConsumer):
                 logger.debug(f"DmOmegleConsumer: receive - Message content: {content}")
                 # sender = self.scope['user']
                 room_name = self.scope['url_route']['kwargs']['roomId']
-
-                # Get receiver username from the room_name
-                receiver_username = self.get_receiver_username(room_name, sender['username'])
-
+                
                 # Get current timestamp
                 x = datetime.datetime.now()
 
@@ -69,21 +58,8 @@ class DmOmegleConsumer(AsyncWebsocketConsumer):
                         'content': content
                     }
                 )
-                await self.channel_layer.group_send(
-                "update",
-                    {
-                        "type": "chat_update",
-                    }
-                )
-            else:
-                logger.warning("DmOmegleConsumer: receive - Received message is empty or does not contain content.")
         except json.JSONDecodeError:
             logger.error("DmOmegleConsumer: receive - Failed to parse received message as JSON.")
-
-    async def chat_update(self, event):
-        await self.send(text_data=json.dumps({
-            "event": "chat_update"
-        }))
     
     async def chat_message(self, event):
         room_name = event['room_name']

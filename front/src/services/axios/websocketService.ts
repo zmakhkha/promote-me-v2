@@ -3,6 +3,7 @@ let socket: WebSocket | null = null;
 let statusSocket: WebSocket | null = null;
 let randomSocket: WebSocket | null = null;
 let chatSocket: WebSocket | null = null; // This should be used globally for the chat connection
+let omegleChatSocket: WebSocket | null = null; // This should be used globally for the chat connection
 let directChatSocket: WebSocket | null = null; // This should be used globally for the chat connection
 let omegleSocket: WebSocket | null = null;
 /**
@@ -93,7 +94,7 @@ export const randomConnectWebSocket = (token: string): void => {
  * Connect to a random match WebSocket for a specific token.
  * @param token - The user token.
  */
-export const OmegleConnectWebSocket = (token: string, ip: string, name: string, age: number): void => {
+export const OmegleConnectWebSocket = (ip: string, name: string, age: number): void => {
   const url = `${SOCKET_URL}ws/omegle/${ip}/${name}/${age}`;
   if (!omegleSocket || omegleSocket.readyState !== WebSocket.OPEN) {
     omegleSocket = new WebSocket(url);
@@ -129,7 +130,7 @@ export const disconnectWebSocket = (socket: WebSocket | null): void => {
   }
 };
 
-const startChat = async (token: string, roomId: string): Promise<void> => {
+export const startChat = async (token: string, roomId: string): Promise<void> => {
   try {
     // Construct WebSocket URL
     const wsUrl = `${SOCKET_URL}ws/chat/${token}/${roomId}`;
@@ -168,6 +169,47 @@ const startChat = async (token: string, roomId: string): Promise<void> => {
   }
 };
 
+
+export const startOmegleChat = async (roomId: string): Promise<void> => {
+  try {
+    // Construct WebSocket URL
+    const wsUrl = `${SOCKET_URL}ws/omegle-chat/${roomId}`;
+
+    // Use the global `chatSocket` to store the chat WebSocket connection
+    omegleChatSocket = new WebSocket(wsUrl);
+
+    // Event handler for when WebSocket connection opens
+    omegleChatSocket.onopen = () => {
+      console.log("[Omegle Dms Consumer] WebSocket connection established!");
+      // Optionally send any initial messages here
+    };
+
+    // Event handler for receiving messages
+    omegleChatSocket.onmessage = (event: MessageEvent) => {
+      const messageData = JSON.parse(event.data);
+
+      // Handle the incoming message based on your use case
+      window.dispatchEvent(new MessageEvent("message", { data: event.data }));
+
+      console.log("[Omegle Dms Consumer] Received message:", messageData);
+    };
+
+    // Event handler for when WebSocket connection closes
+    omegleChatSocket.onclose = () => {
+      console.log("[Omegle Dms Consumer] WebSocket connection closed.");
+    };
+
+    // Event handler for errors
+    omegleChatSocket.onerror = (error) => {
+      console.error("[Omegle Dms Consumer] WebSocket error:", error);
+    };
+
+  } catch (error) {
+    console.error("[Omegle Dms Consumer] Error starting chat:", error);
+  }
+};
+
+
 export default startChat;
 
  // Disconnect all WebSockets
@@ -203,6 +245,38 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
       };
       console.log('++++++++++++++++++', formattedMessage);
       chatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message
+    } catch (error) {
+      console.error("[WebSocket] Error sending message:", error);
+    }
+  } else {
+    console.error("[WebSocket] Cannot send message, WebSocket is not connected");
+  }
+};
+
+
+/**
+ * Send a message through the WebSocket connection.
+ * @param message - The message object to send.
+ */
+export const sendOmegleMessage = async (message: Record<string, any>): Promise<void> => {
+  if (omegleChatSocket && omegleChatSocket.readyState === WebSocket.OPEN) {
+    try {
+      const content = message?.content;  // Ensure 'content' is part of the message
+      if (!content) {
+        throw new Error("Message content is missing");
+      }
+
+      // console.log("[WebSocket] Sending message:", message);
+
+      // Include the necessary fields such as user, timestamp, etc.
+      const formattedMessage = {
+        user: message.user || "default_user",  // You can set user here or from context
+        sender: message.sender || "default_sender",  // Similarly, set sender if not provided
+        timestamp: new Date().toISOString(),  // Using ISO string for timestamp
+        content: content,
+      };
+      console.log('++++++++++++++++++', formattedMessage);
+      omegleChatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message
     } catch (error) {
       console.error("[WebSocket] Error sending message:", error);
     }
