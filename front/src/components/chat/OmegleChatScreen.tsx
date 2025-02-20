@@ -118,8 +118,7 @@ const OmegleChatScreen = () => {
             setChatStatus("Connected! Start chatting.");
             setIsConnecting(false);
             setRoomId(data.roomId);
-            console.log("[roomId ++++++++++++++++++++++++], --->", data);
-            startOmegleChat(data.roomId);
+            startOmegleChat(data.roomId, name);
             break;
 
           case "redirect":
@@ -127,31 +126,32 @@ const OmegleChatScreen = () => {
             const user1 = users.user1;
             const user2 = users.user2;
             if (
-              user.username === user1.username ||
-              user.username === user2.username
+              name === user1.username ||
+              name === user2.username
             ) {
-              if (user.username === user1.username) {
+              if (name === user1.username) {
                 setChatStatus(`Matched with ${user2.username}!`);
-              } else if (user.username === user2.username) {
+              } else if (name === user2.username) {
                 setChatStatus(`Matched with ${user1.username}!`);
               }
               setIsConnecting(false);
               setRoomId(room_name);
-              startOmegleChat(room_name);
+              startOmegleChat(room_name, name);
             }
             break;
 
           case "chat_message":
-            const { sender, message, timestamp } = data;
+            console.log("[chat_message]---------->", data);
+            const { sender, content, timestamp } = data;
             const formattedTimestamp = `${timestamp.hour}:${timestamp.hour}`;
 
             if (data.roomId == roomId) {
               setMessages((prev) => [
                 ...prev,
                 {
-                  text: message,
-                  type: user.id === sender ? "sent" : "received",
-                  sender: user.id === sender ? user.username : data.user,
+                  text: content,
+                  type: name === sender ? "sent" : "received",
+                  sender: name === sender ? name : data.user,
                   timestamp: formattedTimestamp,
                 },
               ]);
@@ -192,16 +192,17 @@ const OmegleChatScreen = () => {
     OmegleConnectWebSocket(ip, name, age);
 
     if (roomId) {
-      startOmegleChat(roomId);
+      startOmegleChat(roomId, name);
     }
   };
 
   const handleSendMessage = () => {
     if (inputValue && inputValue.trim()) {
       sendOmegleMessage({
-        user: user.username,
-        sender: user.id,
+        user: name,
+        sender: name,
         content: inputValue,
+        roomName: roomId,
       });
       setInputValue("");
     }

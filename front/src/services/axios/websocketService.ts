@@ -104,7 +104,7 @@ export const OmegleConnectWebSocket = (ip: string, name: string, age: number): v
     };
 
     omegleSocket.onmessage = (event) => {
-      // console.log("[Random WebSocket] Message received:", event.data);
+      console.log("[Random WebSocket] Message received:", event.data);
       window.dispatchEvent(new MessageEvent("message", { data: event.data }));
     };
 
@@ -170,10 +170,10 @@ export const startChat = async (token: string, roomId: string): Promise<void> =>
 };
 
 
-export const startOmegleChat = async (roomId: string): Promise<void> => {
+export const startOmegleChat = async (roomId: string, name: string): Promise<void> => {
   try {
     // Construct WebSocket URL
-    const wsUrl = `${SOCKET_URL}ws/omegle-chat/${roomId}`;
+    const wsUrl = `${SOCKET_URL}ws/omegle-chat/${roomId}/${name}`;
 
     // Use the global `chatSocket` to store the chat WebSocket connection
     omegleChatSocket = new WebSocket(wsUrl);
@@ -183,10 +183,11 @@ export const startOmegleChat = async (roomId: string): Promise<void> => {
       console.log("[Omegle Dms Consumer] WebSocket connection established!");
       // Optionally send any initial messages here
     };
-
+    
     // Event handler for receiving messages
     omegleChatSocket.onmessage = (event: MessageEvent) => {
       const messageData = JSON.parse(event.data);
+      console.log("[Omegle Dms Consumer] received data : ", messageData);
 
       // Handle the incoming message based on your use case
       window.dispatchEvent(new MessageEvent("message", { data: event.data }));
@@ -266,14 +267,12 @@ export const sendOmegleMessage = async (message: Record<string, any>): Promise<v
         throw new Error("Message content is missing");
       }
 
-      // console.log("[WebSocket] Sending message:", message);
-
       // Include the necessary fields such as user, timestamp, etc.
       const formattedMessage = {
-        user: message.user || "default_user",  // You can set user here or from context
         sender: message.sender || "default_sender",  // Similarly, set sender if not provided
         timestamp: new Date().toISOString(),  // Using ISO string for timestamp
         content: content,
+        roomName: message.roomName || "empty",
       };
       console.log('++++++++++++++++++', formattedMessage);
       omegleChatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message

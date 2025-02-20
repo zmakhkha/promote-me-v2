@@ -1,10 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async
-from .models import Message
 import datetime
 import json
-import random
-import string
 from .utils import  getLogging
 
 
@@ -13,6 +9,7 @@ logger = getLogging()
 class DmOmegleConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         room_name = self.scope["url_route"]["kwargs"]["roomId"]
+        sender = self.scope["url_route"]["kwargs"]["sender"]
 
         await self.accept()
         # Use the room_name for group management
@@ -32,22 +29,21 @@ class DmOmegleConsumer(AsyncWebsocketConsumer):
         print("DmOmegleConsumer: receive - Received message from WebSocket: %s", text_data)
         try:
             message_data = json.loads(text_data)
-            content = message_data.get('content')
-            if content:
-                logger.debug(f"DmOmegleConsumer: receive - Message content: {content}")
-                # sender = self.scope['user']
+            message = message_data.get('content')
+            if message:
+                logger.debug(f"DmOmegleConsumer: receive - Message message: {message}")
                 room_name = self.scope['url_route']['kwargs']['roomId']
+                sender = self.scope['url_route']['kwargs']['sender']
                 
                 # Get current timestamp
                 x = datetime.datetime.now()
 
+                print("before : DmOmegleConsumer: sent to WebSocket")
                 await self.channel_layer.group_send(
                     room_name,
                     {
-                        'room_name' : room_name,
                         'type': 'chat_message',
-                        # 'user': sender['username'],
-                        # 'sender': sender['username'],  # Send username instead of user id
+                        'sender': sender,
                         'timestamp': {
                             'year': x.year,
                             'month': x.month,
@@ -55,43 +51,36 @@ class DmOmegleConsumer(AsyncWebsocketConsumer):
                             'hour': x.hour,
                             'minute': x.minute,
                         },
-                        'content': content
+                        'content': message
                     }
                 )
+                print("after : DmOmegleConsumer: sent to WebSocket")
         except json.JSONDecodeError:
             logger.error("DmOmegleConsumer: receive - Failed to parse received message as JSON.")
-    
+
     async def chat_message(self, event):
-        room_name = event['room_name']
-        content = event['content']
-        # sender = event['user']
-        # sender_id = event['sender']
-        timestamp = event['timestamp']
+        await self.send(text_data=json.dumps(event))
 
-        # Send the message to the WebSocket
-        await self.send(text_data=json.dumps({
-            'type': 'chat_message',
-            'room_name' : room_name,
-            # 'user': sender,
-            # 'sender': sender_id,
-            'timestamp': timestamp,
-            'message': content
-        }))
+    # async def chat_message(self, event):
+    #     room_name = event['room_name']
+    #     content = event['content']
+    #     sender = event['sender']
+    #     timestamp = event['timestamp']
 
-    def get_receiver_username(self, room_name, sender_username):
+    #     # Send the message to the WebSocket
+    #     await self.send(text_data=json.dumps({
+    #         'type': 'chat_message',
+    #         'room_name' : room_name,
+    #         'sender': sender,
+    #         'timestamp': timestamp,
+    #         'content': content
+    #     }))
+
+    def get_users_username(self, room_name, sender_username):
         """
         Given a room name like 'room_timestamp_username1_username2', extract the
         receiver's username by identifying which one is not the sender.
         """
         # Extract usernames from the room_name
-        print(f"---------------------->|{room_name}|")
-        _, username1, username2 = room_name.split("_")
-        
-        # Determine which username is the sender and which is the receiver
-        if username1 == sender_username:
-            return username2
-        return username1
-
-    def generate_random_string(self, length=8):
-        """Generate a random string of letters and digits for guest users."""
-        return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+        _, username1, username2 = room_name.split("_")        
+        return username1, username2

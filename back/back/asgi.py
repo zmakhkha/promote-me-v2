@@ -20,8 +20,8 @@ application = ProtocolTypeRouter({
 	path("ws/status/<str:token>/<int:type>", StatusConsumer.as_asgi()),
 	path("ws/random/<str:token>", RandomChatConsumer.as_asgi()),
   path("ws/chat/<str:token>/<str:roomId>", DmConsumer.as_asgi()),
-  path("ws/omegle-chat/<str:roomId>", DmOmegleConsumer.as_asgi()),
   path("ws/direct/<str:token>/<str:user>", DirectChatConsumer.as_asgi()),
+  path("ws/omegle-chat/<str:roomId>/<str:sender>", DmOmegleConsumer.as_asgi()),
   path("ws/omegle/<str:ip>/<str:name>/<str:age>", OmegleChatConsumer.as_asgi()),
   # path("ws/chat/<str:token>/<str:roomId>", DmConsumer.as_asgi()),
   ]

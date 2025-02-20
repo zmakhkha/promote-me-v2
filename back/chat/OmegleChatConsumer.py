@@ -33,29 +33,29 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
         if self.room_group_name:
             await self.channel_layer.group_send(
                 self.room_group_name,
-                {"type": "partner_disconnected", "message": "Your chat partner has disconnected."},
+                {"type": "partner_disconnected", "content": "Your chat partner has disconnected."},
             )
             # Discard the user from the room group
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data.get("message")
+        message = data.get("content")
 
         if self.room_group_name and message:
             # Forward the message to the other user in the same chat room
             await self.channel_layer.group_send(
                 self.room_group_name,
-                {"type": "chat_message", "message": message, "sender": self.user_id},
+                {"type": "chat_message", "content": message, "sender": self.user_id},
             )
 
     async def chat_message(self, event):
         # Send the message to the current WebSocket connection
-        await self.send(text_data=json.dumps({"message": event["message"], "sender": event["sender"]}))
+        await self.send(text_data=json.dumps({"content": event["content"], "sender": event["sender"]}))
 
     async def partner_disconnected(self, event):
         # Notify the user that their partner has disconnected
-        await self.send(text_data=json.dumps({"message": event["message"], "type": "disconnect"}))
+        await self.send(text_data=json.dumps({"content": event["content"], "type": "disconnect"}))
         self.room_group_name = None
 
     async def match_users(self):
@@ -88,7 +88,7 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
                 room_name,
                 {
                     "type": "match_made",
-                    "message": "You have been matched!",
+                    "content": "You have been matched!",
                     "roomId": f"{room_name}",
                 },
             )
@@ -100,4 +100,4 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
 
     async def match_made(self, event):
         # Send a message to both users that they have been matched
-        await self.send(text_data=json.dumps({"message": event["message"], "roomId": event["roomId"], "type": "match"}))
+        await self.send(text_data=json.dumps({"content": event["content"], "roomId": event["roomId"], "type": "match"}))
