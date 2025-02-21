@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   Flex,
   IconButton,
@@ -18,25 +18,17 @@ import {
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
 } from "@chakra-ui/react";
-import { HamburgerIcon, MoonIcon, SunIcon, BellIcon } from "@chakra-ui/icons";
-import { FaUser, FaHome, FaComments, FaCog } from "react-icons/fa";
+import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { FaHome, FaComments, FaCog } from "react-icons/fa";
 import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
-import { HiDocumentText } from "react-icons/hi";
-import { MdPrivacyTip } from "react-icons/md";
 import Image from "next/image";
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import api from "@/services/axios/api";
-import Notifications from "./Notifications";
 
-const MobileMenu = () => {
+const NonAuthHeaderSmall = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const logo = colorMode === "light" ? logoLight : logoDark;
   const { bg } = useColorModeStyles();
@@ -45,21 +37,6 @@ const MobileMenu = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await api.get("/api/v1/profile/");
-        setUsername(response.data.first_name);
-      } catch (error) {
-        console.error("[MobileMenu] Error fetching user data.");
-      }
-    };
-    fetchUser();
-  }, []);
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onOpen = () => setIsOpen(true);
 
   return (
     <Flex
@@ -83,42 +60,6 @@ const MobileMenu = () => {
       </Link>
 
       <Flex justify="space-between" bg={bg}>
-        {/* <Link href="/notifications">
-          <Button
-            leftIcon={<BellIcon />}
-            variant="ghost"
-            justifyContent="flex-start"
-            w="full"
-          ></Button>
-        </Link> */}
-        <Notifications />
-
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            icon={<FaUser />}
-            aria-label="Profile"
-            variant="ghost"
-          />
-          <MenuList>
-            <MenuItem>Welcome {username}</MenuItem>
-            <MenuItem icon={<FaUser />}>
-              <Link href="/profile">Profile</Link>
-            </MenuItem>
-            <MenuItem icon={<HiDocumentText />}>
-              <Link href="/termsofservice">Terms of Service</Link>
-            </MenuItem>
-            <MenuItem icon={<MdPrivacyTip />}>
-              <Link href="/privacypolicy">Privacy Policy</Link>
-            </MenuItem>
-            <MenuItem
-              onClick={onOpen}
-              icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}
-            >
-              Log Out
-            </MenuItem>
-          </MenuList>
-        </Menu>
         {/* Burger Menu */}
         <IconButton
           icon={<HamburgerIcon />}
@@ -157,7 +98,7 @@ const MobileMenu = () => {
                   justifyContent="flex-start"
                   w="full"
                 >
-                  Chat
+                  Omegle Chat 
                 </Button>
               </Link>
               <Link href="/snapchat">
@@ -190,17 +131,6 @@ const MobileMenu = () => {
                   TikTok
                 </Button>
               </Link>
-              <Link href="/settings">
-                <Button
-                  leftIcon={<FaCog />}
-                  variant="ghost"
-                  justifyContent="flex-start"
-                  w="full"
-                >
-                  Settings
-                </Button>
-              </Link>
-
               <Button
                 leftIcon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
                 onClick={toggleColorMode}
@@ -209,49 +139,12 @@ const MobileMenu = () => {
               >
                 {colorMode === "light" ? "Dark Mode" : "Light Mode"}
               </Button>
-              <Button
-                leftIcon={<IoLogOut />}
-                colorScheme="red"
-                onClick={() => setIsLogoutOpen(true)}
-                variant="ghost"
-                justifyContent="flex-start"
-              >
-                Log Out
-              </Button>
             </Flex>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-
-      {/* Logout Confirmation Dialog */}
-      <AlertDialog
-        isOpen={isLogoutOpen}
-        onClose={() => setIsLogoutOpen(false)}
-        leastDestructiveRef={cancelRef}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Confirm Logout
-            </AlertDialogHeader>
-            <AlertDialogBody>Are you sure you want to log out?</AlertDialogBody>
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={() => setIsLogoutOpen(false)}>
-                Cancel
-              </Button>
-              <Button
-                colorScheme="red"
-                onClick={() => setIsLogoutOpen(false)}
-                ml={3}
-              >
-                Log Out
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
     </Flex>
   );
 };
 
-export default MobileMenu;
+export default NonAuthHeaderSmall;

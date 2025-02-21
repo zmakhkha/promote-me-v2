@@ -1,58 +1,62 @@
 "use client";
 
 import { Grid, GridItem } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import MainInstagram from "@/components/instagram/mainInstagram";
-import Header from "@/common/Header";
-import { useRouter } from "next/navigation";
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
-import socketConnect from "@/services/axios/socketConnect";
 import OmegleChatScreen from "@/components/chat/OmegleChatScreen";
 import NonAuthHeader from "@/common/NonAuthHeader";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
+
   return (
     <Grid
       templateAreas={{
         base: `"header"
                "main"`,
-        md: `"header header"
+        md: `"nav header"
              "nav main"`,
       }}
-      gridTemplateRows={{ base: "auto 1fr", md: "50px 1fr" }}
-      gridTemplateColumns={{ base: "1fr", md: "50px 1fr" }}
+      gridTemplateRows={{ base: "auto 1fr", md: "60px 1fr" }} // Header is 60px tall
+      gridTemplateColumns={{ base: "1fr", md: "250px 1fr" }} // Sidebar 250px, main takes the rest
       height="100vh"
       gap="0.5"
       color={textColor}
       fontWeight="bold"
     >
-      {/* Header Section */}
-      <GridItem area="header" position="sticky" top="0" zIndex="2" bg={bg}>
-        <NonAuthHeader />
-      </GridItem>
-
-      {/* Sidebar Section */}
+      {/* Sidebar - Full Height */}
       <GridItem
         area="nav"
         bg={navBgColor}
         display={{ base: "none", md: "block" }}
+        zIndex="3"
+        height="100vh"
+        position="sticky"
+        top="0"
       >
         <Sidebar />
       </GridItem>
 
-      {/* Main Content Section */}
+      {/* Header - Starts After Sidebar */}
+      <GridItem
+        area="header"
+        position="sticky"
+        top="0"
+        zIndex="2"
+        bg={bg}
+        width="100%"
+      >
+        <NonAuthHeader />
+      </GridItem>
+
+      {/* Main Content */}
       <GridItem
         area="main"
-        position="sticky"
-        zIndex="1"
         overflowY="auto"
         pl="2"
         bg={navBgColor}
       >
-        {/* Placeholder for Main Content */}
         <OmegleChatScreen />
       </GridItem>
     </Grid>

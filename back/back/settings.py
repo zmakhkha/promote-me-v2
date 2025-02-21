@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = config('SECRET_KEY', default='your-fallback-secret-key')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default="localhost,127.0.0.1", cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default="localhost,127.0.0.1, 0.0.0.0, 192.168.1.10", cast=Csv())
 
 # APPLICATIONS
 INSTALLED_APPS = [

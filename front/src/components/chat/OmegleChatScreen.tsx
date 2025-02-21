@@ -11,6 +11,7 @@ import {
   Text,
   Spinner,
   Input,
+  Flex,
 } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import {
@@ -30,16 +31,18 @@ type Message = {
 const OmegleChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
-  const [chatStatus, setChatStatus] = useState<string>("Please enter your details...");
+  const [chatStatus, setChatStatus] = useState<string>(
+    "Please enter your details..."
+  );
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [user, setUser] = useState<any>(null);
-  const [name, setName] = useState<string>('');
+  const [name, setName] = useState<string>("");
   const [age, setAge] = useState<number>(18);
-  const [ip, setIp] = useState<string>('');
+  const [ip, setIp] = useState<string>("");
 
   const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
 
@@ -116,8 +119,10 @@ const OmegleChatScreen = () => {
         switch (data.type) {
           case "match":
             setChatStatus("Connected! Start chatting.");
+            
             setIsConnecting(false);
             setRoomId(data.roomId);
+            console.log("-------------------------->", roomId);
             startOmegleChat(data.roomId, name);
             break;
 
@@ -125,10 +130,7 @@ const OmegleChatScreen = () => {
             const { room_name, users } = data;
             const user1 = users.user1;
             const user2 = users.user2;
-            if (
-              name === user1.username ||
-              name === user2.username
-            ) {
+            if (name === user1.username || name === user2.username) {
               if (name === user1.username) {
                 setChatStatus(`Matched with ${user2.username}!`);
               } else if (name === user2.username) {
@@ -227,130 +229,143 @@ const OmegleChatScreen = () => {
   }, [escFunction]);
 
   return (
-    <Box
-      maxW="lg"
-      w="full"
-      bg={bg}
-      borderRadius="lg"
-      p={8}
-      boxShadow="lg"
-      borderColor={borderColor}
-      borderWidth="1px"
-      mx="auto"
-      my="auto"
-      display="flex"
-      flexDirection="column"
-      justifyContent="space-between"
-      height="80vh"
-    >
-      {/* Ask for user's name and age */}
-      {chatStatus === "Please enter your details..." && (
-        <VStack spacing={4}>
-          <Text fontSize="xl">Enter your details</Text>
-          <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Your name"
-          />
-          <Input
-            type="number"
-            value={age}
-            onChange={(e) => setAge(Number(e.target.value))}
-            placeholder="Your age"
-          />
-          <Button onClick={handleStartChat} colorScheme="blue">
-            Start Chat
-          </Button>
-        </VStack>
-      )}
-
-      {/* Chat Interface */}
-      {chatStatus !== "Please enter your details..." && (
-        <>
-          <Box mb={4} textAlign="center">
-            <Text fontSize="xl" fontWeight="bold">
-              {chatStatus}
-            </Text>
-            {isConnecting && <Spinner mt={4} />}
-          </Box>
-
-          <VStack
-            spacing={4}
-            border="2px"
-            borderColor={"blue.400"}
-            align="stretch"
-            mb={4}
-            maxHeight="calc(100% - 100px)"
-            overflowY="auto"
-            flexGrow={1}
-            p={2}
-          >
-            {messages.map((message, index) => (
-              <HStack
-                key={index}
-                justify={message.type === "sent" ? "flex-end" : "flex-start"}
-                align="flex-end"
-                spacing={2}
-              >
-                {message.type === "received" && (
-                  <Avatar size="sm" name={message.sender} />
-                )}
-                <Box
-                  bg={message.type === "sent" ? hoverColor : borderColor}
-                  color={message.type === "sent" ? "white" : textColor}
-                  px={4}
-                  py={2}
-                  borderRadius={12}
-                  maxWidth="70%"
-                  boxShadow="sm"
-                  display="flex"
-                  flexDirection="column"
-                  pt={1}
-                  pb={0}
-                >
-                  <Text fontWeight={400} fontSize="md" wordBreak="break-word">
-                    {message.text}
-                  </Text>
-                  <Text fontSize="xs" color="gray.400" textAlign="right" pb={0}>
-                    {message.timestamp}
-                  </Text>
-                </Box>
-              </HStack>
-            ))}
-            <div ref={messagesEndRef} />
-          </VStack>
-
-          {/* Message Input Section */}
-          <HStack spacing={2} pt={4}>
+    <Flex justify="center" align="center" py={5} px={5}>
+      <Box
+        maxW="lg"
+        w="full"
+        bg={bg}
+        borderRadius="lg"
+        p={8}
+        boxShadow="lg"
+        borderColor={borderColor}
+        borderWidth="1px"
+        mx="auto"
+        my="auto"
+        display="flex"
+        flexDirection="column"
+        justifyContent="space-between"
+        height="80vh"
+      >
+        {/* Ask for user's name and age */}
+        {chatStatus === "Please enter your details..." && (
+          <VStack spacing={4}>
+            <Text fontSize="xl">Enter your details</Text>
             <Input
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Type your message..."
-              size="lg"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
             />
-            <Button onClick={handleSendMessage} colorScheme="blue">
-              Send
+            <Input
+              type="number"
+              value={age}
+              onChange={(e) => setAge(Number(e.target.value))}
+              placeholder="Your age"
+            />
+            <Button onClick={handleStartChat} colorScheme="blue">
+              Start Chat
             </Button>
-            <Button variant="ghost" onClick={toggleEmojiPicker}>
-              <Smile />
-            </Button>
-            {showEmojiPicker && (
-              <div
-                ref={emojiPickerRef}
-                style={{
-                  position: "absolute",
-                  bottom: "60px",
-                  zIndex: 100,
-                  right: 0,
+          </VStack>
+        )}
+
+        {/* Chat Interface */}
+        {chatStatus !== "Please enter your details..." && (
+          <>
+            <Box mb={4} textAlign="center">
+              <Text fontSize="xl" fontWeight="bold">
+                {chatStatus}
+              </Text>
+              {isConnecting && <Spinner mt={4} />}
+            </Box>
+
+            <VStack
+              spacing={4}
+              border="2px"
+              borderColor={"blue.400"}
+              align="stretch"
+              mb={4}
+              maxHeight="calc(100% - 100px)"
+              overflowY="auto"
+              flexGrow={1}
+              p={2}
+            >
+              {messages.map((message, index) => (
+                <HStack
+                  key={index}
+                  justify={message.type === "sent" ? "flex-end" : "flex-start"}
+                  align="flex-end"
+                  spacing={2}
+                >
+                  {message.type === "received" && (
+                    <Avatar size="sm" name={message.sender} />
+                  )}
+                  <Box
+                    bg={message.type === "sent" ? hoverColor : borderColor}
+                    color={message.type === "sent" ? "white" : textColor}
+                    px={4}
+                    py={2}
+                    borderRadius={12}
+                    maxWidth="70%"
+                    boxShadow="sm"
+                    display="flex"
+                    flexDirection="column"
+                    pt={1}
+                    pb={0}
+                  >
+                    <Text fontWeight={400} fontSize="md" wordBreak="break-word">
+                      {message.text}
+                    </Text>
+                    <Text
+                      fontSize="xs"
+                      color="gray.400"
+                      textAlign="right"
+                      pb={0}
+                    >
+                      {message.timestamp}
+                    </Text>
+                  </Box>
+                </HStack>
+              ))}
+              <div ref={messagesEndRef} />
+            </VStack>
+
+            {/* Message Input Section */}
+            <HStack spacing={2} pt={4}>
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Type your message..."
+                size="lg"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault(); // Prevents a new line
+                    handleSendMessage();
+                  }
                 }}
-              >
-                <EmojiPicker onEmojiClick={addEmoji} />
-              </div>
-            )}
-          </HStack>
-        </>
-      )}
-    </Box>
+              />
+              <Button onClick={handleSendMessage} colorScheme="blue">
+                Send
+              </Button>
+              <Button variant="ghost" onClick={toggleEmojiPicker}>
+                <Smile />
+              </Button>
+              {showEmojiPicker && (
+                <div
+                  ref={emojiPickerRef}
+                  style={{
+                    position: "absolute",
+                    bottom: "60px",
+                    zIndex: 100,
+                    right: 0,
+                  }}
+                >
+                  <EmojiPicker onEmojiClick={addEmoji} />
+                </div>
+              )}
+            </HStack>
+          </>
+        )}
+      </Box>
+    </Flex>
   );
 };
 

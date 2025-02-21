@@ -9,6 +9,7 @@ logger = getLogging()
 class DmOmegleConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         room_name = self.scope["url_route"]["kwargs"]["roomId"]
+        print(f"romm id : ------------->{room_name}")
         sender = self.scope["url_route"]["kwargs"]["sender"]
 
         await self.accept()
