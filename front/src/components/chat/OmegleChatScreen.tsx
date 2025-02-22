@@ -50,6 +50,47 @@ const OmegleChatScreen = () => {
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   // Close emoji picker on outside click
+
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.data || event.data === "{}") {
+        console.error(
+          "[OmegleChatScreen] Received an empty WebSocket message:",
+          event.data
+        );
+        return;
+      }
+      try {
+        const data = JSON.parse(event.data);
+        console.log("[OmegleChatScreen][", data, "]");
+
+        switch (data.type) {
+          case "disconnect":
+            console.log("[OmegleChatScreen][disconnect]");
+            disconnectAll();
+            break;
+            case "chat_message":
+              console.log("[OmegleChatScreen][chat received]");
+              break;
+
+          default:
+            console.log("Unknown message type:", data);
+        }
+      } catch (error) {
+        console.log(
+          "-->|Failed to parse WebSocket message:",
+          event.data,
+          error
+        );
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, [user]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -119,7 +160,7 @@ const OmegleChatScreen = () => {
         switch (data.type) {
           case "match":
             setChatStatus("Connected! Start chatting.");
-            
+
             setIsConnecting(false);
             setRoomId(data.roomId);
             console.log("-------------------------->", roomId);
@@ -329,7 +370,14 @@ const OmegleChatScreen = () => {
             </VStack>
 
             {/* Message Input Section */}
-            <HStack spacing={2} pt={4}>
+            <HStack height={10} spacing={2} position="relative">
+              <Button
+                height={10}
+                colorScheme="pink"
+                onClick={resetChatAndReconnectWebSockets}
+              >
+                Esc
+              </Button>
               <Input
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
@@ -342,11 +390,15 @@ const OmegleChatScreen = () => {
                   }
                 }}
               />
+              <Button
+                height={10}
+                colorScheme="blue"
+                onClick={toggleEmojiPicker}
+              >
+                <Smile />
+              </Button>
               <Button onClick={handleSendMessage} colorScheme="blue">
                 Send
-              </Button>
-              <Button variant="ghost" onClick={toggleEmojiPicker}>
-                <Smile />
               </Button>
               {showEmojiPicker && (
                 <div

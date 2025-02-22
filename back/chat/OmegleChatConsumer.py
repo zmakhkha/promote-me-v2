@@ -28,6 +28,8 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
         # Remove user from waiting list if they were there
         if self in waiting_users:
             waiting_users.remove(self)
+            print('[disconnect]= user disconnected, list containing : ', len(waiting_users))
+
 
         # If the user is in a room, notify the partner of the disconnection
         if self.room_group_name:
@@ -40,24 +42,9 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        message = data.get("content")
+        print(f"[OmegleChatConsumer][receive] {data}")
 
-        if self.room_group_name and message:
-            # Forward the message to the other user in the same chat room
-            await self.channel_layer.group_send(
-                self.room_group_name,
-                {"type": "chat_message", "content": message, "sender": self.user_id},
-            )
-
-    async def chat_message(self, event):
-        # Send the message to the current WebSocket connection
-        await self.send(text_data=json.dumps({"content": event["content"], "sender": event["sender"]}))
-
-    async def partner_disconnected(self, event):
-        # Notify the user that their partner has disconnected
-        await self.send(text_data=json.dumps({"content": event["content"], "type": "disconnect"}))
-        self.room_group_name = None
-
+    
     async def match_users(self):
         print('[match_users]= tried to match user with list containing : ', len(waiting_users))
         """Match users from the waiting list to create a chat room."""
@@ -92,12 +79,16 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
                     "roomId": f"{room_name}",
                 },
             )
-        else:
-            # If there are fewer than 2 users, add the current user to the waiting list
-            if self not in waiting_users:
-                waiting_users.append(self)
-                print(f"connected users: {len(waiting_users)}")
+            waiting_users.remove(user1)
+            waiting_users.remove(user2)
+            print('[match_users]= Matched two users, list containing : ', len(waiting_users))
+
 
     async def match_made(self, event):
         # Send a message to both users that they have been matched
         await self.send(text_data=json.dumps({"content": event["content"], "roomId": event["roomId"], "type": "match"}))
+
+    async def partner_disconnected(self, event):
+        # Notify the user that their partner has disconnected
+        await self.send(text_data=json.dumps({"content": event["content"], "type": "disconnect"}))
+        self.room_group_name = None

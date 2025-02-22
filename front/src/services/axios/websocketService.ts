@@ -218,6 +218,9 @@ export default startChat;
   disconnectWebSocket(chatSocket);
   disconnectWebSocket(statusSocket);
   disconnectWebSocket(randomSocket);
+  disconnectWebSocket(omegleChatSocket);
+  disconnectWebSocket(directChatSocket);
+  disconnectWebSocket(omegleSocket);
   
   // Optionally wait for disconnection or perform any cleanup here
   // console.log("Disconnected all WebSockets.");
