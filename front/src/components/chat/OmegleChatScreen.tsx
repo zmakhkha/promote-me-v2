@@ -50,47 +50,6 @@ const OmegleChatScreen = () => {
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
   // Close emoji picker on outside click
-
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (!event.data || event.data === "{}") {
-        console.error(
-          "[OmegleChatScreen] Received an empty WebSocket message:",
-          event.data
-        );
-        return;
-      }
-      try {
-        const data = JSON.parse(event.data);
-        console.log("[OmegleChatScreen][", data, "]");
-
-        switch (data.type) {
-          case "disconnect":
-            console.log("[OmegleChatScreen][disconnect]");
-            disconnectAll();
-            break;
-            case "chat_message":
-              console.log("[OmegleChatScreen][chat received]");
-              break;
-
-          default:
-            console.log("Unknown message type:", data);
-        }
-      } catch (error) {
-        console.log(
-          "-->|Failed to parse WebSocket message:",
-          event.data,
-          error
-        );
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
-    return () => {
-      window.removeEventListener("message", handleMessage);
-    };
-  }, [user]);
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -125,10 +84,28 @@ const OmegleChatScreen = () => {
     fetchIp();
   }, []);
 
+  // Retrieve user info from localStorage on page load
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    const storedAge = localStorage.getItem("userAge");
+    const storedIp = localStorage.getItem("userIp");
+
+    if (storedName && storedAge && storedIp) {
+      setName(storedName);
+      setAge(parseInt(storedAge, 10));
+      setIp(storedIp);
+    }
+  }, []);
+
   // Connect WebSocket once the user has entered their info
   const handleStartChat = () => {
     if (name && age && ip) {
-      // Save user information
+      // Save user information to localStorage
+      localStorage.setItem("userName", name);
+      localStorage.setItem("userAge", age.toString());
+      localStorage.setItem("userIp", ip);
+
+      // Save the user data in state
       setUser({ name, age });
       setChatStatus("Connecting...");
 
@@ -205,11 +182,7 @@ const OmegleChatScreen = () => {
             console.log("Unknown message type:", data);
         }
       } catch (error) {
-        console.log(
-          "-->|Failed to parse WebSocket message:",
-          event.data,
-          error
-        );
+        console.log("-->|Failed to parse WebSocket message:", event.data, error);
       }
     };
 
@@ -231,11 +204,14 @@ const OmegleChatScreen = () => {
     setIsConnecting(true);
     setRoomId(null);
 
-    // Reconnect WebSocket
-    OmegleConnectWebSocket(ip, name, age);
+    // Get user data from localStorage and reconnect WebSocket
+    const storedName = localStorage.getItem("userName");
+    const storedAge = localStorage.getItem("userAge");
+    const storedIp = localStorage.getItem("userIp");
 
-    if (roomId) {
-      startOmegleChat(roomId, name);
+    if (storedName && storedAge && storedIp) {
+      setUser({ name: storedName, age: parseInt(storedAge, 10) });
+      OmegleConnectWebSocket(storedIp, storedName, parseInt(storedAge, 10));
     }
   };
 
