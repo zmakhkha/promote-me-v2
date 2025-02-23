@@ -43,6 +43,7 @@ const OmegleChatScreen = () => {
   const [name, setName] = useState<string>("");
   const [age, setAge] = useState<number>(18);
   const [ip, setIp] = useState<string>("");
+  // const [isDisabled, setIsDisabled] = useState(false);
 
   const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
 
@@ -135,13 +136,16 @@ const OmegleChatScreen = () => {
         console.log("------------------->[", data, "]");
 
         switch (data.type) {
+          case "disconnect":
+            partnerDisconnected();
+            break;
           case "match":
             setChatStatus("Connected! Start chatting.");
-
             setIsConnecting(false);
             setRoomId(data.roomId);
             console.log("-------------------------->", roomId);
             startOmegleChat(data.roomId, name);
+            // setIsDisabled(false);
             break;
 
           case "redirect":
@@ -203,6 +207,7 @@ const OmegleChatScreen = () => {
     setChatStatus("Waiting for a connection...");
     setIsConnecting(true);
     setRoomId(null);
+    // setIsDisabled(true);
 
     // Get user data from localStorage and reconnect WebSocket
     const storedName = localStorage.getItem("userName");
@@ -215,6 +220,20 @@ const OmegleChatScreen = () => {
     }
   };
 
+
+  const partnerDisconnected = () => {
+    // Disconnect existing WebSockets
+    disconnectAll();
+
+    // Reset states
+    setMessages([]);
+    setInputValue("");
+    setChatStatus("Partner disconnected press Esc to try again !");
+    // setIsConnecting(true);
+    setRoomId(null);
+    // setIsDisabled(true);
+
+  };
   const handleSendMessage = () => {
     if (inputValue && inputValue.trim()) {
       sendOmegleMessage({
@@ -359,6 +378,7 @@ const OmegleChatScreen = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Type your message..."
                 size="lg"
+                // disabled = {isDisabled}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault(); // Prevents a new line

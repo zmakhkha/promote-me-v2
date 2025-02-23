@@ -90,5 +90,8 @@ class OmegleChatConsumer(AsyncWebsocketConsumer):
 
     async def partner_disconnected(self, event):
         # Notify the user that their partner has disconnected
-        await self.send(text_data=json.dumps({"content": event["content"], "type": "disconnect"}))
+        await self.send(text_data=json.dumps({
+            "content": event["content"],
+            "type": "disconnect"
+        }))
         self.room_group_name = None

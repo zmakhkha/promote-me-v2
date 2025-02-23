@@ -22,7 +22,6 @@ class DmOmegleConsumer(AsyncWebsocketConsumer):
         
         # Get room name from URL kwargs
         room_name = self.scope['url_route']['kwargs']['roomId']
-        
         await self.channel_layer.group_discard(room_name, self.channel_name)
 
     async def receive(self, text_data):
