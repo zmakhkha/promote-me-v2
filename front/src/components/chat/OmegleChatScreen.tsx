@@ -43,7 +43,7 @@ const OmegleChatScreen = () => {
   const [name, setName] = useState<string>("");
   const [age, setAge] = useState<number>(18);
   const [ip, setIp] = useState<string>("");
-  // const [isDisabled, setIsDisabled] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
 
@@ -76,7 +76,7 @@ const OmegleChatScreen = () => {
       try {
         const response = await fetch("https://api.ipify.org?format=json");
         const data = await response.json();
-        setIp(data.ip); // Set the IP address
+        setIp(data.ip);
       } catch (error) {
         console.error("Error fetching IP address:", error);
       }
@@ -145,7 +145,7 @@ const OmegleChatScreen = () => {
             setRoomId(data.roomId);
             console.log("-------------------------->", roomId);
             startOmegleChat(data.roomId, name);
-            // setIsDisabled(false);
+            setIsDisabled(false);
             break;
 
           case "redirect":
@@ -207,7 +207,7 @@ const OmegleChatScreen = () => {
     setChatStatus("Waiting for a connection...");
     setIsConnecting(true);
     setRoomId(null);
-    // setIsDisabled(true);
+    setIsDisabled(true);
 
     // Get user data from localStorage and reconnect WebSocket
     const storedName = localStorage.getItem("userName");
@@ -231,7 +231,7 @@ const OmegleChatScreen = () => {
     setChatStatus("Partner disconnected press Esc to try again !");
     // setIsConnecting(true);
     setRoomId(null);
-    // setIsDisabled(true);
+    setIsDisabled(true);
 
   };
   const handleSendMessage = () => {
@@ -378,7 +378,7 @@ const OmegleChatScreen = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Type your message..."
                 size="lg"
-                // disabled = {isDisabled}
+                disabled = {isDisabled}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault(); // Prevents a new line
