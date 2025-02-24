@@ -23,7 +23,7 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/react";
-import { HamburgerIcon, MoonIcon, SunIcon, BellIcon } from "@chakra-ui/icons";
+import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { FaUser, FaHome, FaComments, FaCog } from "react-icons/fa";
 import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
@@ -35,6 +35,7 @@ import logoDark from "../../public/logo-dark.png";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import Notifications from "./Notifications";
+import socketConnect from "@/services/axios/socketConnect";
 
 const MobileMenu = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -49,17 +50,18 @@ const MobileMenu = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        socketConnect("1");
         const response = await api.get("/api/v1/profile/");
         setUsername(response.data.first_name);
       } catch (error) {
-        console.error("[MobileMenu] Error fetching user data.");
+        console.error("[MobileMenu] Error fetching user data:", error);
       }
     };
     fetchUser();
   }, []);
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
 
-  const onOpen = () => setIsOpen(true);
+  // const onOpen = () => setIsOpen(true);
 
   return (
     <Flex
@@ -112,7 +114,7 @@ const MobileMenu = () => {
               <Link href="/privacypolicy">Privacy Policy</Link>
             </MenuItem>
             <MenuItem
-              onClick={onOpen}
+              // onClick={onOpen}
               icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}
             >
               Log Out

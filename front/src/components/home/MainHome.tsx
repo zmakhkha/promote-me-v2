@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Box, Text, Button } from "@chakra-ui/react";
 import { FaInstagram, FaSnapchat, FaTiktok, FaComment } from "react-icons/fa";
 import { useRouter } from "next/navigation"; // Importing Next.js useRouter hook
@@ -19,9 +19,9 @@ const MainHome: React.FC = () => {
   const handleRandomChat = () => {
     // You can adjust this logic to navigate to a random user chat page
     const randomPlatform = ["instagram", "snapchat", "tiktok"];
-    const randomPlatformIndex = Math.floor(
-      Math.random() * randomPlatform.length
-    );
+    // const randomPlatformIndex = Math.floor(
+    //   Math.random() * randomPlatform.length
+    // );
     router.push(`/chat`); // Redirect to a random chat page
   };
 

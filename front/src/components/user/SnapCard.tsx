@@ -12,12 +12,10 @@ import {
   Divider,
   Link,
   Flex,
-  Spacer,
 } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdLocationOff } from "react-icons/md";
 import { SiSnapchat  } from "react-icons/si";
-import { log } from "console";
 
 interface HomeUser {
   id: number;
@@ -43,8 +41,8 @@ const UserCard = ({ user }: Props) => {
   const cardMaxHeight = useBreakpointValue({ base: "450px", md: "600px" });
   console.log(user);
   // Truncate bio if it's longer than 90 characters
-  const truncatedBio =
-    user.bio.length > 90 ? `${user.bio.substring(0, 60)}...` : user.bio;
+  // const truncatedBio =
+  //   user.bio.length > 90 ? `${user.bio.substring(0, 60)}...` : user.bio;
 
   return (
     <Card

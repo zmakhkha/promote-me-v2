@@ -2,7 +2,7 @@
 
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
-import Sidebar from "@/common/Sidebar";
+import Sidebar from "@/common/NonAuthSidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import OmegleChatScreen from "@/components/chat/OmegleChatScreen";
 import NonAuthHeader from "@/common/NonAuthHeader";
@@ -19,7 +19,7 @@ const HomePage = () => {
              "nav main"`,
       }}
       gridTemplateRows={{ base: "auto 1fr", md: "60px 1fr" }} // Header is 60px tall
-      gridTemplateColumns={{ base: "1fr", md: "250px 1fr" }} // Sidebar 250px, main takes the rest
+      gridTemplateColumns={{ base: "1fr", md: "200px 1fr" }} // Sidebar 250px, main takes the rest
       height="100vh"
       gap="0.5"
       color={textColor}
@@ -51,12 +51,7 @@ const HomePage = () => {
       </GridItem>
 
       {/* Main Content */}
-      <GridItem
-        area="main"
-        overflowY="auto"
-        pl="2"
-        bg={navBgColor}
-      >
+      <GridItem area="main" overflowY="auto" pl="2" bg={navBgColor}>
         <OmegleChatScreen />
       </GridItem>
     </Grid>

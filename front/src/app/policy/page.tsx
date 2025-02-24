@@ -2,7 +2,7 @@
 
 import { Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import Sidebar from "@/common/Sidebar";
+import Sidebar from "@/common/NonAuthSidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import socketConnect from "@/services/axios/socketConnect";

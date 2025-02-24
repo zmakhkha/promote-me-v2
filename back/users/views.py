@@ -89,7 +89,7 @@ class UserListView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = DefaultUser.objects.all()
-        queryset = queryset.exclude(id = self.request.user.id)
+        # queryset = queryset.exclude(id = self.request.user.id)
 
         # Get query parameters
         age_from = self.request.query_params.get('age_from')

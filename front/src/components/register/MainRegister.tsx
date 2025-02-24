@@ -37,7 +37,7 @@ const MainRegister = () => {
   });
 
   const [isClient, setIsClient] = useState(false);
-  const { bg, textColor, hoverColor, borderColor } = useColorModeStyles();
+  const { bg, textColor} = useColorModeStyles();
   const toast = useToast();
   const router = useRouter();
 
@@ -71,11 +71,11 @@ const MainRegister = () => {
 
         toast({
           title: "Account Created Successfully",
-          description: "Redirecting to home page...",
+          description: "Redirecting to login page...",
           status: "success",
           duration: 3000,
         });
-        router.push("/");
+        router.push("/login");
       } catch (error: any) {
         if (error.response) {
           console.error("❌ Backend Error Response:", error.response.data);

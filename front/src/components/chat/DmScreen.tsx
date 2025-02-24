@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 import { Smile } from "lucide-react";
 import {
@@ -83,8 +83,7 @@ const DmScreen = ({ user }: Props) => {
 
   // Fetch user profile and token
   useEffect(() => {
-    const token = localStorage.getItem("accessToken") || "";
-    setToken(token);
+    setToken(localStorage.getItem("accessToken") || "");
     if (!token) {
       return;
     }
@@ -97,7 +96,7 @@ const DmScreen = ({ user }: Props) => {
         setRoomId(room_name);
         startChat(token || "", room_name || "");
       } catch (error) {
-        console.log("Failed to load user profile.");
+        console.log("Failed to load user profile:", error);
       }
     };
 

@@ -1,5 +1,4 @@
 import {SOCKET_URL} from '@/utils/config'
-let socket: WebSocket | null = null;
 let statusSocket: WebSocket | null = null;
 let randomSocket: WebSocket | null = null;
 let chatSocket: WebSocket | null = null; // This should be used globally for the chat connection
@@ -146,7 +145,7 @@ export const startChat = async (token: string, roomId: string): Promise<void> =>
 
     // Event handler for receiving messages
     chatSocket.onmessage = (event: MessageEvent) => {
-      const messageData = JSON.parse(event.data);
+      // const messageData = JSON.parse(event.data);
 
       // Handle the incoming message based on your use case
       window.dispatchEvent(new MessageEvent("message", { data: event.data }));
@@ -226,10 +225,10 @@ export default startChat;
   // console.log("Disconnected all WebSockets.");
 };
 
-/**
- * Send a message through the WebSocket connection.
- * @param message - The message object to send.
- */
+// /**
+//  * Send a message through the WebSocket connection.
+//  * @param message - The message object to send.
+//  */
 export const sendMessage = async (message: Record<string, any>): Promise<void> => {
   if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
     try {
@@ -258,10 +257,10 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
 };
 
 
-/**
- * Send a message through the WebSocket connection.
- * @param message - The message object to send.
- */
+// /**
+//  * Send a message through the WebSocket connection.
+//  * @param message - The message object to send.
+//  */
 export const sendOmegleMessage = async (message: Record<string, any>): Promise<void> => {
   if (omegleChatSocket && omegleChatSocket.readyState === WebSocket.OPEN) {
     try {

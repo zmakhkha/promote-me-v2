@@ -15,7 +15,7 @@ import api from "@/services/axios/api";
 
 const USERS_PER_PAGE = 8;
 
-const mainTiktok = () => {
+const MainTiktok = () => {
   const { bg, textColor, borderColor } = useColorModeStyles();
   const [users, setUsers] = useState<any[]>([]);
   const [gender, setGender] = useState<string>("");
@@ -144,4 +144,4 @@ const mainTiktok = () => {
   );
 };
 
-export default mainTiktok;
+export default MainTiktok;

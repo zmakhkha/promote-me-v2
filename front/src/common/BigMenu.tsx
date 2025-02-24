@@ -30,19 +30,21 @@ import Image from "next/image";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import Notifications from "./Notifications";
+import socketConnect from "@/services/axios/socketConnect";
 
 const BigMenu = () => {
   const { colorMode } = useColorMode();
   const logo = colorMode === "light" ? logoLight : logoDark;
   const { bg, toggleColorMode } = useColorModeStyles();
   const [username, setUsername] = useState("User");
-  const { hoverColor } = useColorModeStyles();
+  // const { hoverColor } = useColorModeStyles();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const cancelRef = React.useRef<HTMLButtonElement>(null);
+  // const [isOpen, setIsOpen] = useState(false);
+  // const cancelRef = React.useRef<HTMLButtonElement>(null);
 
   const fetchUsers = async () => {
     try {
+      socketConnect("1");
       const response = await api.get("/api/v1/profile/");
       setUsername(response.data.first_name);
     } catch (err: any) {
@@ -54,101 +56,52 @@ const BigMenu = () => {
     fetchUsers();
   }, []);
 
-  const onOpen = () => setIsOpen(true);
-  const onClose = () => setIsOpen(false);
-
-  const handleLogout = () => {
-    console.log("Logged out");
-    onClose();
-  };
 
   return (
     <Flex
-      justify="space-between"
-      px={10}
+    flexDirection="row-reverse"
+      px={4}
       align="center"
       pt={1}
       bg={bg}
       height="60px"
       borderColor="red"
     >
-      <Link href="/">
-        <Image height={60} src={logo} alt="Logo" />
-      </Link>
-      <Flex
-        justify="space-between"
-        px={3}
-        align="center"
-        pb={4}
-        bg={bg}
-        border={1}
-        borderColor="red"
-      >
-        <Flex align="center">
-            {/* <Link href="/notifications">
-              <IconButton
-                icon={<BellIcon />}
-                aria-label="Notifications"
-                variant="ghost"
-                _hover={{ color: hoverColor }}
-                mr={4}
-              />
-            </Link> */}
-            <Notifications/>
-          <Menu>
-            <MenuButton
-              as={IconButton}
-              icon={<FaUser />}
-              aria-label="Profile"
-              variant="ghost"
-            />
-            <MenuList>
-              <MenuItem>Welcome {username}</MenuItem>
-              <MenuItem icon={<FaUser />}>
-                <Link href="/profile">Profile</Link>
-              </MenuItem>
-              <MenuItem icon={<HiDocumentText />}>
-                <Link href="/termsofservice">Terms of Service</Link>
-              </MenuItem>
-              <MenuItem icon={<MdPrivacyTip />}>
-                <Link href="/privacypolicy">Privacy Policy</Link>
-              </MenuItem>
-              <MenuItem
-                onClick={onOpen}
-                icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}
-              >
-                Log Out
-              </MenuItem>
-            </MenuList>
-          </Menu>
-          <IconButton
-            icon={bg === "gray.200" ? <MoonIcon /> : <SunIcon />}
-            aria-label="Toggle Color Mode"
+      <Flex align="center">
+        <Notifications />
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            icon={<FaUser />}
+            aria-label="Profile"
             variant="ghost"
-            onClick={toggleColorMode}
-            ml={4}
           />
-        </Flex>
-
-        {/* Logout Confirmation Dialog */}
-        {/* <AlertDialog isOpen={isOpen} onClose={onClose} leastDestructiveRef={cancelRef}>
-    <AlertDialogOverlay>
-      <AlertDialogContent>
-        <AlertDialogHeader fontSize="lg" fontWeight="bold">
-          Confirm Logout
-        </AlertDialogHeader>
-        <AlertDialogBody>Are you sure you want to log out?</AlertDialogBody>
-        <AlertDialogFooter>
-          <Button ref={cancelRef} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button colorScheme="red" onClick={handleLogout} ml={3}>
-            Log Out
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialogOverlay>
-  </AlertDialog> */}
+          <MenuList>
+            <MenuItem>Welcome {username}</MenuItem>
+            <MenuItem icon={<FaUser />}>
+              <Link href="/profile">Profile</Link>
+            </MenuItem>
+            <MenuItem icon={<HiDocumentText />}>
+              <Link href="/termsofservice">Terms of Service</Link>
+            </MenuItem>
+            <MenuItem icon={<MdPrivacyTip />}>
+              <Link href="/privacypolicy">Privacy Policy</Link>
+            </MenuItem>
+            <MenuItem
+              // onClick={onOpen}
+              icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}
+            >
+              Log Out
+            </MenuItem>
+          </MenuList>
+        </Menu>
+        <IconButton
+          icon={bg === "gray.200" ? <MoonIcon /> : <SunIcon />}
+          aria-label="Toggle Color Mode"
+          variant="ghost"
+          onClick={toggleColorMode}
+          ml={4}
+        />
       </Flex>
     </Flex>
   );

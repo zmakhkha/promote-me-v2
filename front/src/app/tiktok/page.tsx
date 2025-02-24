@@ -2,10 +2,10 @@
 
 import { Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import Sidebar from "@/common/Sidebar";
+import Sidebar from "@/common/NonAuthSidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
-import MainTiktok from "@/components/tiktok/mainTiktok";
+import MainTiktok from "@/components/tiktok/MainTiktok";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import socketConnect from "@/services/axios/socketConnect";
@@ -26,11 +26,11 @@ const HomePage = () => {
       templateAreas={{
         base: `"header"
                "main"`,
-        md: `"header header"
+        md: `"nav header"
              "nav main"`,
       }}
-      gridTemplateRows={{ base: "auto 1fr", md: "50px 1fr" }}
-      gridTemplateColumns={{ base: "1fr", md: "50px 1fr" }}
+      gridTemplateRows={{ base: "auto 1fr", md: "60px 1fr" }}
+      gridTemplateColumns={{ base: "1fr", md: "200px 1fr" }}
       height="100vh"
       gap="0.5"
       color={textColor}

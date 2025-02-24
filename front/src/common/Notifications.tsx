@@ -74,7 +74,7 @@ const Notifications = () => {
     setSocket(newSocket);
 
     return () => {
-      newSocket.close();
+      socket?.close();
       setSocket(null);
     };
   }, []); // Only runs once on mount

@@ -80,7 +80,7 @@ const ChatScreen = () => {
         const userData = await getConnectedUser();
         setUser(userData);
       } catch (error) {
-        console.log("Failed to load user profile.");
+        console.log("Failed to load user profile:", error);
       }
     };
 

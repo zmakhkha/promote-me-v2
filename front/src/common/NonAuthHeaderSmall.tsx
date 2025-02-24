@@ -1,15 +1,9 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   Flex,
   IconButton,
   Link,
-  AlertDialog,
-  AlertDialogOverlay,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogBody,
-  AlertDialogFooter,
   Button,
   useColorMode,
   Drawer,
@@ -20,9 +14,8 @@ import {
   DrawerCloseButton,
 } from "@chakra-ui/react";
 import { HamburgerIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { FaHome, FaComments, FaCog } from "react-icons/fa";
+import { FaHome, FaComments } from "react-icons/fa";
 import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
-import { IoLogOut } from "react-icons/io5";
 import Image from "next/image";
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
@@ -33,10 +26,7 @@ const NonAuthHeaderSmall = () => {
   const logo = colorMode === "light" ? logoLight : logoDark;
   const { bg } = useColorModeStyles();
 
-  const [username, setUsername] = useState("User");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLogoutOpen, setIsLogoutOpen] = useState(false);
-  const cancelRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Flex

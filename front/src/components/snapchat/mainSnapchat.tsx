@@ -15,7 +15,7 @@ import SnapCard from "../user/SnapCard";
 
 const USERS_PER_PAGE = 8;
 
-const mainSnapchat = () => {
+const MainSnapchat = () => {
   const { bg, textColor, borderColor } = useColorModeStyles();
   const [users, setUsers] = useState<any[]>([]);
   const [gender, setGender] = useState<string>("");
@@ -144,4 +144,4 @@ const mainSnapchat = () => {
   );
 };
 
-export default mainSnapchat;
+export default MainSnapchat;
