@@ -12,6 +12,7 @@ import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import SnapCard from "../user/SnapCard";
+import { USerProfile } from "../register/types";
 
 const USERS_PER_PAGE = 8;
 

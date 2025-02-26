@@ -100,7 +100,7 @@ const MainInstagram = () => {
       ) : (
         <SimpleGrid
           p={1}
-          columns={{ base: 1, sm: 1, md: 3, lg: 4 }}
+          columns={{ base: 1, sm: 1, md: 2, lg: 3 }}
           spacing={4}
           w="100%"
         >

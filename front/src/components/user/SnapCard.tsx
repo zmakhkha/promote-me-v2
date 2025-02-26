@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdLocationOff } from "react-icons/md";
-import { SiSnapchat  } from "react-icons/si";
+import { SiSnapchat } from "react-icons/si";
 
 interface HomeUser {
   id: number;
@@ -40,13 +40,11 @@ const UserCard = ({ user }: Props) => {
   const imageSize = useBreakpointValue({ base: "150px", md: "200px" });
   const cardMaxHeight = useBreakpointValue({ base: "450px", md: "600px" });
   console.log(user);
-  // Truncate bio if it's longer than 90 characters
-  // const truncatedBio =
-  //   user.bio.length > 90 ? `${user.bio.substring(0, 60)}...` : user.bio;
 
   return (
     <Card
-      width="sm"
+      minW="200px"
+      width="200"
       maxH={cardMaxHeight}
       // height="450px"
       borderRadius="xl"
@@ -65,8 +63,6 @@ const UserCard = ({ user }: Props) => {
       {/* Image Section */}
       <Box
         as={Link}
-        // href={`/profile/${user.username}`}
-        // href={`/profile/${user.username}`}
         href={`/profile/${user.username}`}
         height={imageSize}
         width="100%"
@@ -118,23 +114,6 @@ const UserCard = ({ user }: Props) => {
             <FaMapMarkerAlt />
             <Text>{user.location || <MdLocationOff />}</Text>
           </HStack>
-          {/* Bio Section */}
-          {/* About (Bio) Section */}
-          {/* <Box
-            bg="gray.200"
-            p={3}
-            borderRadius="md"
-            mb={2}
-            // textAlign="justify"
-            _dark={{
-              bg: "gray.700",
-            }}
-          >
-            <Text fontSize="sm" color={textColor}>
-              {truncatedBio}
-            </Text>
-          </Box> */}
-          {/* <Spacer /> Pushes content to the top if there's empty space */}
           {/* Interests Section */}
           <Heading fontSize="md" mb={1} color={textColor}>
             Interests
