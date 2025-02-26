@@ -225,11 +225,18 @@ export default startChat;
   // console.log("Disconnected all WebSockets.");
 };
 
-// /**
-//  * Send a message through the WebSocket connection.
-//  * @param message - The message object to send.
-//  */
-export const sendMessage = async (message: Record<string, any>): Promise<void> => {
+interface Message {
+  content: string;  // Ensure 'content' is required
+  user?: string;    // Optional field
+  sender?: string;  // Optional field
+  roomName?: string
+}
+
+/**
+ * Send a message through the WebSocket connection.
+ * @param message - The message object to send.
+ */
+export const sendMessage = async (message: Message): Promise<void> => {
   if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
     try {
       const content = message?.content;  // Ensure 'content' is part of the message
@@ -257,11 +264,11 @@ export const sendMessage = async (message: Record<string, any>): Promise<void> =
 };
 
 
-// /**
-//  * Send a message through the WebSocket connection.
-//  * @param message - The message object to send.
-//  */
-export const sendOmegleMessage = async (message: Record<string, any>): Promise<void> => {
+/**
+ * Send a message through the WebSocket connection.
+ * @param message - The message object to send.
+ */
+export const sendOmegleMessage = async (message: Message): Promise<void> => {
   if (omegleChatSocket && omegleChatSocket.readyState === WebSocket.OPEN) {
     try {
       const content = message?.content;  // Ensure 'content' is part of the message

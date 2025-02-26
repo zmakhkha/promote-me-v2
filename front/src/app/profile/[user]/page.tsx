@@ -1,6 +1,6 @@
 "use client";
 
-import { Flex, Grid, GridItem } from "@chakra-ui/react";
+import {  Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import Sidebar from "@/common/NonAuthSidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
@@ -13,7 +13,7 @@ type Props = {
   user: string;
 };
 
-const page = ({ params }: { params: Props }) => {
+const Profilepage = ({ params }: { params: Props }) => {
   const { user } = params;
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
@@ -71,4 +71,4 @@ const page = ({ params }: { params: Props }) => {
   );
 };
 
-export default page;
+export default Profilepage;

@@ -12,12 +12,13 @@ import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import TiktokCard from "../user/TiktokCard";
 import api from "@/services/axios/api";
+import { USerProfile } from "../register/types";
 
 const USERS_PER_PAGE = 8;
 
 const MainTiktok = () => {
   const { bg, textColor, borderColor } = useColorModeStyles();
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<USerProfile[]>([]);
   const [gender, setGender] = useState<string>("");
   const [minAge, setMinAge] = useState<number>(13);
   const [maxAge, setMaxAge] = useState<number>(60);
@@ -41,8 +42,9 @@ const MainTiktok = () => {
         },
       });
       setUsers(response.data.results || response.data);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || "Failed to fetch users");
+    } catch (error) {
+      console.error(error);
+        setError("Failed to fetch users");
     } finally {
       setIsLoading(false);
     }

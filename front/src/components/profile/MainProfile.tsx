@@ -11,7 +11,6 @@ import {
   Divider,
   Textarea,
   IconButton,
-  useColorModeValue,
   TagLabel,
   Tag,
   Link,
@@ -74,7 +73,6 @@ const MainProfile = ({ username }: MainProfileProps) => {
   const [imagePreview, setImagePreview] = useState<string>(
     placeholderAvatar.src
   );
-
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -208,9 +206,6 @@ const MainProfile = ({ username }: MainProfileProps) => {
                 icon={<FaTiktok />}
                 color={tiktok}
                 bg="transparent"
-                _hover={{
-                  bg: useColorModeValue("gray.200", "gray.700"),
-                }}
                 variant="ghost"
               />
             </Link>

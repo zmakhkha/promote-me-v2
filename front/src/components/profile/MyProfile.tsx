@@ -11,7 +11,6 @@ import {
   Divider,
   Textarea,
   IconButton,
-  useColorModeValue,
   TagLabel,
   Tag,
   Link,
@@ -26,43 +25,32 @@ import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import getCorrectImage from "@/services/axios/getCorrectImage";
-
-interface UserData {
-  image_url: string;
-  first_name: string;
-  last_name: string;
-  age: number | null;
-  gender: string;
-  location: string;
-  bio: string;
-  views: number;
-  likes: number;
-  points: number;
-  interests: string[];
-  instagram?: string | null;
-  snapchat?: string | null;
-  tiktok?: string | null;
-}
+import { USerProfile } from "../register/types";
 
 const MainProfile = () => {
   const { bg, tiktok, textColor, borderColor, navBgColor } =
     useColorModeStyles();
 
-  const [userData, setUserData] = useState<UserData>({
+  const [userData, setUserData] = useState<USerProfile>({
     image_url: placeholderAvatar.src,
-    first_name: "Loading...",
-    last_name: "",
-    age: null,
+    first_name: "John",
+    last_name: "wick",
+    email: "",
+    id: -1,
+    isOnline: false,
+    username: "",
+    age: 18,
     gender: "",
     location: "",
     bio: "",
-    views: 0,
-    likes: 0,
-    points: 0,
+    views: 9999,
+    likes: 4856,
+    points: 14695,
     interests: [],
-    instagram: null,
-    snapchat: null,
-    tiktok: null,
+    instagram: "",
+    snapchat: "",
+    tiktok: "",
+    status: "",
   });
 
   const [imagePreview, setImagePreview] = useState<string>(
@@ -184,9 +172,6 @@ const MainProfile = () => {
                 icon={<FaTiktok />}
                 color={tiktok}
                 bg="transparent"
-                _hover={{
-                  bg: useColorModeValue("gray.200", "gray.700"),
-                }}
                 variant="ghost"
               />
             </Link>

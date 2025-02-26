@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Box, Button, HStack, Input, Text, Select } from "@chakra-ui/react";
+import { Button, HStack, Input, Text, Select } from "@chakra-ui/react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 
 interface DateRangePickerProps {
@@ -8,7 +8,10 @@ interface DateRangePickerProps {
   setAgeRange: (minAge: number, maxAge: number) => void;
 }
 
-const DateRangePicker: React.FC<DateRangePickerProps> = ({ setGender, setAgeRange }) => {
+const DateRangePicker: React.FC<DateRangePickerProps> = ({
+  setGender,
+  setAgeRange,
+}) => {
   const { textColor } = useColorModeStyles();
 
   const [gender, setSelectedGender] = useState<string>("");
@@ -25,11 +28,21 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ setGender, setAgeRang
   };
 
   return (
-    <HStack spacing={2} overflow="hidden" justifyContent="space-between" width="100%">
+    <HStack
+      spacing={2}
+      overflow="hidden"
+      justifyContent="space-between"
+      width="100%"
+    >
       {/* Gender Filter */}
       <HStack>
         <Text color={textColor}>Gender:</Text>
-        <Select value={gender} onChange={handleGenderChange} color={textColor} width="auto">
+        <Select
+          value={gender}
+          onChange={handleGenderChange}
+          color={textColor}
+          width="auto"
+        >
           <option value="">Any</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>

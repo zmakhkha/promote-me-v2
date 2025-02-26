@@ -20,7 +20,7 @@
     const navBgColor = useColorModeValue('gray.100', 'gray.600');
     const systemMessageColor = useColorModeValue('blue.100', 'blue.900');
 
-
+    const tiktokHoverColor = useColorModeValue("blue.700", "blue.200");
 
 return {
       bg,
@@ -34,6 +34,7 @@ return {
       instagramTextColor,
       instagramIconColor,
       toggleColorMode,
+      tiktokHoverColor,
     };
   };
 

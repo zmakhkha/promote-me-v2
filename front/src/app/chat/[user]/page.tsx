@@ -13,7 +13,7 @@ type Props = {
   user: string;
 };
 
-const page = ({ params }: { params: Props }) => {
+const Chatpage = ({ params }: { params: Props }) => {
   const { user } = params;
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
@@ -75,4 +75,4 @@ const page = ({ params }: { params: Props }) => {
   );
 };
 
-export default page;
+export default Chatpage;

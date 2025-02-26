@@ -19,29 +19,15 @@ import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import getCorrectImage from "@/services/axios/getCorrectImage";
+import { USerProfile } from "../register/types";
 
-interface UserData {
-  image_url: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  location: string;
-  age: number;
-  bio: string;
-  views: number;
-  likes: number;
-  points: number;
-  interests: string[];
-  instagram?: string;
-  snapchat?: string;
-  tiktok?: string;
-}
+
 
 const MainSettings = () => {
   const { bg, tiktok, borderColor } = useColorModeStyles();
   const toast = useToast();
 
-  const [userData, setUserData] = useState<UserData>({
+  const [userData, setUserData] = useState<USerProfile>({
     image_url: placeholderAvatar.src,
     first_name: "",
     last_name: "",
@@ -56,6 +42,11 @@ const MainSettings = () => {
     instagram: "",
     snapchat: "",
     tiktok: "",
+    id: -1,
+    isOnline: false,
+    username: "",
+    gender: "", // Add this
+    status: "", // Add this
   });
 
   const [imagePreview, setImagePreview] = useState<string>(
@@ -108,7 +99,13 @@ const MainSettings = () => {
       Object.keys(userData).forEach((key) => {
         if (key !== "image_url") {
           // Skip image_url because it's handled separately
-          formData.append(key, userData[key as keyof UserData] as any);
+          const value = userData[key as keyof USerProfile];
+          if (typeof value === "string" || value instanceof Blob) {
+            formData.append(key, value);
+          } else {
+            // Convert non-string values to strings
+            formData.append(key, String(value));
+          }
         }
       });
 

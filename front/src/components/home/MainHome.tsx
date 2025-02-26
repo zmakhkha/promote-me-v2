@@ -18,7 +18,7 @@ const MainHome: React.FC = () => {
   // Function to handle random chat button click
   const handleRandomChat = () => {
     // You can adjust this logic to navigate to a random user chat page
-    const randomPlatform = ["instagram", "snapchat", "tiktok"];
+    // const randomPlatform = ["instagram", "snapchat", "tiktok"];
     // const randomPlatformIndex = Math.floor(
     //   Math.random() * randomPlatform.length
     // );
@@ -42,8 +42,8 @@ const MainHome: React.FC = () => {
         </Text>
         <Text fontSize="md" mt={2} color={textColor}>
           Welcome to our platform! Discover and connect with new people based on
-          shared interests and passions. Whether you're looking for friends,
-          networking, or new experiences, you'll find it here.
+          shared interests and passions. Whether you&apos;re looking for friends,
+          networking, or new experiences, you&apos;ll find it here.
         </Text>
         {/* SEO Optimized Text Section */}
         <Box
@@ -61,7 +61,7 @@ const MainHome: React.FC = () => {
           <Text fontSize="md" mt={2} color={textColor}>
             Our platform connects people who share common interests, hobbies,
             and values. Browse through detailed profiles and start meaningful
-            conversations. Whether you're into technology, art, travel, or
+            conversations. Whether you&apos;re into technology, art, travel, or
             anything in between, we have a community for you!
           </Text>
           <Text fontSize="sm" mt={2} color={textColor}>

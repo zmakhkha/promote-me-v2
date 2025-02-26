@@ -152,11 +152,11 @@ const DmScreen = ({ user }: Props) => {
             console.log("Unknown message type:", data);
         }
       } catch (error) {
-        // console.log(
-        //   "-->|Failed to parse WebSocket message:",
-        //   event.data,
-        //   error
-        // );
+        console.log(
+          "-->|Failed to parse WebSocket message:",
+          event.data,
+          error
+        );
         return;
       }
     };

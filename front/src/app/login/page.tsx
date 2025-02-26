@@ -1,11 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-// import axios from "api";
 import api from "@/services/axios/api";
-
 import "../../css/LoginPage.css";
-import { API_URL } from "@/utils/config";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -72,7 +69,7 @@ const LoginPage = () => {
           </form>
           {error && <p className="error-message">{error}</p>}
           <p className="account-link">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/register" className="register-link">
               Register
             </Link>
