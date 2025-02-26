@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import Sidebar from "@/common/NonAuthSidebar";
+import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MyProfile from "@/components/profile/MyProfile";
 import Header from "@/common/Header";

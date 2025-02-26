@@ -2,7 +2,7 @@
 
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
-import Sidebar from "@/common/NonAuthSidebar";
+import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import OmegleChatScreen from "@/components/chat/OmegleChatScreen";
 import NonAuthHeader from "@/common/NonAuthHeader";

@@ -2,7 +2,7 @@
 
 import { Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
-import Sidebar from "@/common/NonAuthSidebar";
+import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MainInstagram from "@/components/instagram/mainInstagram";
 import Header from "@/common/Header";
