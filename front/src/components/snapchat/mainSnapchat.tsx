@@ -12,7 +12,7 @@ import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import SnapCard from "../user/SnapCard";
-import { USerProfile } from "../register/types";
+import { USerProfile } from "../auth/types";
 
 const USERS_PER_PAGE = 8;
 
@@ -44,7 +44,7 @@ const MainSnapchat = () => {
       setUsers(response.data.results || response.data);
     } catch (error) {
       setError("Failed to fetch users");
-      console.log("[MainSnapchat]", error)
+      console.log("[MainSnapchat]", error);
     } finally {
       setIsLoading(false);
     }

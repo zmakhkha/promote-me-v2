@@ -1,83 +1,50 @@
 "use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import api from "@/services/axios/api";
-import "../../css/LoginPage.css";
 
-const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+import React, { useEffect } from "react";
+import { Grid, GridItem } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import NonAuthHeader from "@/common/NonAuthHeader"; // Keep your custom header
+import MainRegister from "@/components/auth/MainRegister";
+import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+import MainLogin from "./MainLogin";
 
-  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError(null); // Clear any previous errors
+const Page = () => {
+  const router = useRouter();
 
-    try {
-      const response = await api.post("/api/v1/login/", {
-        username,
-        password,
-      });
-
-      const { access, refresh } = response.data;
-
-      // Store tokens in localStorage
-      localStorage.setItem("accessToken", access);
-      localStorage.setItem("refreshToken", refresh);
-
-      // Redirect to home page
-      window.location.href = "/";
-    } catch (err: any) {
-      // Handle errors gracefully
-      if (err.response?.status === 401) {
-        setError("Invalid username or password.");
-      } else if (err.response?.status === 429) {
-        setError("Too many login attempts. Please try again later.");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
-      }
+  useEffect(() => {
+    // Check for authentication tokens or handle routing logic
+    const isAuthenticated = checkAuthTokens();
+    if (isAuthenticated) {
+      router.push("/");
     }
-  };
+  }, [router]);
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <div className="login-card">
-          <h1 className="login-heading">Login</h1>
-          <form onSubmit={handleLogin}>
-            <div className="login-input-group">
-              <input
-                type="text"
-                placeholder="Username" // Updated placeholder
-                value={username}
-                onChange={(e) => setUsername(e.target.value)} // Updated state setter
-                className="login-input"
-                required
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="login-input"
-                required
-              />
-              <button type="submit" className="login-button">
-                Login
-              </button>
-            </div>
-          </form>
-          {error && <p className="error-message">{error}</p>}
-          <p className="account-link">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="register-link">
-              Register
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+    <Grid
+      templateAreas={{
+        base: `"header"
+               "main"`,
+      }}
+      gridTemplateRows={{ base: "auto 1fr" }} // header + main content
+      gridTemplateColumns={{ base: "1fr" }} // Single column for mobile view
+      height="100vh"
+      gap="0.5"
+      color="gray.800"
+      fontWeight="bold"
+    >
+      {/* Header Section */}
+      <GridItem area="header" position="sticky" top="0" zIndex="2">
+        {/* Header will stay on top */}
+        <NonAuthHeader />
+      </GridItem>
+
+      {/* Main Content Section */}
+      <GridItem area="main" bg="white" overflow="auto">
+        {/* Main content goes here */}
+        <MainLogin /> {/* Assuming this is your main form/step component */}
+      </GridItem>
+    </Grid>
   );
 };
 
-export default LoginPage;
+export default Page;

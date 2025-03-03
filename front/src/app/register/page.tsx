@@ -1,28 +1,48 @@
-import MainRegister from '@/components/register/MainRegister';
-import React from 'react';
-import { Box, Image } from '@chakra-ui/react';
+"use client";
+
+import React, { useEffect } from "react";
+import { Grid, GridItem } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import NonAuthHeader from "@/common/NonAuthHeader"; // Keep your custom header
+import MainRegister from "@/components/auth/MainRegister";
+import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 
 const Page = () => {
-  return (
-    <Box position="relative" width="100vw" height="100vh" overflow="hidden">
-      {/* Background Image */}
-      <Image
-        src="./register-bgc.png" // Use absolute path
-        alt="Background"
-        objectFit="cover"
-        position="absolute"
-        top={0}
-        left={0}
-        width="100%"
-        height="100%"
-        zIndex={-1}
-      />
+  const router = useRouter();
 
-      {/* Main Content */}
-      <Box position="relative" zIndex={1}>
-        <MainRegister />
-      </Box>
-    </Box>
+  useEffect(() => {
+    // Check for authentication tokens or handle routing logic
+    const isAuthenticated = checkAuthTokens();
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [router]);
+
+  return (
+    <Grid
+      templateAreas={{
+        base: `"header"
+               "main"`,
+      }}
+      gridTemplateRows={{ base: "auto 1fr" }} // header + main content
+      gridTemplateColumns={{ base: "1fr" }} // Single column for mobile view
+      height="100vh"
+      gap="0.5"
+      color="gray.800"
+      fontWeight="bold"
+    >
+      {/* Header Section */}
+      <GridItem area="header" position="sticky" top="0" zIndex="2">
+        {/* Header will stay on top */}
+        <NonAuthHeader />
+      </GridItem>
+
+      {/* Main Content Section */}
+      <GridItem area="main" bg="white" overflow="auto">
+        {/* Main content goes here */}
+        <MainRegister /> {/* Assuming this is your main form/step component */}
+      </GridItem>
+    </Grid>
   );
 };
 

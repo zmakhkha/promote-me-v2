@@ -12,7 +12,7 @@ import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import TiktokCard from "../user/TiktokCard";
 import api from "@/services/axios/api";
-import { USerProfile } from "../register/types";
+import { USerProfile } from "../auth/types";
 
 const USERS_PER_PAGE = 8;
 
@@ -44,7 +44,7 @@ const MainTiktok = () => {
       setUsers(response.data.results || response.data);
     } catch (error) {
       console.error(error);
-        setError("Failed to fetch users");
+      setError("Failed to fetch users");
     } finally {
       setIsLoading(false);
     }

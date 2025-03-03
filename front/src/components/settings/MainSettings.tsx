@@ -19,9 +19,7 @@ import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import getCorrectImage from "@/services/axios/getCorrectImage";
-import { USerProfile } from "../register/types";
-
-
+import { USerProfile } from "../auth/types";
 
 const MainSettings = () => {
   const { bg, tiktok, borderColor } = useColorModeStyles();

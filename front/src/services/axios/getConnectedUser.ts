@@ -1,4 +1,4 @@
-import { USerProfile } from "@/components/register/types";
+import { USerProfile } from "@/components/auth/types";
 import api from "./api";
 
 // Function to get the connected user's profile
