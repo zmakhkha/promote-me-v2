@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import NonAuthHeader from "@/common/NonAuthHeader"; // Keep your custom header
-import MainRegister from "@/components/auth/MainRegister";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import MainLogin from "./MainLogin";
 

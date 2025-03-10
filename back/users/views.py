@@ -59,9 +59,9 @@ class SignUpAPIView(APIView):
             email = serializer.validated_data.get('email')
 
             if DefaultUser.objects.filter(email=email).exists():
-                return Response({'email': 'This email is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'This email is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
             if DefaultUser.objects.filter(username=username).exists():
-                return Response({'username': 'This username is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'error': 'This username is already in use.'}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 serializer.save()

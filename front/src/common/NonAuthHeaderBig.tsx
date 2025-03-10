@@ -5,9 +5,13 @@ import { Flex, IconButton, Button, useColorMode, Link } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import logoLight from "../../public/logo-light.png";
+import logoDark from "../../public/logo-dark.png";
 
 const NonAuthHeaderBig = () => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const logo = colorMode === "light" ? logoLight : logoDark;
   const { bg } = useColorModeStyles();
   const router = useRouter();
 
@@ -22,7 +26,7 @@ const NonAuthHeaderBig = () => {
     >
       {/* Sign In / Sign Up Buttons */}
       <Flex gap={3}>
-        <Link href="/register">
+        {/* <Link href="/register">
           <Button onClick={() => router.push("/signin")} variant="outline">
             Sign In
           </Button>
@@ -31,7 +35,8 @@ const NonAuthHeaderBig = () => {
           <Button onClick={() => router.push("/signup")} colorScheme="blue">
             Sign Up
           </Button>
-        </Link>
+        </Link> */}
+        <Image height={40} width={100} src={logo} alt="promote-me logo" />
       </Flex>
 
       {/* Light/Dark Mode Toggle */}

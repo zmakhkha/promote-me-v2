@@ -14,6 +14,7 @@ import {
   Textarea,
   useToast,
   Avatar,
+  Image,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import useColorModeStyles from "@/utils/useColorModeStyles";
@@ -36,9 +37,10 @@ const MainRegister = () => {
     location: "khouribga, morocco",
     bio: "morocco",
     interests: [] as string[],
-    image_url: Avatar,
+    image_url: null as File | null, // updated to properly store the file
   });
 
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isClient, setIsClient] = useState(false);
   const toast = useToast();
   const router = useRouter();
@@ -56,29 +58,75 @@ const MainRegister = () => {
   const handleNext = async () => {
     if (step === steps.length) {
       try {
-        const response = await api.post("/api/v1/register/", formData);
-        toast({
-          title: "Account Created Successfully",
-          description: "Redirecting to login page...",
-          status: "success",
-          duration: 3000,
+        const formDataToSend = new FormData();
+
+        // Append all fields from formData to formDataToSend
+        (Object.keys(formData) as Array<keyof typeof formData>).forEach(
+          (key) => {
+            if (key === "interests") {
+              // Stringify the entire array and append once
+              formDataToSend.append("interests", JSON.stringify(formData[key]));
+            } else if (key === "image_url" && formData[key]) {
+              formDataToSend.append("image_url", formData[key] as File);
+            } else {
+              formDataToSend.append(key, formData[key] as any);
+            }
+          }
+        );
+
+        // Submit the form
+        const response = await api.post("/api/v1/register/", formDataToSend, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
-        router.push("/login");
+
+        // Explicit response status check
+        console.log("-----------------------------------------");
+        console.log(response.status);
+        console.log(response);
+        console.log("-----------------------------------------");
+
+        if (response.status === 200 || response.status === 201) {
+          toast({
+            title: "Account Created Successfully",
+            description: "Redirecting to login page...",
+            status: "success",
+            duration: 3000,
+          });
+          router.push("/login");
+        } else {
+          toast({
+            title: "Registration Failed",
+            description: "Something went wrong. Please try again.",
+            status: "error",
+            duration: 5000,
+          });
+        }
       } catch (error: any) {
         toast({
           title: "Registration Failed",
-          description: error.response?.data?.message || "An error occurred.",
+          description:
+            error.response?.data?.message || "An unexpected error occurred.",
           status: "error",
           duration: 5000,
         });
       }
       return;
     }
+
+    // Move to next step if not at the last one
     setStep((prev) => prev + 1);
   };
 
   const handlePrevious = () => {
     if (step > 1) setStep((prev) => prev - 1);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      updateFormData("image_url", file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const steps = [
@@ -249,13 +297,18 @@ const MainRegister = () => {
       title: "Upload a Profile Picture",
       key: "image_url",
       component: (
-        <Input
-          type="file"
-          accept="image/*"
-          onChange={(e) =>
-            updateFormData("image_url", e.target.files?.[0] || null)
-          }
-        />
+        <Stack spacing={4} align="center">
+          {previewUrl && (
+            <Image
+              src={previewUrl}
+              alt="Profile Preview"
+              boxSize="100px"
+              objectFit="cover"
+              borderRadius="full"
+            />
+          )}
+          <Input type="file" accept="image/*" onChange={handleImageChange} />
+        </Stack>
       ),
     },
   ];
