@@ -21,35 +21,86 @@ const MainLogin = () => {
   const router = useRouter();
   const { bg, textColor } = useColorModeStyles();
 
+  // const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   setError(null); // Clear any previous errors
+
+  //   try {
+  //     const response = await api.post("/api/v1/login/", {
+  //       username,
+  //       password,
+  //     });
+
+  //     const { access, refresh } = response.data;
+
+  //     // Store tokens in localStorage
+  //     localStorage.setItem("accessToken", access);
+  //     localStorage.setItem("refreshToken", refresh);
+
+  //     // Redirect to home page
+  //     router.push("/"); // Redirect using next.js router
+  //   } catch (err: any) {
+  //     // Handle errors gracefully
+  //     if (err.response?.status === 401) {
+  //       setError("Invalid username or password.");
+  //     } else if (err.response?.status === 429) {
+  //       setError("Too many login attempts. Please try again later.");
+  //     } else {
+  //       setError("An unexpected error occurred. Please try again.");
+  //     }
+  //   }
+  // };
+
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null); // Clear any previous errors
-
+    setError(null); // Clear previous errors
+  
     try {
       const response = await api.post("/api/v1/login/", {
         username,
         password,
       });
-
+  
       const { access, refresh } = response.data;
-
+  
       // Store tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
-
-      // Redirect to home page
-      router.push("/"); // Redirect using next.js router
+  
+      // Show success toast
+      toast({
+        title: "Login successful!",
+        description: "Redirecting...",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+  
+      // Redirect to home page (slightly delayed optional)
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
     } catch (err: any) {
-      // Handle errors gracefully
+      let message = "An unexpected error occurred. Please try again.";
       if (err.response?.status === 401) {
-        setError("Invalid username or password.");
+        message = "Invalid username or password.";
       } else if (err.response?.status === 429) {
-        setError("Too many login attempts. Please try again later.");
-      } else {
-        setError("An unexpected error occurred. Please try again.");
+        message = "Too many login attempts. Please try again later.";
       }
+  
+      setError(message);
+  
+      // Show error toast
+      toast({
+        title: "Oops!",
+        description: message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
     }
   };
+  
 
   return (
     <Flex
