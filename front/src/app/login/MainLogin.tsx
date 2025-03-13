@@ -54,19 +54,19 @@ const MainLogin = () => {
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null); // Clear previous errors
-  
+
     try {
       const response = await api.post("/api/v1/login/", {
         username,
         password,
       });
-  
+
       const { access, refresh } = response.data;
-  
+
       // Store tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
-  
+
       // Show success toast
       toast({
         title: "Login successful!",
@@ -75,7 +75,7 @@ const MainLogin = () => {
         duration: 3000,
         isClosable: true,
       });
-  
+
       // Redirect to home page (slightly delayed optional)
       setTimeout(() => {
         router.push("/");
@@ -87,9 +87,9 @@ const MainLogin = () => {
       } else if (err.response?.status === 429) {
         message = "Too many login attempts. Please try again later.";
       }
-  
+
       setError(message);
-  
+
       // Show error toast
       toast({
         title: "Oops!",
@@ -100,7 +100,6 @@ const MainLogin = () => {
       });
     }
   };
-  
 
   return (
     <Flex
@@ -130,7 +129,7 @@ const MainLogin = () => {
           textAlign="center"
           color="pink.400"
         >
-          Login
+          Loginb
         </Text>
         <form onSubmit={handleLogin}>
           <Flex direction="column" gap={4}>

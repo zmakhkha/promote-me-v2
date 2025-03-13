@@ -1,7 +1,7 @@
 version: "3"
 
 services:
-  back-end:
+  backend:
     build: ./back
     ports:
       - "2000:2000"
@@ -39,21 +39,44 @@ services:
       - promote
     restart: unless-stopped
 
-  fron-tend:
+  # frontend:
+  #   build:
+  #     context: ./front
+  #     dockerfile: Dockerfile
+  #   image: frontend
+  #   container_name: frontend
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - backend
+  #   # env_file:
+  #   #   - .env
+  #   networks:
+  #     - promote
+  #   restart: unless-stopped
+
+  frontend:
     build:
       context: ./front
       dockerfile: Dockerfile
     image: frontend
     container_name: frontend
     ports:
-      - "3000:3000"
+      - "3000:3000"               # Next.js dev server runs on 3000 by default
     depends_on:
-      - back-end
-    env_file:
-      - .env
+      - backend
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    environment:
+      - HOST=0.0.0.0
+      - CHOKIDAR_USEPOLLING=true 
+    command: npm run dev
     networks:
       - promote
     restart: unless-stopped
+
+
 
 
 
