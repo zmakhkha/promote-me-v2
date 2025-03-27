@@ -10,11 +10,6 @@ COPY package.json package-lock.json ./
 
 RUN npm install
 
-# Install vite globally if you really need to (optional)
-RUN npm install -g vite
-
-ENV PATH /app/node_modules/.bin:$PATH
-
 # Expose the Vite dev server port (default is 3000)
 EXPOSE 3000
 

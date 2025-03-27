@@ -129,7 +129,7 @@ const MainLogin = () => {
           textAlign="center"
           color="pink.400"
         >
-          Loginb
+          Login 
         </Text>
         <form onSubmit={handleLogin}>
           <Flex direction="column" gap={4}>
