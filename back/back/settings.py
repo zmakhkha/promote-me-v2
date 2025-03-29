@@ -79,7 +79,8 @@ ASGI_APPLICATION = 'back.asgi.application'
 # }
 
 # === DATABASE CONFIG ===
-USE_POSTGRES = os.getenv('USE_POSTGRES', 'True') == 'True'
+# USE_POSTGRES = os.getenv('USE_POSTGRES', 'True') == 'True'
+USE_POSTGRES = False
 
 if USE_POSTGRES:
     DATABASES = {
