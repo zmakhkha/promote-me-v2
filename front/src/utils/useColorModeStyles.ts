@@ -10,6 +10,7 @@
     // );
     const instagramTextColor = useColorModeValue('#d62976', '#feda75');
     const instagramIconColor = useColorModeValue('#d62976', '#feda75');
+    const bgColor = useColorModeValue('green.500', 'green.300');
 
     // General Theme Colors
     const bg = useColorModeValue('white', 'gray.800');
@@ -21,6 +22,8 @@
     const systemMessageColor = useColorModeValue('blue.100', 'blue.900');
 
     const tiktokHoverColor = useColorModeValue("blue.700", "blue.200");
+    const tableStripeClore = useColorModeValue('gray.400', 'gray.800');
+
 
 return {
       bg,
@@ -35,6 +38,8 @@ return {
       instagramIconColor,
       toggleColorMode,
       tiktokHoverColor,
+      tableStripeClore,
+      bgColor,
     };
   };
 
