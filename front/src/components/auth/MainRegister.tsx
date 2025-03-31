@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import {
   Box,
   Button,
@@ -19,6 +19,26 @@ import {
 import { useRouter } from "next/navigation";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "../../services/axios/api";
+import countries  from "@/data/countries";
+
+interface SelectProps {
+  options: { value: string; label: string }[];
+  placeholder: string;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+}
+
+const CustomSelect: React.FC<SelectProps> = ({ options, placeholder, onChange }) => {
+  return (
+    <select onChange={onChange} defaultValue="">
+      <option value="" disabled>{placeholder}</option>
+      {options.map((option, index) => (
+        <option key={index} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+};
 
 const MainRegister = () => {
   const { bg, textColor } = useColorModeStyles();
@@ -37,7 +57,7 @@ const MainRegister = () => {
     location: "khouribga, morocco",
     bio: "morocco",
     interests: [] as string[],
-    image_url: null as File | null, // updated to properly store the file
+    image_url: null as File | null,
   });
 
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -129,6 +149,15 @@ const MainRegister = () => {
     }
   };
 
+  const options = countries.map((country) => ({
+    value: country.name.common,
+    label: country.name.common,
+  })).sort((a, b) => a.label.localeCompare(b.label));;
+
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    updateFormData("location", event.target.value);
+  };
+
   const steps = [
     {
       title: "Choose a Username",
@@ -218,11 +247,7 @@ const MainRegister = () => {
       title: "Location",
       key: "location",
       component: (
-        <Input
-          placeholder="City, Country"
-          value={formData.location}
-          onChange={(e) => updateFormData("location", e.target.value)}
-        />
+        <CustomSelect options={options} placeholder="Select a country" onChange={handleChange} />
       ),
     },
     {
