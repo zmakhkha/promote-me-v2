@@ -61,12 +61,13 @@ const MainLogin = () => {
         password,
       });
 
-      const { access, refresh } = response.data;
+        
+        const { access, refresh, is_staff } = response.data;
 
       // Store tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
-
+      
       // Show success toast
       toast({
         title: "Login successful!",
@@ -75,11 +76,10 @@ const MainLogin = () => {
         duration: 3000,
         isClosable: true,
       });
-
-      // Redirect to home page (slightly delayed optional)
+      
       setTimeout(() => {
-        router.push("/");
-      }, 1000);
+        is_staff ? router.push("/admin") : router.push("/");
+      }, 2000);
     } catch (err: any) {
       let message = "An unexpected error occurred. Please try again.";
       if (err.response?.status === 401) {
