@@ -13,9 +13,9 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import "@/css/styles.css";
 import FloatingButton from "./FloatingButton";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import "@/css/styles.css";
 import api from "@/services/axios/api";
 
 
@@ -24,7 +24,7 @@ interface User {
   email: string;
   is_active: boolean;
   is_staff: string;
-  payement_status: string;
+  points: string;
 }
 
 const ListeUsers = () => {
@@ -217,19 +217,19 @@ const ListeUsers = () => {
                   <Button
                     fontWeight={700}
                     variant="ghost"
-                    onClick={() => sortUsers("payement_status")}
+                    onClick={() => sortUsers("points")}
                     color={textColor}
                     _hover={{ color: hoverColor }}
                     rightIcon={
-                      sortConfig.key === "payement_status" &&
+                      sortConfig.key === "points" &&
                       sortConfig.direction === "asc" ? (
                         <ChevronUpIcon />
-                      ) : sortConfig.key === "payement_status" ? (
+                      ) : sortConfig.key === "points" ? (
                         <ChevronDownIcon />
                       ) : undefined
                     }
                   >
-                    Payment
+                    Points
                   </Button>
                 </Th>
 
@@ -255,7 +255,7 @@ const ListeUsers = () => {
                   <Td color={textColor}>
                     {user.is_staff ? "Admin" : "Regular"}
                   </Td>
-                  <Td color={textColor}>{user.payement_status}</Td>
+                  <Td color={textColor}>{user.points}</Td>
                 </Tr>
               ))}
             </Tbody>

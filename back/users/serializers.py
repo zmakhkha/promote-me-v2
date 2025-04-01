@@ -105,7 +105,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class AdminModifyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DefaultUser
-        fields = ['username', 'email', 'first_name', 'last_name', 'points', 'payement_status', 'is_staff']
+        fields = [
+            'id', 'username', 'first_name', 'last_name',
+            'age', 'gender', 'location', 'bio', 'interests', 'status',
+            'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
+        ]
 
 class AdminUserSerializer(serializers.ModelSerializer):
     class Meta:

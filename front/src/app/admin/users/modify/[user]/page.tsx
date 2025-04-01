@@ -1,10 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import useColorModeStyles from "@/app/utils/useColorModeStyles";
 import { Grid, GridItem } from "@chakra-ui/react";
-import ModifyUser from "@/app/components/admin/ModifyUser";
-import HeaderAdmin from "@/app/components/main/HeaderAdmin";
-import AdminSidebar from "@/app/components/main/AdminSidebar";
+import ModifyUser from "@/app/admin/components/ModifyUser";
+import useColorModeStyles from "@/utils/useColorModeStyles";
 type Params = {
   user: string;
 };
@@ -38,14 +36,16 @@ const ModifyUserpage = ({ params }: { params: Params }) => {
       fontWeight="bold"
     >
       <GridItem area={"header"} bg={navBgColor}>
-        <HeaderAdmin />
+        {/* <HeaderAdmin /> */}
+        <h1>HeaderAdmin</h1>
       </GridItem>
       <GridItem
         bg={navBgColor}
         area={"nav"}
         display={{ base: "none", md: "block" }}
       >
-        <AdminSidebar />
+        {/* <AdminSidebar /> */}
+        <h1>AdminSidebar</h1>
       </GridItem>
       <GridItem
         pl="2"

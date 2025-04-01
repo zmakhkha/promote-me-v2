@@ -134,7 +134,6 @@ const CreateUser = () => {
             <Stack direction="row">
               <Radio value="male">Male</Radio>
               <Radio value="female">Female</Radio>
-              <Radio value="other">Other</Radio>
             </Stack>
           </RadioGroup>
         </FormControl>

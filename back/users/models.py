@@ -39,7 +39,7 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
     likes = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
     birth_date = models.DateField(null=True, blank=True)  # Replaced age with birth_date
-    gender = models.CharField(max_length=10, choices=[('Male', 'Male'), ('Female', 'Female')])
+    gender = models.CharField(max_length=10, choices=[('male', 'male'), ('female', 'female')])
     location = models.CharField(max_length=100)
     bio = models.TextField()
     interests = models.JSONField(default=list)
