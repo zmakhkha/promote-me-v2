@@ -34,7 +34,8 @@ const Page = () => {
         area={"nav"}
         display={{ base: "none", md: "block" }}
       >
-        <Sidebar />
+        {/* <Sidebar /> */}
+        <h1>Sidebar</h1>
       </GridItem>
       <GridItem
         pl="2"

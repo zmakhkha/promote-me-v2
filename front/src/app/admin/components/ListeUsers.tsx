@@ -37,18 +37,44 @@ const ListeUsers = () => {
   const { bg, tableStripeClore, textColor, hoverColor, navBgColor } =
     useColorModeStyles();
 
+    // useEffect(() => {
+    //   const fetchUsers = async () => {
+    //     try {
+    //       const response = await api.get<User[]>("/api/v1/users");
+    //       setUsers(response.data);
+    //       console.log("-----------------------------------------");
+    //       console.log(response.status);
+    //       console.log(response);
+    //       console.log("-----------------------------------------");
+    //     } catch (error) {
+    //       console.error("Error fetching users:", error);
+    //     }
+    //   };
+  
+    //   fetchUsers();
+    // }, []);
+
     useEffect(() => {
       const fetchUsers = async () => {
         try {
-          const response = await api.get<User[]>("/api/v1/users");
-          setUsers(response.data);
+          const response = await fetch("http://localhost:2000/api/v1/users/");
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          const data = await response.json();
+          setUsers(data);
+          console.log("-----------------------------------------");
+          console.log(response.status);
+          console.log(data);
+          console.log("-----------------------------------------");
         } catch (error) {
           console.error("Error fetching users:", error);
         }
       };
-  
+    
       fetchUsers();
     }, []);
+    
 
   const sortUsers = (key: keyof User) => {
     let direction: "asc" | "desc" = "asc";
