@@ -11,6 +11,21 @@ SECRET_KEY = config('SECRET_KEY', default='your-fallback-secret-key')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default="localhost,127.0.0.1, 0.0.0.0, 192.168.1.10", cast=Csv())
 
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0,192.168.1.184,192.168.1.184:3000').split(',')
+
+# === CORS CONFIG ===
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:3000').split(',')
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+
+# === CSRF CONFIG ===
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:3000,http://192.168.1.1:3000').split(',')
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
+
+
 # APPLICATIONS
 INSTALLED_APPS = [
     'django.contrib.admin',

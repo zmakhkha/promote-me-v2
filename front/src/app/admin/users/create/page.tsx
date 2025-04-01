@@ -25,7 +25,8 @@ const Page = () => {
       fontWeight="bold"
     >
       <GridItem area={"header"} bg={navBgColor}>
-        <Header />
+        {/* <Header /> */}
+        <h1>Header</h1>
       </GridItem>
       <GridItem
         bg={navBgColor}

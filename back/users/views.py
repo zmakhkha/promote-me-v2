@@ -7,11 +7,13 @@ from rest_framework import generics
 from django.forms import ValidationError
 from django.contrib.auth import authenticate, login
 from django.core.cache import cache
+from django.shortcuts import get_object_or_404
+
 
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import DefaultUser
-from .serializers import UserDetailSerializer, UserProfileSerializer, UserSerializer
+from .serializers import AdminModifyUserSerializer, AdminUserSerializer, UserDetailSerializer, UserProfileSerializer, UserSerializer
 from rest_framework.exceptions import ValidationError
 
 
@@ -170,3 +172,44 @@ class UserProfileView(APIView):
         user = request.user
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+
+class UserListView(APIView):
+    # permission_classes = [IsAdminUser]
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        # if not request.user.is_staff:  # Double-check admin status
+        #     return Response({'error': 'Role non valid'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Exclude the logged-in admin from the returned data
+        users = DefaultUser.objects.exclude(id=request.user.id)
+        serializer = AdminUserSerializer(users, many=True)
+        return Response(serializer.data)
+    
+class ModifyUserView(APIView):
+    def get(self, request, *args, **kwargs):
+        username = request.query_params.get("username")
+        if not username:
+            return Response({"error": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(DefaultUser, username=username)
+        serializer = AdminModifyUserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, *args, **kwargs):
+        username = request.data.get("username")
+        if not username:
+            return Response({"error": "Username is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = get_object_or_404(DefaultUser, username=username)
+
+        serializer = AdminModifyUserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User data updated successfully.", "data": serializer.data}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+    

@@ -18,6 +18,7 @@ import FloatingButton from "./FloatingButton";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
 
+
 interface User {
   username: string;
   email: string;
@@ -36,18 +37,18 @@ const ListeUsers = () => {
   const { bg, tableStripeClore, textColor, hoverColor, navBgColor } =
     useColorModeStyles();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await api.get<User[]>("/auth/users");
-        setUsers(response.data);
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, []);
+    useEffect(() => {
+      const fetchUsers = async () => {
+        try {
+          const response = await api.get<User[]>("/api/v1/users");
+          setUsers(response.data);
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      };
+  
+      fetchUsers();
+    }, []);
 
   const sortUsers = (key: keyof User) => {
     let direction: "asc" | "desc" = "asc";
@@ -205,12 +206,7 @@ const ListeUsers = () => {
                     Payment
                   </Button>
                 </Th>
-                <Th color={textColor}>
-                  <Button> Sol </Button>
-                </Th>
-                <Th color={textColor}>
-                  <Button> Station </Button>
-                </Th>
+
               </Tr>
             </Thead>
             <Tbody>
@@ -234,24 +230,6 @@ const ListeUsers = () => {
                     {user.is_staff ? "Admin" : "Regular"}
                   </Td>
                   <Td color={textColor}>{user.payement_status}</Td>
-                  <Td>
-                    <Link
-                      href={`/admin/users/data/soil/${user.username}`}
-                      color={hoverColor}
-                      textDecoration="underline"
-                    >
-                      Voire
-                    </Link>
-                  </Td>
-                  <Td>
-                    <Link
-                      href={`/admin/users/data/station/${user.username}`}
-                      color={hoverColor}
-                      textDecoration="underline"
-                    >
-                      Voire
-                    </Link>
-                  </Td>
                 </Tr>
               ))}
             </Tbody>
