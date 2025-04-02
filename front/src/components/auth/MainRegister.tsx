@@ -93,7 +93,7 @@ const MainRegister = () => {
       }
     } catch (error) {
       toast({
-        title: "OTP Sending Failed",
+        title: "Error",
         description: error.response?.data?.error || "An error occurred.",
         status: "error",
         duration: 3000,
@@ -142,16 +142,28 @@ const MainRegister = () => {
           }
         );
 
-        // Submit the form
-        const response = await api.post("/api/v1/register/", formDataToSend, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+      // Log the contents of formDataToSend
+      console.log("------------------------------");
+      if (formDataToSend instanceof FormData) {
+          for (let [key, value] of formDataToSend.entries()) {
+              console.log(`${key}:`, value);
+          }
+      } else {
+          console.log(formDataToSend);
+      }
+      console.log("------------------------------");
 
-        // Explicit response status check
-        // console.log("-----------------------------------------");
-        // console.log(response.status);
-        // console.log(response);
-        // console.log("-----------------------------------------");
+      // Submit the form
+      const response = await api.post("/api/v1/register/", formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      // Explicit response status check
+      console.log("-----------------------------------------");
+      console.log(response.status);
+      console.log(response);
+      console.log("-----------------------------------------");
+
 
         if (response.status === 200 || response.status === 201) {
           toast({

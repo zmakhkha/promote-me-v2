@@ -8,17 +8,30 @@ from django.forms import ValidationError
 from django.contrib.auth import authenticate, login
 from django.core.cache import cache
 from django.shortcuts import get_object_or_404
-
-
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import DefaultUser
 from .serializers import AdminModifyUserSerializer, AdminUserSerializer, UserDetailSerializer, UserProfileSerializer, UserSerializer
 from rest_framework.exceptions import ValidationError
-
-
 from .models import DefaultUser
+from rest_framework import generics
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
+from django.db.models import F, Func, Value
+from django.db.models.functions import ExtractYear
+from datetime import datetime
+from .models import DefaultUser
+from .serializers import UserListSerializer
+from rest_framework import generics
+from rest_framework.exceptions import NotFound
+from .serializers import UserListSerializer
+from .models import DefaultUser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 from .serializers import UserListSerializer, UserSerializer
+from .serializers import UserSettingsSerializer
 
 class SignInAPIView(APIView):
     permission_classes = [AllowAny]
@@ -52,10 +65,18 @@ class SignInAPIView(APIView):
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+import logging
+# Set up logger
+logger = logging.getLogger(__name__)
+
+
 class SignUpAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
+        # Log the request data for debugging purposes
+        logger.debug(f"Request Data: {request.data}")
+        
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             username = serializer.validated_data.get('username')
@@ -70,20 +91,17 @@ class SignUpAPIView(APIView):
                 serializer.save()
                 return Response({'status': 'Account created successfully'}, status=status.HTTP_201_CREATED)
             except ValidationError as e:
+                # Log the validation error
+                logger.error(f"ValidationError during account creation: {e.messages}")
                 return Response({'password': e.messages}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Log serializer errors if validation fails
+        for field, errors in serializer.errors.items():
+            logger.error(f"Validation Error in field '{field}': {errors}")
+        
+        # Return serializer errors as response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-from rest_framework import generics
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import AllowAny
-from django.db.models import F, Func, Value
-from django.db.models.functions import ExtractYear
-from datetime import datetime
-
-from .models import DefaultUser
-from .serializers import UserListSerializer
 
 
 class UserListView(generics.ListAPIView):
@@ -122,10 +140,6 @@ class UserListView(generics.ListAPIView):
         return queryset
 
 
-from rest_framework import generics
-from rest_framework.exceptions import NotFound
-from .models import DefaultUser
-from .serializers import UserListSerializer
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = DefaultUser.objects.all()
@@ -140,11 +154,6 @@ class UserDetailView(generics.RetrieveAPIView):
         except DefaultUser.DoesNotExist:
             raise NotFound({"Error": "User not found!"})
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from .serializers import UserSettingsSerializer
 
 class UserSettingsView(APIView):
     # permission_classes = [IsAuthenticated]
@@ -219,26 +228,57 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .models import OTPVerification
 
+# class SendOTPView(APIView):
+#     def post(self, request):
+#         email = request.data.get("email")
+#         if not email:
+#             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+#         user, created = DefaultUser.objects.get_or_create(username=email, email=email)
+#         otp_instance, _ = OTPVerification.objects.get_or_create(user=user)
+#         otp_instance.generate_otp()
+
+#         # Send OTP via email
+#         send_mail(
+#             "Your OTP Code",
+#             f"Your OTP code is {otp_instance.otp}",
+#             "your-email@gmail.com",
+#             [email],
+#             fail_silently=False,
+#         )
+
+#         return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
+
+
 class SendOTPView(APIView):
     def post(self, request):
         email = request.data.get("email")
         if not email:
             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        user, created = DefaultUser.objects.get_or_create(username=email, email=email)
-        otp_instance, _ = OTPVerification.objects.get_or_create(user=user)
-        otp_instance.generate_otp()
+        try:
+            # Attempt to get or create a user
+            user, created = DefaultUser.objects.get_or_create(username=email, email=email)
+        except Exception as e:
+            # Catch any unexpected errors and return an error response
+            return Response({"error": "Email already used !!"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Send OTP via email
-        send_mail(
-            "Your OTP Code",
-            f"Your OTP code is {otp_instance.otp}",
-            "your-email@gmail.com",
-            [email],
-            fail_silently=False,
-        )
+        try:
+            otp_instance, _ = OTPVerification.objects.get_or_create(user=user)
+            otp_instance.generate_otp()
 
-        return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
+            # Send OTP via email
+            send_mail(
+                "Your OTP Code",
+                f"Your OTP code is {otp_instance.otp}",
+                "your-email@gmail.com",
+                [email],
+                fail_silently=False,
+            )
+            return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Handle errors related to OTP generation or sending the email
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class VerifyOTPView(APIView):
     def post(self, request):
@@ -251,11 +291,12 @@ class VerifyOTPView(APIView):
 
             if otp_instance.otp == otp:
                 otp_instance.delete()  # OTP is used, delete it
+                user.delete()
                 return Response({"message": "OTP verified successfully"}, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
-        except User.DoesNotExist:
+        except DefaultUser.DoesNotExist:
             return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
         except OTPVerification.DoesNotExist:
