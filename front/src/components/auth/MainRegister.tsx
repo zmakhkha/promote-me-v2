@@ -64,6 +64,9 @@ const MainRegister = () => {
   const [isClient, setIsClient] = useState(false);
   const toast = useToast();
   const router = useRouter();
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpVerified, setOtpVerified] = useState(false); // track if OTP is verified
 
   useEffect(() => {
     setIsClient(true);
@@ -73,6 +76,51 @@ const MainRegister = () => {
 
   const updateFormData = (key: string, value: any) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
+  };
+
+
+  const sendOTP = async () => {
+    try {
+      const response = await api.post("/api/v1/send-otp/", { email: formData.email });
+      if (response.status === 200) {
+        toast({
+          title: "OTP Sent",
+          description: "Check your email for the OTP.",
+          status: "success",
+          duration: 3000,
+        });
+        setOtpSent(true);
+      }
+    } catch (error) {
+      toast({
+        title: "OTP Sending Failed",
+        description: error.response?.data?.error || "An error occurred.",
+        status: "error",
+        duration: 3000,
+      });
+    }
+  };
+  
+  const verifyOTP = async () => {
+    try {
+      const response = await api.post("/api/v1/verify-otp/", { email: formData.email, otp });
+      if (response.status === 200) {
+        toast({
+          title: "OTP Verified",
+          description: "Proceeding to the next step.",
+          status: "success",
+          duration: 3000,
+        });
+        setStep((prev) => prev + 1);
+      }
+    } catch (error) {
+      toast({
+        title: "Invalid OTP",
+        description: "Please enter the correct OTP.",
+        status: "error",
+        duration: 3000,
+      });
+    }
   };
 
   const handleNext = async () => {
@@ -100,10 +148,10 @@ const MainRegister = () => {
         });
 
         // Explicit response status check
-        console.log("-----------------------------------------");
-        console.log(response.status);
-        console.log(response);
-        console.log("-----------------------------------------");
+        // console.log("-----------------------------------------");
+        // console.log(response.status);
+        // console.log(response);
+        // console.log("-----------------------------------------");
 
         if (response.status === 200 || response.status === 201) {
           toast({
@@ -134,6 +182,8 @@ const MainRegister = () => {
     }
 
     // Move to next step if not at the last one
+    if (step === 2 && !otpSent) return; // Prevent moving to OTP step without sending OTP
+    if (step === 3 && !otpVerified) return;
     setStep((prev) => prev + 1);
   };
 
@@ -174,12 +224,35 @@ const MainRegister = () => {
       title: "Your Email",
       key: "email",
       component: (
-        <Input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => updateFormData("email", e.target.value)}
-        />
+        <Box>
+          <Input
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={(e) => updateFormData("email", e.target.value)}
+            isDisabled={otpSent} // Disable email input once OTP is sent
+          />
+          <Button colorScheme="blue" mt={2} onClick={sendOTP} isDisabled={otpSent}>
+            Send OTP
+          </Button>
+        </Box>
+      ),
+    },
+    {
+      title: "Enter OTP",
+      key: "otp",
+      component: (
+        <Box>
+          <Input
+            type="text"
+            placeholder="Enter OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
+          <Button colorScheme="green" mt={2} onClick={verifyOTP} isDisabled={!otpSent || otpVerified || !otp}>
+            Verify OTP
+          </Button>
+        </Box>
       ),
     },
     {
