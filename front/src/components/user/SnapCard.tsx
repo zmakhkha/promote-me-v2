@@ -44,7 +44,7 @@ const UserCard = ({ user }: Props) => {
   return (
     <Card
       minW="200px"
-      width="200"
+      // width="200"
       maxH={cardMaxHeight}
       // height="450px"
       borderRadius="xl"
@@ -119,7 +119,7 @@ const UserCard = ({ user }: Props) => {
             Interests
           </Heading>
           <Flex wrap="wrap" gap={2}>
-            {user.interests.slice(0, 3).map((interest, index) => (
+            {user.interests?.slice(0, 3).map((interest, index) => (
               <Badge
                 key={index}
                 colorScheme="blue"

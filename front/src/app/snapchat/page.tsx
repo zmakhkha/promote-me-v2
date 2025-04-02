@@ -5,10 +5,10 @@ import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
-import MainSnapchat from "@/components/snapchat/MainSnapchat";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import socketConnect from "@/services/axios/socketConnect";
+import MainSnapchat from "@/components/snapchat/mainSnapchat";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();

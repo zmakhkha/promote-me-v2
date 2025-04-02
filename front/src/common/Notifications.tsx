@@ -38,7 +38,7 @@ const Notifications = () => {
       const response = await api.get("/api/v1/messages-notifications/");
       setUnseenMessages(response.data.unseen_messages || []);
     } catch (error) {
-      console.error("Error fetching unseen messages:", error);
+      console.log("Error fetching unseen messages:", error);
     }
   };
 
@@ -64,7 +64,7 @@ const Notifications = () => {
     };
 
     newSocket.onerror = (event: Event) => {
-      console.error("WebSocket error:", event);
+      console.log("WebSocket error:", event);
     };
 
     newSocket.onclose = () => {

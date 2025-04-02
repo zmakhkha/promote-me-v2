@@ -228,26 +228,21 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .models import OTPVerification
 
-# class SendOTPView(APIView):
-#     def post(self, request):
-#         email = request.data.get("email")
-#         if not email:
-#             return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-#         user, created = DefaultUser.objects.get_or_create(username=email, email=email)
-#         otp_instance, _ = OTPVerification.objects.get_or_create(user=user)
-#         otp_instance.generate_otp()
+class VerifyUSernameView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request):
+        username = request.data.get("username")
+        if not username:
+            return Response({"error": "Username is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-#         # Send OTP via email
-#         send_mail(
-#             "Your OTP Code",
-#             f"Your OTP code is {otp_instance.otp}",
-#             "your-email@gmail.com",
-#             [email],
-#             fail_silently=False,
-#         )
-
-#         return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
+        try:
+            # Attempt to get or create a user
+            user = DefaultUser.objects.get(username=username)
+        except Exception as e:
+            # Catch any unexpected errors and return an error response
+            return Response({"message": "Username vailable."}, status=status.HTTP_200_OK)
+        return Response({"error": "Username already used !!"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SendOTPView(APIView):

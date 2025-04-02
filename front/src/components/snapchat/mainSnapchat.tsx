@@ -118,7 +118,9 @@ const MainSnapchat = () => {
                 display="flex"
                 justifyContent="center"
               >
-                <SnapCard user={user} />
+                <SnapCard 
+                key={user.id}
+                user={user} />
               </Box>
             ))}
         </SimpleGrid>

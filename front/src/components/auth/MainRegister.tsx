@@ -123,8 +123,53 @@ const MainRegister = () => {
     }
   };
 
+  const verifyUsername = async () => {
+    try {
+      const response = await api.post("/api/v1/verify-username/", { username: formData.username, otp });
+      if (response.status === 200) {
+        // toast({
+        //   title: "OTP Verified",
+        //   description: "Proceeding to the next step.",
+        //   status: "success",
+        //   duration: 3000,
+        // });
+        setStep((prev) => prev + 1);
+      }
+    } catch (error) {
+      toast({
+        title: "Invalid Username",
+        description: "Username already taken.",
+        status: "error",
+        duration: 3000,
+      });
+    }
+  };
+
   const handleNext = async () => {
-    if (step === steps.length) {
+    console.log("++++++++++++++", step);
+    if (step === 1) {
+      try {
+        const response = await api.post("/api/v1/verify-username/", { username: formData.username, otp });
+        if (response.status === 200) {
+          // toast({
+          //   title: "OTP Verified",
+          //   description: "Proceeding to the next step.",
+          //   status: "success",
+          //   duration: 3000,
+          // });
+          setStep((prev) => prev + 1); return;
+        }
+      } catch (error) {
+        toast({
+          title: "Invalid Username",
+          description: "Username already taken.",
+          status: "error",
+          duration: 3000,
+        });
+        return;
+      }
+    }
+      if (step === steps.length) {
       try {
         const formDataToSend = new FormData();
 
@@ -323,7 +368,6 @@ const MainRegister = () => {
           <Stack direction="row">
             <Radio value="male">Male</Radio>
             <Radio value="female">Female</Radio>
-            <Radio value="other">Other</Radio>
           </Stack>
         </RadioGroup>
       ),

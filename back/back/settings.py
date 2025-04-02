@@ -195,26 +195,26 @@ CHANNEL_LAYERS = {
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',  # Or use 'INFO' if you prefer less verbose logging
-            'class': 'logging.FileHandler',
-            'filename': 'app_logs.log',  # File where logs will be saved
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'back': {  # Replace with your app's name
-            'handlers': ['file'],
-            'level': 'DEBUG',  # Adjust log level as needed
-            'propagate': True,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',  # Or use 'INFO' if you prefer less verbose logging
+#             'class': 'logging.FileHandler',
+#             'filename': 'app_logs.log',  # File where logs will be saved
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#         'back': {  # Replace with your app's name
+#             'handlers': ['file'],
+#             'level': 'DEBUG',  # Adjust log level as needed
+#             'propagate': True,
+#         },
+#     },
+# }
