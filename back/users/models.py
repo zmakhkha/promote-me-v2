@@ -1,3 +1,4 @@
+import random
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from .validators import max_size_validator
@@ -72,3 +73,12 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
             today = date.today()
             return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
         return None
+    
+class OTPVerification(models.Model):
+    user = models.OneToOneField(DefaultUser, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def generate_otp(self):
+        self.otp = str(random.randint(100000, 999999))
+        self.save()

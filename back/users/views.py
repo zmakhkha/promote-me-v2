@@ -212,4 +212,51 @@ class ModifyUserView(APIView):
         else:
             return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-    
+
+from django.core.mail import send_mail
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
+from .models import OTPVerification
+
+class SendOTPView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        if not email:
+            return Response({"error": "Email is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        user, created = DefaultUser.objects.get_or_create(username=email, email=email)
+        otp_instance, _ = OTPVerification.objects.get_or_create(user=user)
+        otp_instance.generate_otp()
+
+        # Send OTP via email
+        send_mail(
+            "Your OTP Code",
+            f"Your OTP code is {otp_instance.otp}",
+            "your-email@gmail.com",
+            [email],
+            fail_silently=False,
+        )
+
+        return Response({"message": "OTP sent successfully"}, status=status.HTTP_200_OK)
+
+class VerifyOTPView(APIView):
+    def post(self, request):
+        email = request.data.get("email")
+        otp = request.data.get("otp")
+
+        try:
+            user = DefaultUser.objects.get(email=email)
+            otp_instance = OTPVerification.objects.get(user=user)
+
+            if otp_instance.otp == otp:
+                otp_instance.delete()  # OTP is used, delete it
+                return Response({"message": "OTP verified successfully"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        except OTPVerification.DoesNotExist:
+            return Response({"error": "OTP not found"}, status=status.HTTP_404_NOT_FOUND)
