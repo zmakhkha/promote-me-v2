@@ -31,7 +31,7 @@ export const connectDirectChat = (token: string, receiverId: string): void => {
     };
 
     directChatSocket.onerror = (error) => {
-      console.error("[Direct Chat] WebSocket error:", error);
+      console.log("[Direct Chat] WebSocket error:", error);
     };
   }
 };
@@ -55,7 +55,7 @@ export const connectWebSocket = (token: string, type: string): void => {
     };
 
     statusSocket.onerror = (error) => {
-      console.error("[Status WebSocket] WebSocket error:", error);
+      console.log("[Status WebSocket] WebSocket error:", error);
     };
   }
 };
@@ -83,7 +83,7 @@ export const randomConnectWebSocket = (token: string): void => {
     };
 
     randomSocket.onerror = (error) => {
-      console.error("[Random WebSocket] WebSocket error:", error);
+      console.log("[Random WebSocket] WebSocket error:", error);
     };
   }
 };
@@ -112,7 +112,7 @@ export const OmegleConnectWebSocket = (ip: string, name: string, age: number): v
     };
 
     omegleSocket.onerror = (error) => {
-      console.error("[Random WebSocket] WebSocket error:", error);
+      console.log("[Random WebSocket] WebSocket error:", error);
     };
   }
 };
@@ -160,11 +160,11 @@ export const startChat = async (token: string, roomId: string): Promise<void> =>
 
     // Event handler for errors
     chatSocket.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      console.log("WebSocket error:", error);
     };
 
   } catch (error) {
-    console.error("Error starting chat:", error);
+    console.log("Error starting chat:", error);
   }
 };
 
@@ -201,11 +201,11 @@ export const startOmegleChat = async (roomId: string, name: string): Promise<voi
 
     // Event handler for errors
     omegleChatSocket.onerror = (error) => {
-      console.error("[Omegle Dms Consumer] WebSocket error:", error);
+      console.log("[Omegle Dms Consumer] WebSocket error:", error);
     };
 
   } catch (error) {
-    console.error("[Omegle Dms Consumer] Error starting chat:", error);
+    console.log("[Omegle Dms Consumer] Error starting chat:", error);
   }
 };
 
@@ -256,10 +256,10 @@ export const sendMessage = async (message: Message): Promise<void> => {
       console.log('++++++++++++++++++', formattedMessage);
       chatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message
     } catch (error) {
-      console.error("[WebSocket] Error sending message:", error);
+      console.log("[WebSocket] Error sending message:", error);
     }
   } else {
-    console.error("[WebSocket] Cannot send message, WebSocket is not connected");
+    console.log("[WebSocket] Cannot send message, WebSocket is not connected");
   }
 };
 
@@ -286,10 +286,10 @@ export const sendOmegleMessage = async (message: Message): Promise<void> => {
       console.log('++++++++++++++++++', formattedMessage);
       omegleChatSocket.send(JSON.stringify(formattedMessage));  // Send the structured message
     } catch (error) {
-      console.error("[WebSocket] Error sending message:", error);
+      console.log("[WebSocket] Error sending message:", error);
     }
   } else {
-    console.error("[WebSocket] Cannot send message, WebSocket is not connected");
+    console.log("[WebSocket] Cannot send message, WebSocket is not connected");
   }
 };
 

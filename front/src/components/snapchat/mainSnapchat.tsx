@@ -20,7 +20,7 @@ const MainSnapchat = () => {
   const { bg, textColor, borderColor } = useColorModeStyles();
   const [users, setUsers] = useState<USerProfile[]>([]);
   const [gender, setGender] = useState<string>("");
-  const [minAge, setMinAge] = useState<number>(13);
+  const [minAge, setMinAge] = useState<number>(18);
   const [maxAge, setMaxAge] = useState<number>(60);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,6 +42,9 @@ const MainSnapchat = () => {
         },
       });
       setUsers(response.data.results || response.data);
+      console.log("Begin-----------users");
+      console.log(users);
+      console.log("End-----------users");
     } catch (error) {
       setError("Failed to fetch users");
       console.log("[MainSnapchat]", error);

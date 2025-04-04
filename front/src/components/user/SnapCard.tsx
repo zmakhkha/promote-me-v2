@@ -1,3 +1,4 @@
+import getCorrectImage from "@/services/axios/getCorrectImage";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import {
   Card,
@@ -75,7 +76,7 @@ const UserCard = ({ user }: Props) => {
         }}
       >
         <Image
-          src={user.image_url}
+          src={getCorrectImage(user.image_url)}
           alt={`${user.username}'s profile`}
           objectFit="cover"
           width="100%"

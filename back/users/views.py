@@ -1,37 +1,38 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework import generics
-from django.forms import ValidationError
+import logging
+from datetime import datetime
+
+# Django imports
 from django.contrib.auth import authenticate, login
 from django.core.cache import cache
-from django.shortcuts import get_object_or_404
-from rest_framework import generics
-from rest_framework.response import Response
-from .models import DefaultUser
-from .serializers import AdminModifyUserSerializer, AdminUserSerializer, UserDetailSerializer, UserProfileSerializer, UserSerializer
-from rest_framework.exceptions import ValidationError
-from .models import DefaultUser
-from rest_framework import generics
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import AllowAny
+from django.core.mail import send_mail
+from django.forms import ValidationError as DjangoValidationError
 from django.db.models import F, Func, Value
 from django.db.models.functions import ExtractYear
-from datetime import datetime
-from .models import DefaultUser
-from .serializers import UserListSerializer
-from rest_framework import generics
-from rest_framework.exceptions import NotFound
-from .serializers import UserListSerializer
-from .models import DefaultUser
-from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+
+# DRF imports
+from rest_framework import generics, status
+from rest_framework.exceptions import NotFound, ValidationError
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-from rest_framework import status
-from .serializers import UserListSerializer, UserSerializer
-from .serializers import UserSettingsSerializer
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
+# Local imports
+from .models import DefaultUser, OTPVerification
+from .serializers import (
+    AdminModifyUserSerializer,
+    AdminUserSerializer,
+    UserDetailSerializer,
+    UserListSerializer,
+    UserProfileSerializer,
+    UserSerializer,
+    UserSettingsSerializer,
+)
+
+# Set up logger
+logger = logging.getLogger(__name__)
+
 
 class SignInAPIView(APIView):
     permission_classes = [AllowAny]
@@ -65,9 +66,7 @@ class SignInAPIView(APIView):
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-import logging
-# Set up logger
-logger = logging.getLogger(__name__)
+
 
 
 class SignUpAPIView(APIView):
@@ -195,6 +194,7 @@ class UserListView(APIView):
         # Exclude the logged-in admin from the returned data
         users = DefaultUser.objects.exclude(id=request.user.id)
         serializer = AdminUserSerializer(users, many=True)
+        serializer = UserDetailSerializer(users, many=True)
         return Response(serializer.data)
     
 class ModifyUserView(APIView):
@@ -222,11 +222,7 @@ class ModifyUserView(APIView):
             return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
-from django.core.mail import send_mail
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework import status
-from .models import OTPVerification
+
 
 
 class VerifyUSernameView(APIView):
