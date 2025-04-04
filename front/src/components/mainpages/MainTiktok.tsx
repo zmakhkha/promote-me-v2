@@ -10,17 +10,20 @@ import {
 } from "@chakra-ui/react";
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import TiktokCard from "../user/TiktokCard";
 import api from "@/services/axios/api";
 import { USerProfile } from "../auth/types";
+import { useBreakpointValue } from "@chakra-ui/react";
+import UserCard from "../user/UserCard";
+import UserListItem from "../user/UserListItem";
 
 const USERS_PER_PAGE = 8;
 
 const MainTiktok = () => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const { bg, textColor, borderColor } = useColorModeStyles();
   const [users, setUsers] = useState<USerProfile[]>([]);
   const [gender, setGender] = useState<string>("");
-  const [minAge, setMinAge] = useState<number>(13);
+  const [minAge, setMinAge] = useState<number>(18);
   const [maxAge, setMaxAge] = useState<number>(60);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,9 +45,12 @@ const MainTiktok = () => {
         },
       });
       setUsers(response.data.results || response.data);
+      console.log("Begin-----------users");
+      console.log(users);
+      console.log("End-----------users");
     } catch (error) {
-      console.error(error);
       setError("Failed to fetch users");
+      console.log("[MainTiktok]", error);
     } finally {
       setIsLoading(false);
     }
@@ -102,7 +108,7 @@ const MainTiktok = () => {
       ) : (
         <SimpleGrid
           p={1}
-          columns={{ base: 1, sm: 1, md: 3, lg: 4 }}
+          columns={isMobile ? 1 : { base: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
           spacing={4}
           w="100%"
         >
@@ -113,12 +119,16 @@ const MainTiktok = () => {
             )
             .map((user) => (
               <Box
-                key={user.id}
+                key={user.id} // Add key prop here
                 w="100%"
                 display="flex"
                 justifyContent="center"
               >
-                <TiktokCard user={user} />
+                {isMobile ? (
+                  <UserListItem user={user} platform="tiktok" />
+                ) : (
+                  <UserCard user={user} platform="tiktok" />
+                )}
               </Box>
             ))}
         </SimpleGrid>

@@ -10,21 +10,6 @@ export type RegisterFormData = {
 	photo: File | null;
   };
 
-//   interface UserData {
-// 	image_url: string;
-// 	first_name: string;
-// 	last_name: string;
-// 	location: string;
-// 	age: number;
-// 	bio: string;
-// 	views: number;
-// 	likes: number;
-// 	points: number;
-// 	interests: string[];
-// 	instagram?: string;
-// 	snapchat?: string;
-// 	tiktok?: string;
-// }
 
 export interface USerProfile {
 	email: string;

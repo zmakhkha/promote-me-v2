@@ -11,12 +11,15 @@ import {
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
-import SnapCard from "../user/SnapCard";
 import { USerProfile } from "../auth/types";
+import { useBreakpointValue } from "@chakra-ui/react";
+import UserListItem from "../user/UserListItem";
+import UserCard from "../user/UserCard";
 
 const USERS_PER_PAGE = 8;
 
-const MainSnapchat = () => {
+const MainInstagram = () => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const { bg, textColor, borderColor } = useColorModeStyles();
   const [users, setUsers] = useState<USerProfile[]>([]);
   const [gender, setGender] = useState<string>("");
@@ -47,7 +50,7 @@ const MainSnapchat = () => {
       console.log("End-----------users");
     } catch (error) {
       setError("Failed to fetch users");
-      console.log("[MainSnapchat]", error);
+      console.log("[MainInstagram]", error);
     } finally {
       setIsLoading(false);
     }
@@ -75,7 +78,7 @@ const MainSnapchat = () => {
         bg={bg}
       >
         <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-          Snapchat Users
+          Tiktok Users
         </Text>
       </Box>
 
@@ -105,7 +108,7 @@ const MainSnapchat = () => {
       ) : (
         <SimpleGrid
           p={1}
-          columns={{ base: 1, sm: 1, md: 3, lg: 4 }}
+          columns={isMobile ? 1 : { base: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
           spacing={4}
           w="100%"
         >
@@ -116,14 +119,16 @@ const MainSnapchat = () => {
             )
             .map((user) => (
               <Box
-                key={user.id}
+                key={user.id} // Add key prop here
                 w="100%"
                 display="flex"
                 justifyContent="center"
               >
-                <SnapCard 
-                key={user.id}
-                user={user} />
+                {isMobile ? (
+                  <UserListItem user={user} platform="instagram" />
+                ) : (
+                  <UserCard user={user} platform="instagram" />
+                )}
               </Box>
             ))}
         </SimpleGrid>
@@ -151,4 +156,4 @@ const MainSnapchat = () => {
   );
 };
 
-export default MainSnapchat;
+export default MainInstagram;

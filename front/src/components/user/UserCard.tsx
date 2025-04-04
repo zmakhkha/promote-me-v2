@@ -1,3 +1,4 @@
+import getCorrectImage from "@/services/axios/getCorrectImage";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import {
   Card,
@@ -15,7 +16,9 @@ import {
 } from "@chakra-ui/react";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { MdLocationOff } from "react-icons/md";
-import { FaInstagram } from "react-icons/fa";
+import { SiSnapchat } from "react-icons/si";
+import { SiInstagram } from "react-icons/si";
+import { SiTiktok } from "react-icons/si";
 
 interface HomeUser {
   id: number;
@@ -29,26 +32,34 @@ interface HomeUser {
   image_url: string;
   isOnline: boolean;
   instagram: string;
+  snapchat: string;
+  tiktok: string;
 }
 
-interface Props {
+interface UserCardProps {
   user: HomeUser;
+  platform: "snapchat" | "instagram" | "tiktok"; // New prop to define the platform
 }
 
-const UserCard = ({ user }: Props) => {
-  const { bg, textColor, borderColor, hoverColor } = useColorModeStyles(); // Destructure the colors
-  const imageSize = useBreakpointValue({ base: "150px", md: "200px" });
-  const cardMaxHeight = useBreakpointValue({ base: "450px", md: "600px" });
-  console.log(user)
-  // Truncate bio if it's longer than 90 characters
-  // const truncatedBio =
-  //   user.bio.length > 90 ? `${user.bio.substring(0, 60)}...` : user.bio;
+const UserCard = ({ user, platform }: UserCardProps) => {
+  const {
+    bg,
+    textColor,
+    borderColor,
+    hoverColor,
+    snapchatTextColor,
+    instagramTextColor,
+    tiktokTextColor,
+  } = useColorModeStyles();
+
+  const cardWidth = useBreakpointValue({ base: "90%", sm: "300px", md: "400px" });
+  const imageHeight = useBreakpointValue({ base: "180px", sm: "200px", md: "220px" });
+  const cardMaxHeight = useBreakpointValue({ base: "420px", md: "500px" });
 
   return (
     <Card
-      width="sm"
+      width={cardWidth}
       maxH={cardMaxHeight}
-      // height="450px"
       borderRadius="xl"
       boxShadow="lg"
       overflow="hidden"
@@ -56,97 +67,60 @@ const UserCard = ({ user }: Props) => {
       _hover={{
         transform: "scale(1.05)",
         boxShadow: "xl",
-        borderColor: hoverColor, // Hover effect using color mode value
+        borderColor: hoverColor,
       }}
-      bg={bg} // Set background color based on color mode
+      bg={bg}
       border="1px"
-      borderColor={borderColor} // Border color changes based on color mode
+      borderColor={borderColor}
     >
       {/* Image Section */}
       <Box
         as={Link}
-        // href={`/profile/${user.username}`}
-        // href={`/profile/${user.username}`}
-        href={`/profile?user/${user.username}`}
-        height={imageSize}
+        href={`/profile/${user.username}`}
+        height={imageHeight}
         width="100%"
         overflow="hidden"
-        borderRadius="md"
         position="relative"
-        _hover={{
-          transform: "scale(1.1)",
-          transition: "all 0.3s ease-in-out",
-        }}
       >
         <Image
-          src={user.image_url}
+          src={getCorrectImage(user.image_url)}
           alt={`${user.username}'s profile`}
           objectFit="cover"
           width="100%"
           height="100%"
-          borderRadius="md"
+          borderRadius="0"
         />
       </Box>
+
       {/* Scrollable Content */}
       <Flex
         direction="column"
         overflowY="auto"
-        maxH={`calc(${cardMaxHeight} - ${imageSize})`}
+        maxH={`calc(${cardMaxHeight} - ${imageHeight})`}
         flex="1"
       >
-        <CardBody flex="1" display="flex" flexDirection="column">
-          {/* Header Section with User Info */}
+        <CardBody display="flex" flexDirection="column" flex="1">
           <HStack justify="space-between" mb={1}>
-            <Heading
-              fontSize="xl"
-              fontWeight="bold"
-              color={textColor}
-              mb={2}
-              textAlign="center"
-            >
+            <Heading fontSize="xl" fontWeight="bold" color={textColor} mb={2}>
               {user.first_name} · {user.gender} · {user.age}
             </Heading>
           </HStack>
-          {/* Location Section */}
-          <HStack
-            // justify="center"
-            mb={2}
-            color="gray.500"
-            fontSize="sm"
-            fontStyle="italic"
-          >
+
+          <HStack mb={2} color="gray.500" fontSize="sm" fontStyle="italic">
             <FaMapMarkerAlt />
             <Text>{user.location || <MdLocationOff />}</Text>
           </HStack>
-          {/* Bio Section */}
-          {/* About (Bio) Section */}
-          {/* <Box
-            bg="gray.200"
-            p={3}
-            borderRadius="md"
-            mb={2}
-            // textAlign="justify"
-            _dark={{
-              bg: "gray.700",
-            }}
-          >
-            <Text fontSize="sm" color={textColor}>
-              {truncatedBio}
-            </Text>
-          </Box> */}
-          {/* <Spacer /> Pushes content to the top if there's empty space */}
-          {/* Interests Section */}
+
           <Heading fontSize="md" mb={1} color={textColor}>
             Interests
           </Heading>
           <Flex wrap="wrap" gap={2}>
-            {user.interests.slice(0, 3).map((interest, index) => (
+            {user.interests?.slice(0, 3).map((interest, index) => (
               <Badge
                 key={index}
                 colorScheme="blue"
                 fontSize="sm"
                 px={2}
-                // py={1}
                 borderRadius="full"
                 boxShadow="md"
                 bg="blue.100"
@@ -158,23 +132,61 @@ const UserCard = ({ user }: Props) => {
           </Flex>
         </CardBody>
       </Flex>
-      {/* Divider and Instagram Link */}
+
+      {/* Divider and Platform Link */}
       <Divider borderColor={borderColor} />
       <Box textAlign="center" py={2}>
-        <Link
-          href={`https://www.instagram.com/${user.instagram}`}
-          isExternal
-          color="blue.400"
-          fontWeight="medium"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          gap={2}
-          _hover={{ textDecoration: "underline" }}
-        >
-          <FaInstagram />
-          View Instagram
-        </Link>
+        {/* Conditionally render based on the platform */}
+        {platform === "snapchat" && (
+          <Link
+            href={`https://snapchat.com/add/${user.snapchat}`}
+            isExternal
+            color={snapchatTextColor}
+            fontWeight="medium"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+            _hover={{ textDecoration: "underline" }}
+          >
+            <SiSnapchat /> &nbsp;
+            View Snapchat
+          </Link>
+        )}
+
+        {platform === "instagram" && (
+          <Link
+            href={`https://instagram.com/${user.instagram}`}
+            isExternal
+            color={instagramTextColor}
+            fontWeight="medium"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+            _hover={{ textDecoration: "underline" }}
+          >
+            <SiInstagram /> &nbsp;
+            View Instagram
+          </Link>
+        )}
+
+        {platform === "tiktok" && (
+          <Link
+            href={`https://tiktok.com/@${user.tiktok}`}
+            isExternal
+            color={tiktokTextColor}
+            fontWeight="medium"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            gap={2}
+            _hover={{ textDecoration: "underline" }}
+          >
+            <SiTiktok /> &nbsp;
+            View TikTok
+          </Link>
+        )}
       </Box>
     </Card>
   );

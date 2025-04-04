@@ -65,10 +65,6 @@ class SignInAPIView(APIView):
             cache.set(cache_key, attempts + 1, timeout=300)
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-
-
-
-
 class SignUpAPIView(APIView):
     permission_classes = [AllowAny]
 
@@ -100,8 +96,6 @@ class SignUpAPIView(APIView):
         
         # Return serializer errors as response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 class UserListView(generics.ListAPIView):
     permission_classes = [AllowAny]
@@ -137,8 +131,6 @@ class UserListView(generics.ListAPIView):
             queryset = queryset.filter(gender=gender)
 
         return queryset
-
-
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = DefaultUser.objects.all()
@@ -180,8 +172,6 @@ class UserProfileView(APIView):
         user = request.user
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
 
 class UserListView(APIView):
     # permission_classes = [IsAdminUser]
@@ -221,10 +211,6 @@ class ModifyUserView(APIView):
         else:
             return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
 class VerifyUSernameView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -239,7 +225,6 @@ class VerifyUSernameView(APIView):
             # Catch any unexpected errors and return an error response
             return Response({"message": "Username vailable."}, status=status.HTTP_200_OK)
         return Response({"error": "Username already used !!"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class SendOTPView(APIView):
     def post(self, request):
@@ -270,6 +255,7 @@ class SendOTPView(APIView):
         except Exception as e:
             # Handle errors related to OTP generation or sending the email
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class VerifyOTPView(APIView):
     def post(self, request):

@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
-import MainHome from "@/components/home/MainHome";
+import MainHome from "@/components/mainpages/MainHome";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import socketConnect from "@/services/axios/socketConnect";
