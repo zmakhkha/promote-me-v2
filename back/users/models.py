@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 from .validators import max_size_validator
 from datetime import date
+from django.utils import timezone
 from django.utils.timezone import now
 
 class DefaultUserManager(BaseUserManager):
@@ -82,3 +83,20 @@ class OTPVerification(models.Model):
     def generate_otp(self):
         self.otp = str(random.randint(100000, 999999))
         self.save()
+
+class ProfileView(models.Model):
+    viewer = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='views_given')
+    viewed = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='views_received')
+    date = models.DateField(default=timezone.now)
+
+    class Meta:
+        unique_together = ('viewer', 'viewed', 'date')
+
+
+class ProfileLike(models.Model):
+    liked_by = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='likes_given')
+    liked_user = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='likes_received')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('liked_by', 'liked_user')

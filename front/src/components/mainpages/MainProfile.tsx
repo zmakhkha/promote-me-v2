@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -52,6 +50,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
   const { bg, tiktok, textColor, borderColor, navBgColor } =
     useColorModeStyles();
 
+  const [liked, setLiked] = useState(false);
   const [userData, setUserData] = useState<UserData>({
     image_url: placeholderAvatar.src,
     username: "",
@@ -74,12 +73,97 @@ const MainProfile = ({ username }: MainProfileProps) => {
     placeholderAvatar.src
   );
 
+  // Fetch the like status from the backend
+  const fetchLikeStatus = async () => {
+    try {
+      const response = await api.get(
+        `/api/v1/profile/like-status/${username}/`
+      );
+      console.log("---------->|", response.data);
+      setLiked(response.data.detail); // Set the like status from backend
+    } catch (error) {
+      console.error("Error fetching like status:", error);
+    }
+  };
+
+  const handleDislike = async () => {
+    try {
+      const response = await api.post(`/api/v1/profile/dislike/`, {
+        disliked_username: username,
+      });
+
+      if (response.status === 200) {
+        // Toggle like status and update likes count
+        setLiked(false);
+        setUserData((prev) => ({
+          ...prev,
+          likes: prev.likes - (liked ? 1 : 0), // Decrement likes if disliked
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to dislike user:", error);
+    }
+  };
+
+  // const handleLike = async () => {
+  //   try {
+  //     // Send a like toggle request to the backend
+  //     const response = await api.post(`/api/v1/profile/like/`, {
+  //       liked_username: username,
+  //     });
+  //     // Update the liked status after liking
+  //     setLiked((prev) => !prev);
+
+  //     if (response.data?.likes !== undefined) {
+  //       setUserData((prev) => ({
+  //         ...prev,
+  //         likes: response.data.likes,
+  //       }));
+  //     } else {
+  //       // Fallback: increment or decrement likes on UI without full backend update
+  //       setUserData((prev) => ({
+  //         ...prev,
+  //         likes: prev.likes + (liked ? -1 : 1),
+  //       }));
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to like user:", error);
+  //   }
+  // };
+  const handleLike = async () => {
+    try {
+      if (liked) {
+        // If already liked, handle dislike
+        await handleDislike();
+      } else {
+        // Send like toggle request
+        const response = await api.post(`/api/v1/profile/like/`, {
+          liked_username: username,
+        });
+
+        setLiked(true);
+        if (response.data?.likes !== undefined) {
+          setUserData((prev) => ({
+            ...prev,
+            likes: response.data.likes,
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Failed to like/dislike user:", error);
+    }
+  };
+
+  // Fetch user data and increment views
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await api.get(`/api/v1/users/${username}/`);
         setUserData(response.data);
         setImagePreview(response.data.image_url || placeholderAvatar.src);
+
+        // Increment views
+        await api.post(`api/v1/profile/view/`, { viewed_username: username });
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
@@ -87,8 +171,9 @@ const MainProfile = ({ username }: MainProfileProps) => {
 
     if (username) {
       fetchUserData();
+      fetchLikeStatus(); // Fetch like status when the component mounts
     }
-  }, [username]);
+  }, [username]); // Fetch user data when username changes
 
   return (
     <Flex justify="center" align="center" py={5} px={5}>
@@ -113,6 +198,24 @@ const MainProfile = ({ username }: MainProfileProps) => {
             boxShadow="lg"
           />
         </Flex>
+        <Flex justify="center" mt={-8}>
+          <IconButton
+            aria-label="Like/Dislike"
+            icon={
+              liked ? (
+                <Text fontSize="2xl" color="red.400">
+                  ❤️
+                </Text>
+              ) : (
+                <Text fontSize="2xl" color="gray.400">
+                  🤍
+                </Text>
+              )
+            }
+            variant="ghost"
+            onClick={handleLike}
+          />
+        </Flex>
 
         {/* Name and Age */}
         <Text fontSize="2xl" fontWeight="bold" color={textColor}>
@@ -128,20 +231,14 @@ const MainProfile = ({ username }: MainProfileProps) => {
 
         {/* Start Chat Button */}
         <Flex justify="center" mb={4}>
-          <Link
-            href={`/chat/${userData.username}`}
-            // color={hoverColor}
-            textDecoration="underline"
-          >
+          <Link href={`/chat/${userData.username}`} textDecoration="underline">
             <IconButton
               aria-label="Start Chat"
               icon={<FaCommentDots />}
               colorScheme="teal"
               size="lg"
               variant="solid"
-            >
-              Start Chat
-            </IconButton>
+            />
           </Link>
         </Flex>
 
@@ -171,7 +268,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
           )}
           {userData.snapchat && (
             <Link
-              href={`https://snapchat.com/add/${userData.instagram}`}
+              href={`https://snapchat.com/add/${userData.snapchat}`}
               isExternal
               color="blue.400"
               fontWeight="medium"
@@ -191,7 +288,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
           )}
           {userData.tiktok && (
             <Link
-              href={`https://www.tiktok.com/@${userData.instagram}`}
+              href={`https://www.tiktok.com/@${userData.tiktok}`}
               isExternal
               color="blue.400"
               fontWeight="medium"
