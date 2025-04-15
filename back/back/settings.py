@@ -193,7 +193,17 @@ CHANNEL_LAYERS = {
 # EMAIL_HOST_PASSWORD = "your-app-password"  # Use an App Password (not your main password)
 
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'makhkhas.zakaria@gmail.com'
+EMAIL_HOST_PASSWORD = 'llys vmqq vwha ieqj'  # Use the app password here
+
 
 # LOGGING = {
 #     'version': 1,
