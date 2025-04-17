@@ -3,7 +3,10 @@ from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
 
 from .validators import *
-from .models import DefaultUser
+from .models import DefaultUser, ProfileView, ProfileLike
+
+# serializers.py
+
 
 unique_username_validator = UniqueValidator(
     queryset=DefaultUser.objects.all(), message="This username is already in use."
@@ -115,3 +118,13 @@ class AdminUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DefaultUser
         fields = ['username', 'email',  'points', 'location',  'is_staff',]
+
+class ProfileViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfileView
+        fields = '__all__'
+
+class ProfileLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProfileLike
+        fields = '__all__'

@@ -1,7 +1,22 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .views import SendOTPView, SignInAPIView, SignUpAPIView, UserListView,UserDetailView, UserProfileView, UserSettingsView, UserListView, ModifyUserView, VerifyOTPView, VerifyUSernameView
+from .views import (SendOTPView,
+ SignInAPIView,
+ SignUpAPIView,
+ UserListView,
+ UserDetailView,
+ UserProfileView,
+ UserSettingsView,
+ UserListView,
+ ModifyUserView,
+ VerifyOTPView,
+ VerifyUSernameView,
+ RecordProfileView,
+ LikeUser,
+ DislikeUser,
+ CheckLikeStatus
+ )
 
 urlpatterns = [
     #tokens
@@ -26,4 +41,10 @@ urlpatterns = [
     path("send-otp/", SendOTPView.as_view(), name="send-otp"),
     path("verify-otp/", VerifyOTPView.as_view(), name="verify-otp"),
     path("verify-username/", VerifyUSernameView.as_view(), name="verify-username"),
+	
+    #
+    path('profile/view/', RecordProfileView.as_view(), name='record-profile-view'),
+    path('profile/like/', LikeUser.as_view(), name='like-user'),
+    path('profile/dislike/', DislikeUser.as_view(), name='dislike-user'),
+    path('profile/like-status/<str:username>/', CheckLikeStatus.as_view(), name='like-status'),
 ]

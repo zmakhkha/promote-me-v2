@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from datetime import date
 
 # Django imports
 from django.contrib.auth import authenticate, login
@@ -12,6 +13,7 @@ from django.shortcuts import get_object_or_404
 
 # DRF imports
 from rest_framework import generics, status
+from rest_framework import status, permissions
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -19,7 +21,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 # Local imports
-from .models import DefaultUser, OTPVerification
+from .models import (OTPVerification,DefaultUser, ProfileView, ProfileLike)
 from .serializers import (
     AdminModifyUserSerializer,
     AdminUserSerializer,
@@ -29,6 +31,11 @@ from .serializers import (
     UserSerializer,
     UserSettingsSerializer,
 )
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import permissions, status
+
 
 # Set up logger
 logger = logging.getLogger(__name__)
@@ -65,10 +72,6 @@ class SignInAPIView(APIView):
             cache.set(cache_key, attempts + 1, timeout=300)
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-
-
-
-
 class SignUpAPIView(APIView):
     permission_classes = [AllowAny]
 
@@ -100,8 +103,6 @@ class SignUpAPIView(APIView):
         
         # Return serializer errors as response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 
 class UserListView(generics.ListAPIView):
     permission_classes = [AllowAny]
@@ -137,8 +138,6 @@ class UserListView(generics.ListAPIView):
             queryset = queryset.filter(gender=gender)
 
         return queryset
-
-
 
 class UserDetailView(generics.RetrieveAPIView):
     queryset = DefaultUser.objects.all()
@@ -180,8 +179,6 @@ class UserProfileView(APIView):
         user = request.user
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    
 
 class UserListView(APIView):
     # permission_classes = [IsAdminUser]
@@ -221,10 +218,6 @@ class ModifyUserView(APIView):
         else:
             return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
 class VerifyUSernameView(APIView):
     permission_classes = [AllowAny]
     def post(self, request):
@@ -239,7 +232,6 @@ class VerifyUSernameView(APIView):
             # Catch any unexpected errors and return an error response
             return Response({"message": "Username vailable."}, status=status.HTTP_200_OK)
         return Response({"error": "Username already used !!"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 class SendOTPView(APIView):
     def post(self, request):
@@ -271,6 +263,7 @@ class SendOTPView(APIView):
             # Handle errors related to OTP generation or sending the email
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 class VerifyOTPView(APIView):
     def post(self, request):
         email = request.data.get("email")
@@ -292,3 +285,100 @@ class VerifyOTPView(APIView):
 
         except OTPVerification.DoesNotExist:
             return Response({"error": "OTP not found"}, status=status.HTTP_404_NOT_FOUND)
+
+class RecordProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        print('------------++-------------')
+        viewed_username = request.data.get('viewed_username')
+        try:
+            viewer = request.user
+            viewed = DefaultUser.objects.get(username=viewed_username)
+
+            if viewer == viewed:
+                return Response({'detail': 'Cannot view your own profile.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            today = date.today()
+            _, created = ProfileView.objects.get_or_create(viewer=viewer, viewed=viewed, date=today)
+            if created:
+                viewer.points += 5
+                viewed.points += 10
+                viewed.views += 1
+                viewer.save()
+                viewed.save()
+
+            return Response({'detail': 'Profile view recorded.'}, status=status.HTTP_200_OK)
+
+        except DefaultUser.DoesNotExist:
+            return Response({'detail': 'Viewed user not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+class LikeUser(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        liked_username = request.data.get('liked_username')
+        try:
+            liker = request.user
+            liked = DefaultUser.objects.get(username=liked_username)
+
+            if liker == liked:
+                return Response({'detail': 'Cannot like yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            _, created = ProfileLike.objects.get_or_create(liked_by=liker, liked_user=liked)
+            if created:
+                liker.points += 2
+                liked.likes += 1
+                liker.save()
+                liked.save()
+                return Response({'detail': 'User liked.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'detail': 'You already liked this user.'}, status=status.HTTP_200_OK)
+
+        except DefaultUser.DoesNotExist:
+            return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class DislikeUser(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        disliked_username = request.data.get('disliked_username')
+        try:
+            disliker = request.user
+            disliked = DefaultUser.objects.get(username=disliked_username)
+
+            if disliker == disliked:
+                return Response({'detail': 'Cannot dislike yourself.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Find the like object if it exists
+            like_obj = ProfileLike.objects.filter(liked_by=disliker, liked_user=disliked).first()
+            
+            if like_obj:
+                # Remove like, update like counts, and delete the relationship
+                disliked.likes -= 1 if disliked.likes > 0 else 0
+                disliker.save()
+                disliked.save()
+                like_obj.delete()
+                return Response({'detail': 'User disliked.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'detail': 'You have not liked this user yet.'}, status=status.HTTP_200_OK)
+
+        except DefaultUser.DoesNotExist:
+            return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+class CheckLikeStatus(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request,username, *args, **kwargs):
+        # username = request.data.get('username')        
+        print(f"--------->{username}")
+        # Get the target user
+        target_user = DefaultUser.objects.get(username=username)
+            
+        # Check if there is a like relationship between the authenticated user and the target user
+        like_exists = ProfileLike.objects.filter(liked_by=request.user, liked_user=target_user).exists()
+        if like_exists:
+            return Response({'detail': True}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': False}, status=status.HTTP_200_OK)

@@ -10,16 +10,20 @@ import {
 } from "@chakra-ui/react";
 import DateRangePicker from "@/common/DateRangePicker";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import UserCard from "../user/UserCard";
 import api from "@/services/axios/api";
+import { USerProfile } from "../auth/types";
+import { useBreakpointValue } from "@chakra-ui/react";
+import UserCard from "../user/UserCard";
+import UserListItem from "../user/UserListItem";
 
 const USERS_PER_PAGE = 8;
 
-const MainInstagram = () => {
+const MainSnapchat = () => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const { bg, textColor, borderColor } = useColorModeStyles();
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<USerProfile[]>([]);
   const [gender, setGender] = useState<string>("");
-  const [minAge, setMinAge] = useState<number>(13);
+  const [minAge, setMinAge] = useState<number>(18);
   const [maxAge, setMaxAge] = useState<number>(60);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,8 +45,12 @@ const MainInstagram = () => {
         },
       });
       setUsers(response.data.results || response.data);
-    } catch (err: any) {
-      setError(err.response?.data?.detail || "Failed to fetch users");
+      console.log("Begin-----------users");
+      console.log(users);
+      console.log("End-----------users");
+    } catch (error) {
+      setError("Failed to fetch users");
+      console.log("[MainSnapchat]", error);
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +78,7 @@ const MainInstagram = () => {
         bg={bg}
       >
         <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-          Instagram Users
+          Snapchat Users
         </Text>
       </Box>
 
@@ -100,7 +108,7 @@ const MainInstagram = () => {
       ) : (
         <SimpleGrid
           p={1}
-          columns={{ base: 1, sm: 1, md: 2, lg: 3 }}
+          columns={isMobile ? 1 : { base: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
           spacing={4}
           w="100%"
         >
@@ -111,12 +119,16 @@ const MainInstagram = () => {
             )
             .map((user) => (
               <Box
-                key={user.id}
+                key={user.id} // Add key prop here
                 w="100%"
                 display="flex"
                 justifyContent="center"
               >
-                <UserCard user={user} />
+                {isMobile ? (
+                  <UserListItem user={user} platform="snapchat" />
+                ) : (
+                  <UserCard user={user} platform="snapchat" />
+                )}
               </Box>
             ))}
         </SimpleGrid>
@@ -144,4 +156,4 @@ const MainInstagram = () => {
   );
 };
 
-export default MainInstagram;
+export default MainSnapchat;

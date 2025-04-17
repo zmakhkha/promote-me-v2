@@ -8,7 +8,7 @@ import Header from "@/common/Header";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import socketConnect from "@/services/axios/socketConnect";
-import MainSnapchat from "@/components/snapchat/mainSnapchat";
+import MainSnapchat from "@/components/mainpages/mainSnapchat";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();

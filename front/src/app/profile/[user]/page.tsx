@@ -8,7 +8,7 @@ import Header from "@/common/Header";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
-import MainProfile from "@/components/profile/MainProfile";
+import MainProfile from "@/components/mainpages/MainProfile";
 type Props = {
   user: string;
 };

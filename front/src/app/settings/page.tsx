@@ -4,7 +4,7 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import MainSettings from "@/components/settings/MainSettings";
+import MainSettings from "@/components/mainpages/MainSettings";
 import Header from "@/common/Header";
 import { useRouter } from "next/navigation";
 import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
