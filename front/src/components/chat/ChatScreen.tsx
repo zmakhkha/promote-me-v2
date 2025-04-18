@@ -33,8 +33,9 @@ const ChatScreen = () => {
   const [inputValue, setInputValue] = useState<string>("");
   const [token, setToken] = useState<string>("");
   const [chatStatus, setChatStatus] = useState<string>(
-    "Waiting for a connection..."
+    "Searching for  authenticated users ..."
   );
+
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [roomId, setRoomId] = useState<string | null>(null);
@@ -255,7 +256,10 @@ const ChatScreen = () => {
     >
       <Box mb={4} textAlign="center">
         <Text fontSize="xl" fontWeight="bold">
-          {chatStatus}
+          {/* {chatStatus} */}
+          <Text whiteSpace="pre-line" textAlign="center">
+            {chatStatus}
+          </Text>
         </Text>
         {isConnecting && <Spinner mt={4} />}
       </Box>
