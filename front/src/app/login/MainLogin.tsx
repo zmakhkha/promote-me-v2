@@ -7,53 +7,25 @@ import {
   Text,
   Flex,
   Link,
-  useToast,
+  Spinner,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import api from "@/services/axios/api";
+
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import api from "@/services/axios/api";
 
 const MainLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const toast = useToast();
+  const [loading, setLoading] = useState(false); // Loading state for animation
   const router = useRouter();
   const { bg, textColor } = useColorModeStyles();
 
-  // const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   setError(null); // Clear any previous errors
-
-  //   try {
-  //     const response = await api.post("/api/v1/login/", {
-  //       username,
-  //       password,
-  //     });
-
-  //     const { access, refresh } = response.data;
-
-  //     // Store tokens in localStorage
-  //     localStorage.setItem("accessToken", access);
-  //     localStorage.setItem("refreshToken", refresh);
-
-  //     // Redirect to home page
-  //     router.push("/"); // Redirect using next.js router
-  //   } catch (err: any) {
-  //     // Handle errors gracefully
-  //     if (err.response?.status === 401) {
-  //       setError("Invalid username or password.");
-  //     } else if (err.response?.status === 429) {
-  //       setError("Too many login attempts. Please try again later.");
-  //     } else {
-  //       setError("An unexpected error occurred. Please try again.");
-  //     }
-  //   }
-  // };
-
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null); // Clear previous errors
+    setError(null); 
+    setLoading(true);
 
     try {
       const response = await api.post("/api/v1/login/", {
@@ -61,25 +33,13 @@ const MainLogin = () => {
         password,
       });
 
-        
-        const { access, refresh, is_staff } = response.data;
+      const { access, refresh, is_staff } = response.data;
 
       // Store tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
-      
-      // Show success toast
-      toast({
-        title: "Login successful!",
-        description: "Redirecting...",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-      
-      setTimeout(() => {
-        is_staff ? router.push("/admin") : router.push("/");
-      }, 2000);
+
+      is_staff ? router.push("/admin") : router.push("/");
     } catch (err: any) {
       let message = "An unexpected error occurred. Please try again.";
       if (err.response?.status === 401) {
@@ -88,16 +48,9 @@ const MainLogin = () => {
         message = "Too many login attempts. Please try again later.";
       }
 
-      setError(message);
-
-      // Show error toast
-      toast({
-        title: "Oops!",
-        description: message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      setError(message); // Set error message
+    } finally {
+      setLoading(false); // Stop loading animation
     }
   };
 
@@ -129,7 +82,7 @@ const MainLogin = () => {
           textAlign="center"
           color="pink.400"
         >
-          Login 
+          Login
         </Text>
         <form onSubmit={handleLogin}>
           <Flex direction="column" gap={4}>
@@ -149,15 +102,22 @@ const MainLogin = () => {
               required
               className="login-input"
             />
-            <Button type="submit" colorScheme="pink" variant="solid" w="full">
+            <Button
+              type="submit"
+              colorScheme="pink"
+              variant="solid"
+              w="full"
+              isLoading={loading} // This will show the loading spinner
+              loadingText="Logging in..."
+            >
               Login
             </Button>
           </Flex>
         </form>
         {error && (
-          <Text color="red.500" mt={2}>
-            {error}
-          </Text>
+          <Flex justify="center" align="center" mt={2} w="100%" color="red.500">
+            <Text>{error}</Text>
+          </Flex>
         )}
         <Text mt={4} textAlign="center" color="gray.600">
           Don&apos;t have an account?{" "}
