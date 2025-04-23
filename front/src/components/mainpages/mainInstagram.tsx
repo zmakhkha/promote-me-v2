@@ -36,7 +36,7 @@ const MainInstagram = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.get("/api/v1/users/", {
+      const response = await api.get("/api/v1/users-info/", {
         params: {
           page: currentPage,
           gender,

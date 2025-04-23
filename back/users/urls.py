@@ -8,7 +8,7 @@ from .views import (SendOTPView,
  UserDetailView,
  UserProfileView,
  UserSettingsView,
- UserListView,
+ AdminUserListView,
  ModifyUserView,
  VerifyOTPView,
  VerifyUSernameView,
@@ -28,13 +28,13 @@ urlpatterns = [
     path('login/', SignInAPIView.as_view(), name='login'),
     
     #user list
-    path('users/', UserListView.as_view(), name='user-list'),
+    path('users-info/', UserListView.as_view(), name='user-list'),
     path('users/<str:username>/', UserDetailView.as_view(), name='user-detail'),
 	path('settings/', UserSettingsView.as_view(), name='user-settings'),
 	path('profile/', UserProfileView.as_view(), name='user-profile'),
    
    #Admin
-    path('list-users/', UserListView.as_view(), name='list-user'),
+    path('list-users/', AdminUserListView.as_view(), name='list-user'),
     path('modify-user/', ModifyUserView.as_view(), name='modify-user'),
    
    #otp

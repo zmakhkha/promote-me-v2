@@ -132,7 +132,7 @@ class UserListView(generics.ListAPIView):
 
         # Filter by gender
         if gender:
-            valid_genders = ['Male', 'Female', 'other']
+            valid_genders = ['male', 'female', 'other']
             if gender not in valid_genders:
                 raise ValidationError(f"Gender must be one of {valid_genders}.")
             queryset = queryset.filter(gender=gender)
@@ -180,7 +180,7 @@ class UserProfileView(APIView):
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-class UserListView(APIView):
+class AdminUserListView(APIView):
     # permission_classes = [IsAdminUser]
     permission_classes = [AllowAny]
 
