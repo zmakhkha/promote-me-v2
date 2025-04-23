@@ -257,9 +257,9 @@ const ChatScreen = () => {
       <Box mb={4} textAlign="center">
         <Text fontSize="xl" fontWeight="bold">
           {/* {chatStatus} */}
-          <Text whiteSpace="pre-line" textAlign="center">
+          <Box as="span" fontWeight="bold">
             {chatStatus}
-          </Text>
+          </Box>
         </Text>
         {isConnecting && <Spinner mt={4} />}
       </Box>

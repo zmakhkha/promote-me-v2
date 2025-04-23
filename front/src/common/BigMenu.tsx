@@ -7,7 +7,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Link,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { FaUser } from "react-icons/fa";
@@ -18,6 +17,7 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import Notifications from "./Notifications";
 import socketConnect from "@/services/axios/socketConnect";
+import Link from "next/link";
 
 const BigMenu = () => {
   const { bg, toggleColorMode } = useColorModeStyles();
@@ -58,19 +58,20 @@ const BigMenu = () => {
           />
           <MenuList>
             <MenuItem>Welcome {username}</MenuItem>
-            <MenuItem icon={<FaUser />}>
-              <Link href="/profile">Profile</Link>
-            </MenuItem>
-            <MenuItem icon={<HiDocumentText />}>
-              <Link href="/termsofservice">Terms of Service</Link>
-            </MenuItem>
-            <MenuItem icon={<MdPrivacyTip />}>
-              <Link href="/privacypolicy">Privacy Policy</Link>
+            <MenuItem as={Link} href="/profile" icon={<FaUser />}>
+              Profile
             </MenuItem>
             <MenuItem
-              // onClick={onOpen}
-              icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}
+              as={Link}
+              href="/terms-of-service"
+              icon={<HiDocumentText />}
             >
+              Terms of Service
+            </MenuItem>
+            <MenuItem as={Link} href="/privacy-policy" icon={<MdPrivacyTip />}>
+              Privacy Policy
+            </MenuItem>
+            <MenuItem icon={<IoLogOut style={{ transform: "scaleX(-1)" }} />}>
               Log Out
             </MenuItem>
           </MenuList>
