@@ -54,7 +54,7 @@ const MobileMenu = () => {
         const response = await api.get("/api/v1/profile/");
         setUsername(response.data.first_name);
       } catch (error) {
-        console.error("[MobileMenu] Error fetching user data:", error);
+        console.log("[MobileMenu] Error fetching user data:", error);
       }
     };
     fetchUser();

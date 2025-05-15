@@ -1,7 +1,7 @@
 "use client";
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
-import useColorModeStyles from "../../utils/useColorModeStyles";
+import useColorModeStyles from "@/utils/useColorModeStyles";
 
 const Page = () => {
   const { textColor, navBgColor } = useColorModeStyles();

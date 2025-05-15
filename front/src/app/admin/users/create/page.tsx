@@ -1,10 +1,12 @@
 "use client";
-import Header from "@/common/Header";
-import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
-import CreateUser from "../../components/CreateUser";
+import CreateUser from "@/app/admin/components/CreateUser"
+import AdminSidebar from "@/app/admin/components/AdminSidebar";
+import AdminHeader from "@/app/admin/components/AdminHeader";
+
+
 
 const Page = () => {
   const { textColor, navBgColor } = useColorModeStyles();
@@ -18,22 +20,21 @@ const Page = () => {
              "nav main"`,
       }}
       gridTemplateRows={{ base: "auto 1fr", md: "50px 1fr" }}
-      gridTemplateColumns={{ base: "1fr", md: "200px 1fr" }}
+      gridTemplateColumns={{ base: "1fr", md: "50px 1fr" }}
       height="100vh"
       gap="0.5"
       color={textColor}
       fontWeight="bold"
     >
       <GridItem area={"header"} bg={navBgColor}>
-        {/* <Header /> */}
-        <h1>Header</h1>
+        <AdminHeader />
       </GridItem>
       <GridItem
         bg={navBgColor}
         area={"nav"}
         display={{ base: "none", md: "block" }}
       >
-        <Sidebar />
+        <AdminSidebar />
       </GridItem>
       <GridItem
         pl="2"
@@ -42,7 +43,6 @@ const Page = () => {
         overflowY="auto"
         height="100%"
       >
-        {/* <CreateUser /> */}
         <CreateUser />
       </GridItem>
     </Grid>
