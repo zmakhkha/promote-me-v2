@@ -26,8 +26,9 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Redirect to login page
+      localStorage.removeItem("accessToken");
       window.location.href = "/login";
+      // Redirect to login page
     }
     return Promise.reject(error);
   }

@@ -99,7 +99,9 @@ class RandomChatConsumer(AsyncWebsocketConsumer):
     async def add_user_to_queue(self, user):
         print(f"[RandomChatConsumer] add_user_to_queue: Adding user {user.username} to queue. Current Status: {user.status}.")
         # Add user to the queue and update status to IDLE
+        print(f"[RandomChatConsumer] Queue size [Before]: {len(self.user_queue)}.")
         self.user_queue.append(user)
+        print(f"[RandomChatConsumer] Queue size [After]: {len(self.user_queue)}.")
         await self.update_user_status(user, DefaultUser.STATUS_IDLE)
 
     async def remove_user_from_queue(self, user):

@@ -69,6 +69,9 @@ const useColorModeStyles = () => {
   const navBgColor = useColorModeValue("#F7FAFC", "#2D3748"); // Navigation background
   const systemMessageColor = useColorModeValue("#EDF2F7", "#4A5568"); // System messages background
   const tableStripeColor = useColorModeValue("#F7FAFC", "#2D3748"); // Table row stripes
+  const bgColor = useColorModeValue("white", "gray.700");
+  const thBg = useColorModeValue("gray.100", "gray.800");
+
 
   return {
     toggleColorMode,
@@ -82,6 +85,8 @@ const useColorModeStyles = () => {
     navBgColor,
     systemMessageColor,
     tableStripeColor,
+    bgColor,
+    thBg,
   };
 };
 

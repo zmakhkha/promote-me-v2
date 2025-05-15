@@ -1,103 +1,136 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
+  Box,
+  Text,
   Table,
   Thead,
   Tbody,
   Tr,
   Th,
   Td,
+  Spinner,
   TableContainer,
-  Button,
-  Text,
-  Box,
+  useColorModeValue,
   Link,
+  Badge,
 } from "@chakra-ui/react";
-import { ChevronUpIcon, ChevronDownIcon } from "@chakra-ui/icons";
-import FloatingButton from "./FloatingButton";
-import useColorModeStyles from "@/utils/useColorModeStyles";
-import "@/css/styles.css";
+import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import {
+  useReactTable,
+  ColumnDef,
+  getCoreRowModel,
+  getSortedRowModel,
+  SortingState,
+  flexRender,
+} from "@tanstack/react-table";
 import api from "@/services/axios/api";
-
+import useColorModeStyles from "@/utils/useColorModeStyles";
 
 interface User {
   username: string;
   email: string;
-  is_active: boolean;
-  is_staff: string;
-  points: string;
+  views: number;
+  age: number;
+  gender: "male" | "female" | "other" | string;
+  location: string;
 }
 
-const ListeUsers = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [sortConfig, setSortConfig] = useState<{
-    key: keyof User | null;
-    direction: "asc" | "desc";
-  }>({ key: null, direction: "asc" });
+const ListeUsers: React.FC = () => {
+  const [data, setData] = useState<User[]>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [loading, setLoading] = useState(true);
 
-  const { bg, tableStripeClore, textColor, hoverColor, navBgColor } =
-    useColorModeStyles();
-
-    // useEffect(() => {
-    //   const fetchUsers = async () => {
-    //     try {
-    //       const response = await api.get<User[]>("/api/v1/users");
-    //       setUsers(response.data);
-    //       console.log("-----------------------------------------");
-    //       console.log(response.status);
-    //       console.log(response);
-    //       console.log("-----------------------------------------");
-    //     } catch (error) {
-    //       console.error("Error fetching users:", error);
-    //     }
-    //   };
-  
-    //   fetchUsers();
-    // }, []);
-
-    useEffect(() => {
-      const fetchUsers = async () => {
-        try {
-          const response = await fetch("http://localhost:2000/api/v1/users/");
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const data = await response.json();
-          setUsers(data);
-          console.log("-----------------------------------------");
-          console.log(response.status);
-          console.log(data);
-          console.log("-----------------------------------------");
-        } catch (error) {
-          console.error("Error fetching users:", error);
-        }
-      };
-    
-      fetchUsers();
-    }, []);
-    
-
-  const sortUsers = (key: keyof User) => {
-    let direction: "asc" | "desc" = "asc";
-    if (sortConfig.key === key && sortConfig.direction === "asc") {
-      direction = "desc";
-    }
-    setSortConfig({ key, direction });
-
-    const sortedUsers = [...users].sort((a, b) => {
-      if (a[key] < b[key]) {
-        return direction === "asc" ? -1 : 1;
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await api.get<User[]>("/api/v1/list-users/");
+        setData(response.data);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      } finally {
+        setLoading(false);
       }
-      if (a[key] > b[key]) {
-        return direction === "asc" ? 1 : -1;
-      }
-      return 0;
-    });
-    setUsers(sortedUsers);
-  };
+    };
+
+    fetchUsers();
+  }, []);
+
+  const columns = useMemo<ColumnDef<User>[]>(
+    () => [
+      {
+        accessorKey: "username",
+        header: "Username",
+        cell: (info) => info.getValue(),
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+        cell: (info) => info.getValue(),
+      },
+      {
+        accessorKey: "views",
+        header: "Profile Views",
+        cell: (info) => info.getValue().toLocaleString(),
+      },
+      {
+        accessorKey: "age",
+        header: "Age",
+        cell: (info) => info.getValue(),
+      },
+      {
+        accessorKey: "gender",
+        header: "Gender",
+        cell: (info) => {
+          const gender = info.getValue();
+          let colorScheme = "gray";
+
+          if (gender === "male") colorScheme = "blue";
+          else if (gender === "female") colorScheme = "pink";
+          else if (gender === "other") colorScheme = "purple";
+
+          return (
+            <Badge colorScheme={colorScheme} textTransform="capitalize">
+              {gender}
+            </Badge>
+          );
+        },
+      },
+      {
+        accessorKey: "location",
+        header: "Location",
+        cell: (info) => info.getValue(),
+      },
+      {
+        id: "actions",
+        header: "Action",
+        cell: (info) => (
+          <Link
+            href={`/admin/users/modify/${info.row.original.username}`}
+            _hover={{ textDecoration: "none" }}
+          >
+            <Badge colorScheme="blue">Modifier</Badge>
+          </Link>
+        ),
+      },
+    ],
+    []
+  );
+
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
+
+  const { bg, textColor, bgColor, thBg, borderColor } = useColorModeStyles();
 
   return (
     <div className="container">
-      <FloatingButton />
       <Box
         className="header"
         bg={bg}
@@ -105,161 +138,70 @@ const ListeUsers = () => {
         mb={4}
         borderRadius="md"
         boxShadow="sm"
+        border="solid 1px"
       >
         <Text fontSize="2xl" fontWeight="bold" color={textColor}>
           Liste des utilisateurs
         </Text>
       </Box>
-      <Box bg={bg} className="wide admin-register">
-        <TableContainer bg={navBgColor} borderRadius="lg" boxShadow="md">
-          <Table
-            variant="striped"
-            sx={{
-              border: "1px solid",
-              borderColor: textColor,
-              th: {
-                borderBottom: "2px solid",
-                borderColor: textColor,
-                textAlign: "left",
-              },
-              tr: {
-                borderBottom: "2px solid",
-                borderColor: textColor,
-                textAlign: "left",
-              },
-              td: {
-                borderBottom: "1px solid",
-                borderColor: textColor,
-                textAlign: "left",
-              },
-              tbody: { tr: { "&:nth-of-type(odd)": { bg: tableStripeClore } } },
-            }}
-          >
-            <Thead>
-              <Tr>
-                <Th color={textColor}>
-                  <Button
-                    fontWeight={700}
-                    variant="ghost"
-                    onClick={() => sortUsers("username")}
-                    color={textColor}
-                    _hover={{ color: hoverColor }}
-                    rightIcon={
-                      sortConfig.key === "username" &&
-                      sortConfig.direction === "asc" ? (
-                        <ChevronUpIcon />
-                      ) : sortConfig.key === "username" ? (
-                        <ChevronDownIcon />
-                      ) : undefined
-                    }
-                  >
-                    Username
-                  </Button>
-                </Th>
-                <Th color={textColor}>
-                  <Button
-                    fontWeight={700}
-                    variant="ghost"
-                    onClick={() => sortUsers("email")}
-                    color={textColor}
-                    _hover={{ color: hoverColor }}
-                    rightIcon={
-                      sortConfig.key === "email" &&
-                      sortConfig.direction === "asc" ? (
-                        <ChevronUpIcon />
-                      ) : sortConfig.key === "email" ? (
-                        <ChevronDownIcon />
-                      ) : undefined
-                    }
-                  >
-                    Email
-                  </Button>
-                </Th>
-                <Th color={textColor}>
-                  <Button
-                    fontWeight={700}
-                    variant="ghost"
-                    onClick={() => sortUsers("is_active")}
-                    color={textColor}
-                    _hover={{ color: hoverColor }}
-                    rightIcon={
-                      sortConfig.key === "is_active" &&
-                      sortConfig.direction === "asc" ? (
-                        <ChevronUpIcon />
-                      ) : sortConfig.key === "is_active" ? (
-                        <ChevronDownIcon />
-                      ) : undefined
-                    }
-                  >
-                    Status
-                  </Button>
-                </Th>
-                <Th color={textColor}>
-                  <Button
-                    fontWeight={700}
-                    variant="ghost"
-                    onClick={() => sortUsers("is_staff")}
-                    color={textColor}
-                    _hover={{ color: hoverColor }}
-                    rightIcon={
-                      sortConfig.key === "is_staff" &&
-                      sortConfig.direction === "asc" ? (
-                        <ChevronUpIcon />
-                      ) : sortConfig.key === "is_staff" ? (
-                        <ChevronDownIcon />
-                      ) : undefined
-                    }
-                  >
-                    Type
-                  </Button>
-                </Th>
-                <Th color={textColor}>
-                  <Button
-                    fontWeight={700}
-                    variant="ghost"
-                    onClick={() => sortUsers("points")}
-                    color={textColor}
-                    _hover={{ color: hoverColor }}
-                    rightIcon={
-                      sortConfig.key === "points" &&
-                      sortConfig.direction === "asc" ? (
-                        <ChevronUpIcon />
-                      ) : sortConfig.key === "points" ? (
-                        <ChevronDownIcon />
-                      ) : undefined
-                    }
-                  >
-                    Points
-                  </Button>
-                </Th>
 
-              </Tr>
-            </Thead>
-            <Tbody>
-              {users.map((user, index) => (
-                <Tr key={index}>
-                  <Td color={textColor}>
-                    {" "}
-                    <Link
-                      href={`/admin/users/modify/${user.username}`}
-                      color={hoverColor}
-                      textDecoration="underline"
-                    >
-                      {user.username}
-                    </Link>
-                  </Td>
-                  <Td color={textColor}>{user.email}</Td>
-                  <Td color={textColor}>
-                    {user.is_active ? "Active" : "Inactive"}
-                  </Td>
-                  <Td color={textColor}>
-                    {user.is_staff ? "Admin" : "Regular"}
-                  </Td>
-                  <Td color={textColor}>{user.points}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
+      <Box className="wide admin-register">
+        <TableContainer
+          bg={bgColor}
+          borderRadius="lg"
+          boxShadow="base"
+          overflowX="auto"
+        >
+          {loading ? (
+            <Box textAlign="center" py={10}>
+              <Spinner size="lg" />
+            </Box>
+          ) : (
+            <Table variant="simple">
+              <Thead bg={thBg}>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <Tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => {
+                      const isSorted = header.column.getIsSorted();
+                      return (
+                        <Th
+                          key={header.id}
+                          onClick={header.column.getToggleSortingHandler()}
+                          cursor="pointer"
+                          color={textColor}
+                          borderColor={borderColor}
+                        >
+                          <Box display="flex" alignItems="center">
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {isSorted === "asc" && (
+                              <TriangleUpIcon ml={1} boxSize={3} />
+                            )}
+                            {isSorted === "desc" && (
+                              <TriangleDownIcon ml={1} boxSize={3} />
+                            )}
+                          </Box>
+                        </Th>
+                      );
+                    })}
+                  </Tr>
+                ))}
+              </Thead>
+              <Tbody>
+                {table.getRowModel().rows.map((row) => (
+                  <Tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <Td key={cell.id} color={textColor}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </Td>
+                    ))}
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          )}
         </TableContainer>
       </Box>
     </div>

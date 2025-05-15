@@ -2,9 +2,9 @@
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
-import MainAdmin from "./components/MainAdmin";
-import Header from "@/common/Header";
-import Sidebar from "@/common/Sidebar";
+import AdminSidebar from "./components/AdminSidebar";
+import ListeUsers from "./components/ListeUsers";
+import AdminHeader from "./components/AdminHeader";
 
 
 const Page = () => {
@@ -18,22 +18,22 @@ const Page = () => {
         md: `"header header"
              "nav main"`,
       }}
-      gridTemplateRows={{ base: "auto 1fr", md: "60px 1fr" }}
-      gridTemplateColumns={{ base: "1fr", md: "200px 1fr" }}
+      gridTemplateRows={{ base: "auto 1fr", md: "50px 1fr" }}
+      gridTemplateColumns={{ base: "1fr", md: "50px 1fr" }}
       height="100vh"
       gap="0.5"
       color={textColor}
       fontWeight="bold"
     >
       <GridItem area={"header"} bg={navBgColor}>
-        <Header />
+        <AdminHeader />
       </GridItem>
       <GridItem
         bg={navBgColor}
         area={"nav"}
         display={{ base: "none", md: "block" }}
       >
-        <Sidebar />
+        <AdminSidebar />
       </GridItem>
       <GridItem
         pl="2"
@@ -42,7 +42,7 @@ const Page = () => {
         overflowY="auto"
         height="100%"
       >
-        <MainAdmin />
+        <ListeUsers />
       </GridItem>
     </Grid>
   );
