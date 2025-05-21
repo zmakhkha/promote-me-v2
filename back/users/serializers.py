@@ -70,7 +70,7 @@ class UserListSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name',
-            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url',
+            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url', 'image_link',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
 
@@ -79,7 +79,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = [
             'username', 'first_name', 'last_name',
-            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url',
+            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url', 'image_link',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
 
@@ -91,7 +91,7 @@ class UserSettingsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DefaultUser
         # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
-        fields = ['image_url', 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
+        fields = ['image_url', 'image_link', 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -101,7 +101,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
         fields = [
             'id', 'username', 'first_name', 'last_name',
-            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url',
+            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url', 'image_link',
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
 

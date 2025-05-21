@@ -19,25 +19,10 @@ import { MdLocationOff } from "react-icons/md";
 import { SiSnapchat } from "react-icons/si";
 import { SiInstagram } from "react-icons/si";
 import { SiTiktok } from "react-icons/si";
-
-interface HomeUser {
-  id: number;
-  username: string;
-  first_name: string;
-  age: number;
-  gender: string;
-  location: string;
-  bio: string;
-  interests: string[];
-  image_url: string;
-  isOnline: boolean;
-  instagram: string;
-  snapchat: string;
-  tiktok: string;
-}
+import { USerProfile } from "../auth/types";
 
 interface UserCardProps {
-  user: HomeUser;
+  user: USerProfile;
   platform: "snapchat" | "instagram" | "tiktok"; // New prop to define the platform
 }
 
@@ -52,8 +37,16 @@ const UserCard = ({ user, platform }: UserCardProps) => {
     tiktokTextColor,
   } = useColorModeStyles();
 
-  const cardWidth = useBreakpointValue({ base: "90%", sm: "300px", md: "400px" });
-  const imageHeight = useBreakpointValue({ base: "180px", sm: "200px", md: "220px" });
+  const cardWidth = useBreakpointValue({
+    base: "90%",
+    sm: "300px",
+    md: "400px",
+  });
+  const imageHeight = useBreakpointValue({
+    base: "180px",
+    sm: "200px",
+    md: "220px",
+  });
   const cardMaxHeight = useBreakpointValue({ base: "420px", md: "500px" });
 
   return (
@@ -83,7 +76,7 @@ const UserCard = ({ user, platform }: UserCardProps) => {
         position="relative"
       >
         <Image
-          src={getCorrectImage(user.image_url)}
+          src={user.image_link || getCorrectImage(user.image_url)}
           alt={`${user.username}'s profile`}
           objectFit="cover"
           width="100%"
@@ -149,8 +142,7 @@ const UserCard = ({ user, platform }: UserCardProps) => {
             gap={2}
             _hover={{ textDecoration: "underline" }}
           >
-            <SiSnapchat /> &nbsp;
-            View Snapchat
+            <SiSnapchat /> &nbsp; View Snapchat
           </Link>
         )}
 
@@ -166,8 +158,7 @@ const UserCard = ({ user, platform }: UserCardProps) => {
             gap={2}
             _hover={{ textDecoration: "underline" }}
           >
-            <SiInstagram /> &nbsp;
-            View Instagram
+            <SiInstagram /> &nbsp; View Instagram
           </Link>
         )}
 
@@ -183,8 +174,7 @@ const UserCard = ({ user, platform }: UserCardProps) => {
             gap={2}
             _hover={{ textDecoration: "underline" }}
           >
-            <SiTiktok /> &nbsp;
-            View TikTok
+            <SiTiktok /> &nbsp; View TikTok
           </Link>
         )}
       </Box>

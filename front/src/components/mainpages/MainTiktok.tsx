@@ -36,7 +36,7 @@ const MainTiktok = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.get("/api/v1/users/", {
+      const response = await api.get("/api/v1/users-info/tiktok/", {
         params: {
           page: currentPage,
           gender,

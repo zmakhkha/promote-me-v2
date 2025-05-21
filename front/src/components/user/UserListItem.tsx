@@ -16,25 +16,11 @@ import { SiInstagram } from "react-icons/si";  // Import Instagram icon
 import { SiTiktok } from "react-icons/si";     // Import TikTok icon
 import getCorrectImage from "@/services/axios/getCorrectImage";
 import useColorModeStyles from "@/utils/useColorModeStyles";
+import { USerProfile } from "../auth/types";
 
-interface HomeUser {
-  id: number;
-  username: string;
-  first_name: string;
-  age: number;
-  gender: string;
-  location: string;
-  bio: string;
-  interests: string[];
-  image_url: string;
-  isOnline: boolean;
-  instagram: string;
-  snapchat: string;
-  tiktok: string;
-}
 
 interface SnapListItemProps {
-  user: HomeUser;
+  user: USerProfile;
   platform: "snapchat" | "instagram" | "tiktok";  // Add 'platform' prop to specify which social media to render
 }
 
@@ -89,7 +75,7 @@ const UserListItem: React.FC<SnapListItemProps> = ({ user, platform }) => {
       {/* User Info */}
       <HStack spacing={3} align="center">
         <Image
-          src={getCorrectImage(user.image_url)}
+          src={user.image_link || getCorrectImage(user.image_url)}
           alt={user.username}
           boxSize="90px"
           borderRadius={20}

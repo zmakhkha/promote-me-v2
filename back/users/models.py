@@ -1,10 +1,17 @@
-import random
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from .validators import max_size_validator
-from datetime import date
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenVerifyView
+
 from django.utils import timezone
 from django.utils.timezone import now
+
+from datetime import date
+import random
+
+from .validators import max_size_validator
 
 class DefaultUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -45,6 +52,7 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
     location = models.CharField(max_length=100)
     bio = models.TextField()
     interests = models.JSONField(default=list)
+    image_link = models.CharField(max_length=255, blank=True, null=True)
     image_url = models.ImageField(
         upload_to='images',
         validators=[max_size_validator],
@@ -100,3 +108,14 @@ class ProfileLike(models.Model):
 
     class Meta:
         unique_together = ('liked_by', 'liked_user')
+
+
+
+
+class TokenVerifyView(TokenVerifyView):
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except Exception as e:
+            # Optional: log or customize error response here
+            return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)

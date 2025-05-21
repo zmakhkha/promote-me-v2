@@ -28,7 +28,6 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("accessToken");
       window.location.href = "/login";
-      // Redirect to login page
     }
     return Promise.reject(error);
   }

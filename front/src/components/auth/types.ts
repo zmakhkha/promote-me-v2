@@ -26,6 +26,7 @@ export interface USerProfile {
 	// interests : string;
 	status : string;
 	image_url : string;
+	image_link : string;
 	snapchat : string;
 	instagram : string;
 	tiktok : string;

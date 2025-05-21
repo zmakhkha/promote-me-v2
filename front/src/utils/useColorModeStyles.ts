@@ -37,9 +37,6 @@
 
 //     // Platform Specific
 //     snapchatColor,
-//     snapchatTextColor,
-//     instagramTextColor,
-//     instagramIconColor,
 //     tiktok,
 //     tiktokHoverColor,
 //     tiktokTextColor,
@@ -47,7 +44,6 @@
 // };
 
 // export default useColorModeStyles;
-
 
 import { useColorMode, useColorModeValue } from "@chakra-ui/react";
 
@@ -72,6 +68,11 @@ const useColorModeStyles = () => {
   const bgColor = useColorModeValue("white", "gray.700");
   const thBg = useColorModeValue("gray.100", "gray.800");
 
+  const instagramIconColor = useColorModeValue('#d62976', '#feda75');
+  const instagramTextColor = useColorModeValue('#d62976', '#feda75');
+  const snapchatTextColor = useColorModeValue("gray.100", "gray.800");
+  const tiktokTextColor = useColorModeValue('#FE2C55', '#00F2EA');  // Alternate hover
+
 
   return {
     toggleColorMode,
@@ -87,6 +88,10 @@ const useColorModeStyles = () => {
     tableStripeColor,
     bgColor,
     thBg,
+    snapchatTextColor,
+    instagramTextColor,
+    instagramIconColor,
+    tiktokTextColor,
   };
 };
 

@@ -104,20 +104,70 @@ class SignUpAPIView(APIView):
         # Return serializer errors as response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# class UserListView(generics.ListAPIView):
+#     permission_classes = [AllowAny]
+#     serializer_class = UserListSerializer
+
+#     def get_queryset(self):
+#         queryset = DefaultUser.objects.all()
+#         # queryset = queryset.exclude(id = self.request.user.id)
+
+#         # Get query parameters
+#         age_from = self.request.query_params.get('age_from')
+#         age_to = self.request.query_params.get('age_to')
+#         gender = self.request.query_params.get('gender')
+
+#         # Filter by age range
+#         current_year = datetime.now().year
+#         if age_from or age_to:
+#             try:
+#                 if age_from:
+#                     birth_year_to = current_year - int(age_from)
+#                     queryset = queryset.filter(birth_date__year__lte=birth_year_to)
+#                 if age_to:
+#                     birth_year_from = current_year - int(age_to)
+#                     queryset = queryset.filter(birth_date__year__gte=birth_year_from)
+#             except ValueError:
+#                 raise ValidationError("Age parameters must be valid integers.")
+
+#         # Filter by gender
+#         if gender:
+#             valid_genders = ['male', 'female', 'other']
+#             if gender not in valid_genders:
+#                 raise ValidationError(f"Gender must be one of {valid_genders}.")
+#             queryset = queryset.filter(gender=gender)
+
+#         return queryset
+
+
 class UserListView(generics.ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = UserListSerializer
 
     def get_queryset(self):
         queryset = DefaultUser.objects.all()
-        # queryset = queryset.exclude(id = self.request.user.id)
+        platform = self.kwargs.get('platform')
 
-        # Get query parameters
+        if platform:
+            platform = platform.lower()
+            if platform not in ['snap', 'tiktok', 'insta']:
+                raise ValidationError("Platform must be one of: snap, tiktok, insta.")
+
+            platform_field = {
+                'snap': 'snapchat__isnull',
+                'tiktok': 'tiktok__isnull',
+                'insta': 'instagram__isnull'
+            }
+
+            # Exclude users with null or blank platform fields
+            kwargs = {platform_field[platform]: False}
+            queryset = queryset.filter(**kwargs).exclude(**{platform_field[platform].replace('__isnull', ''): ""})
+
+        # Additional filters
         age_from = self.request.query_params.get('age_from')
         age_to = self.request.query_params.get('age_to')
         gender = self.request.query_params.get('gender')
 
-        # Filter by age range
         current_year = datetime.now().year
         if age_from or age_to:
             try:
@@ -130,7 +180,6 @@ class UserListView(generics.ListAPIView):
             except ValueError:
                 raise ValidationError("Age parameters must be valid integers.")
 
-        # Filter by gender
         if gender:
             valid_genders = ['male', 'female', 'other']
             if gender not in valid_genders:
