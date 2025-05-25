@@ -9,6 +9,7 @@ import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
 import ChatScreen from "@/components/chat/ChatScreen";
+import ComingSoon from "@/common/coming-soon";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -63,7 +64,8 @@ const HomePage = () => {
           height="100%"
           width="100%"
         >
-          <ChatScreen />
+          {/* <ChatScreen /> */}
+          <ComingSoon />
         </Flex>
       </GridItem>
     </Grid>

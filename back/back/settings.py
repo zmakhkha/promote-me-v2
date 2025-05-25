@@ -111,14 +111,15 @@ ASGI_APPLICATION = 'back.asgi.application'
 
 # === DATABASE CONFIG ===
 # USE_POSTGRES = os.getenv('USE_POSTGRES', 'True') == 'True'
+# USE_POSTGRES = True
 USE_POSTGRES = False
 
 if USE_POSTGRES:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.getenv('POSTGRES_DB', 'agrydata_db'),
-            'USER': os.getenv('POSTGRES_USER', 'agry_admin'),
+            'NAME': os.getenv('POSTGRES_DB', 'db'),
+            'USER': os.getenv('POSTGRES_USER', 'admin'),
             'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'Str0ngP@ssw0rd!'),
             'HOST': os.getenv('POSTGRES_HOST', 'database'),
             'PORT': int(os.getenv('POSTGRES_PORT', 5432)),

@@ -1,18 +1,18 @@
 services:
-  # backend:
-  #   build: ./back
-  #   ports:
-  #     - "2000:2000"
-  #   container_name: backend
-  #   volumes:
-  #     - ./back:/code
-  #   depends_on:
-  #     - data
-  #   networks:
-  #     - promote
-  #   restart: unless-stopped
-
-  data:
+  back-end:
+    build: ./back
+    ports:
+      - "2000:2000"
+    container_name: backEnd
+    volumes:
+      - ./back:/code
+    depends_on:
+      - db
+    networks:
+      - promote
+    restart: unless-stopped
+  
+  db:
     container_name: database
     image: postgres
     volumes:
@@ -37,21 +37,21 @@ services:
       - promote
     restart: unless-stopped
 
-  # frontend:
-  #   build:
-  #     context: ./front
-  #     dockerfile: Dockerfile
-  #   image: frontend
-  #   container_name: frontend
-  #   ports:
-  #     - "3000:3000"
-  #   depends_on:
-  #     - backend
-  #   # env_file:
-  #   #   - .env
-  #   networks:
-  #     - promote
-  #   restart: unless-stopped
+  frontend:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    image: frontend
+    container_name: frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - back-end
+    # env_file:
+    #   - .env
+    networks:
+      - promote
+    restart: unless-stopped
 
   # frontend:
   #   build:

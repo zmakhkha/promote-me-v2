@@ -6,4 +6,4 @@ python manage.py migrate
 # daphne -e ssl:2000 back.asgi:application
 daphne -b 0.0.0.0 -p 2000 back.asgi:application
 
-python manage.py runserver 0.0.0.0:2000
+# python manage.py runserver 0.0.0.0:2000

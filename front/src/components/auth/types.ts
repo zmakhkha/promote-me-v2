@@ -23,7 +23,6 @@ export interface USerProfile {
 	location : string;
 	bio : string;
     interests: [],
-	// interests : string;
 	status : string;
 	image_url : string;
 	image_link : string;

@@ -23,6 +23,7 @@ import {
 import placeholderAvatar from "../../data/image/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
+import { USerProfile } from "../auth/types";
 
 interface UserData {
   username: string;
@@ -47,27 +48,28 @@ interface MainProfileProps {
 }
 
 const MainProfile = ({ username }: MainProfileProps) => {
-  const { bg, tiktok, textColor, borderColor, navBgColor } =
+  const { bg, textColor, borderColor, navBgColor } =
     useColorModeStyles();
 
   const [liked, setLiked] = useState(false);
-  const [userData, setUserData] = useState<UserData>({
-    image_url: placeholderAvatar.src,
-    username: "",
-    first_name: "Loading...",
-    last_name: "",
-    age: null,
-    gender: "",
-    location: "",
-    bio: "",
-    views: 0,
-    likes: 0,
-    points: 0,
-    interests: [],
-    instagram: null,
-    snapchat: null,
-    tiktok: null,
-  });
+ const [userData, setUserData] = useState<USerProfile>({
+  username: "",
+  first_name: "Loading...",
+  last_name: "",
+  age: 18,
+  gender: "",
+  location: "",
+  bio: "",
+  interests: [],
+  image_url: placeholderAvatar.src,
+  views: 0,
+  likes: 0,
+  points: 0,
+  instagram: "null",
+  snapchat: "null",
+  tiktok: "null",
+});
+
 
   const [imagePreview, setImagePreview] = useState<string>(
     placeholderAvatar.src
@@ -105,31 +107,6 @@ const MainProfile = ({ username }: MainProfileProps) => {
     }
   };
 
-  // const handleLike = async () => {
-  //   try {
-  //     // Send a like toggle request to the backend
-  //     const response = await api.post(`/api/v1/profile/like/`, {
-  //       liked_username: username,
-  //     });
-  //     // Update the liked status after liking
-  //     setLiked((prev) => !prev);
-
-  //     if (response.data?.likes !== undefined) {
-  //       setUserData((prev) => ({
-  //         ...prev,
-  //         likes: response.data.likes,
-  //       }));
-  //     } else {
-  //       // Fallback: increment or decrement likes on UI without full backend update
-  //       setUserData((prev) => ({
-  //         ...prev,
-  //         likes: prev.likes + (liked ? -1 : 1),
-  //       }));
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to like user:", error);
-  //   }
-  // };
   const handleLike = async () => {
     try {
       if (liked) {
@@ -160,7 +137,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
       try {
         const response = await api.get(`/api/v1/users/${username}/`);
         setUserData(response.data);
-        setImagePreview(response.data.image_url || placeholderAvatar.src);
+        setImagePreview(response.data.image_link || response.data.image_url || placeholderAvatar.src);
 
         // Increment views
         await api.post(`api/v1/profile/view/`, { viewed_username: username });
