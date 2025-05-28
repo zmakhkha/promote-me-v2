@@ -49,7 +49,7 @@ const Sidebar = () => {
           {/* Sidebar Items */}
           <Flex direction="column" width="100%">
             {[
-              { label: "Chat", icon: <FaComments />, href: "/chat/random" },
+              // { label: "Chat", icon: <FaComments />, href: "/chat/random" },
               { label: "Snapchat", icon: <FaSnapchat />, href: "/snapchat" },
               { label: "Instagram", icon: <FaInstagram />, href: "/instagram" },
               { label: "TikTok", icon: <FaTiktok />, href: "/tiktok" },

@@ -1,7 +1,7 @@
 "use client";
 
 import { Flex, Grid, GridItem } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React, { use, useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
@@ -13,8 +13,8 @@ type Props = {
   user: string;
 };
 
-const Chatpage = ({ params }: { params: Props }) => {
-  const { user } = params;
+const Chatpage = ({ params }: { params: Promise<Props> }) => {
+  const { user } = use(params);
   const { bg, textColor, navBgColor } = useColorModeStyles();
 
   const router = useRouter();

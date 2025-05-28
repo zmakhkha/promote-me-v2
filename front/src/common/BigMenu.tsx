@@ -17,7 +17,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { FaUser } from "react-icons/fa";
+import { FaCog, FaUser } from "react-icons/fa";
 import { IoLogOut } from "react-icons/io5";
 import { HiDocumentText } from "react-icons/hi";
 import { MdPrivacyTip } from "react-icons/md";
@@ -29,7 +29,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { FocusableElement } from "@chakra-ui/utils"; // Add this import
 
-
 const BigMenu = () => {
   const { bg, toggleColorMode } = useColorModeStyles();
   const [username, setUsername] = useState("User");
@@ -37,7 +36,6 @@ const BigMenu = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<FocusableElement>(null);
-
 
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
@@ -82,6 +80,9 @@ const BigMenu = () => {
               <MenuItem>Welcome {username}</MenuItem>
               <MenuItem as={Link} href="/profile" icon={<FaUser />}>
                 Profile
+              </MenuItem>
+              <MenuItem as={Link} href="/settings" icon={<FaCog />}>
+                Settings
               </MenuItem>
               <MenuItem
                 as={Link}

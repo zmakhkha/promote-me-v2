@@ -5,6 +5,8 @@ import api from "./api";
 export const getConnectedUser = async (): Promise<USerProfile> => {
   try {
     const response = await api.get("/api/v1/profile/"); // Make a GET request to /profile endpoint
+            console.log("------------------------+++---------------------User data fetched:", response.data);
+    
     return response.data; // Return the user's data from the response
   } catch (error) {
     console.error("Error fetching user profile:", error);

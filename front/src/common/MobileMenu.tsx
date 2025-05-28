@@ -152,7 +152,7 @@ const MobileMenu = () => {
                   Home
                 </Button>
               </Link>
-              <Link href="/omegle">
+              {/* <Link href="/omegle">
                 <Button
                   leftIcon={<FaComments />}
                   variant="ghost"
@@ -161,7 +161,7 @@ const MobileMenu = () => {
                 >
                   Chat
                 </Button>
-              </Link>
+              </Link> */}
               <Link href="/snapchat">
                 <Button
                   leftIcon={<FaSnapchat />}

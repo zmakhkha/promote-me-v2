@@ -13,6 +13,13 @@ import {
   InputLeftElement,
   useToast,
   Icon,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { FaInstagram, FaSnapchatGhost, FaTiktok } from "react-icons/fa";
 import placeholderAvatar from "../../data/image/no-avatar.png";
@@ -24,9 +31,12 @@ import { USerProfile } from "../auth/types";
 const MainSettings = () => {
   const { bg, tiktok, borderColor } = useColorModeStyles();
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef<HTMLButtonElement>(null);
 
   const [userData, setUserData] = useState<USerProfile>({
     image_url: placeholderAvatar.src,
+    image_link: "",
     first_name: "",
     last_name: "",
     email: "",
@@ -43,8 +53,8 @@ const MainSettings = () => {
     id: -1,
     isOnline: false,
     username: "",
-    gender: "", // Add this
-    status: "", // Add this
+    gender: "",
+    status: "",
   });
 
   const [imagePreview, setImagePreview] = useState<string>(
@@ -92,23 +102,27 @@ const MainSettings = () => {
   };
 
   const handleSaveChanges = async () => {
+    const requiredFields = ["first_name", "last_name", "bio"];
+    const hasEmpty = requiredFields.some(
+      (field) => !userData[field as keyof USerProfile]?.toString().trim()
+    );
+
+    if (hasEmpty) {
+      onOpen();
+      return;
+    }
+
     try {
       const formData = new FormData();
       Object.keys(userData).forEach((key) => {
         if (key !== "image_url") {
-          // Skip image_url because it's handled separately
           const value = userData[key as keyof USerProfile];
-          if (typeof value === "string" || value instanceof Blob) {
-            formData.append(key, value);
-          } else {
-            // Convert non-string values to strings
-            formData.append(key, String(value));
-          }
+          formData.append(key, typeof value === "string" ? value : String(value));
         }
       });
 
       if (fileInputRef.current?.files?.[0]) {
-        formData.append("image_url", fileInputRef.current.files[0]); // Send file as image_url
+        formData.append("image_url", fileInputRef.current.files[0]);
       }
 
       await api.put("/api/v1/settings/", formData, {
@@ -135,117 +149,131 @@ const MainSettings = () => {
   };
 
   return (
-    <Flex justify="center" align="center" py={5} px={5}>
-      <Box
-        maxW="lg"
-        w="full"
-        bg={bg}
-        borderRadius="lg"
-        p={8}
-        boxShadow="lg"
-        borderColor={borderColor}
-        borderWidth="1px"
-      >
-        <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={6}>
-          Settings
-        </Text>
-
-        <Flex
-          justify="center"
-          align="center"
-          direction="column"
-          mb={4}
+    <>
+      <Flex justify="center" align="center" py={5} px={5}>
+        <Box
+          maxW="lg"
           w="full"
+          bg={bg}
+          borderRadius="lg"
+          p={8}
+          boxShadow="lg"
+          borderColor={borderColor}
+          borderWidth="1px"
         >
-          <Avatar size="2xl" mb={1} src={imagePreview} />
-          <Button
-            as="label"
-            htmlFor="file-upload"
-            colorScheme="teal"
-            cursor="pointer"
-            mt={2}
-          >
-            Choose File
+          <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={6}>
+            Settings
+          </Text>
+
+          <Flex justify="center" align="center" direction="column" mb={4} w="full">
+            <Avatar size="2xl" mb={1} src={imagePreview} />
+            <Button as="label" htmlFor="file-upload" colorScheme="teal" cursor="pointer" mt={2}>
+              Choose File
+            </Button>
+            <Input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              ref={fileInputRef}
+              style={{ display: "none" }}
+            />
+          </Flex>
+
+          <VStack spacing={4} align="start">
+            <HStack w="full">
+              <Input
+                placeholder="First Name"
+                name="first_name"
+                value={userData.first_name}
+                onChange={handleInputChange}
+              />
+              <Input
+                placeholder="Last Name"
+                name="last_name"
+                value={userData.last_name}
+                onChange={handleInputChange}
+              />
+            </HStack>
+            <Textarea
+              placeholder="Bio"
+              name="bio"
+              value={userData.bio}
+              onChange={handleInputChange}
+            />
+          </VStack>
+
+          <Text mt={6} fontSize="lg" fontWeight="bold" mb={2}>
+            Social Media Links
+          </Text>
+          <VStack spacing={3} align="start" w="full">
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <Icon as={FaInstagram} color="pink.400" />
+              </InputLeftElement>
+              <Input
+                placeholder="Instagram username"
+                name="instagram"
+                value={userData.instagram || ""}
+                onChange={handleInputChange}
+              />
+            </InputGroup>
+
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <Icon as={FaSnapchatGhost} color="yellow.400" />
+              </InputLeftElement>
+              <Input
+                placeholder="Snapchat username"
+                name="snapchat"
+                value={userData.snapchat || ""}
+                onChange={handleInputChange}
+              />
+            </InputGroup>
+
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <Icon as={FaTiktok} color={tiktok} />
+              </InputLeftElement>
+              <Input
+                placeholder="TikTok username"
+                name="tiktok"
+                value={userData.tiktok || ""}
+                onChange={handleInputChange}
+              />
+            </InputGroup>
+          </VStack>
+
+          <Button colorScheme="teal" mt={6} w="full" onClick={handleSaveChanges}>
+            Save Changes
           </Button>
-          <Input
-            id="file-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            ref={fileInputRef}
-            style={{ display: "none" }}
-          />
-        </Flex>
+        </Box>
+      </Flex>
 
-        <VStack spacing={4} align="start">
-          <HStack w="full">
-            <Input
-              placeholder="First Name"
-              name="first_name"
-              value={userData.first_name}
-              onChange={handleInputChange}
-            />
-            <Input
-              placeholder="Last Name"
-              name="last_name"
-              value={userData.last_name}
-              onChange={handleInputChange}
-            />
-          </HStack>
-          <Textarea
-            placeholder="Bio"
-            name="bio"
-            value={userData.bio}
-            onChange={handleInputChange}
-          />
-        </VStack>
-
-        <Text mt={6} fontSize="lg" fontWeight="bold" mb={2}>
-          Social Media Links
-        </Text>
-        <VStack spacing={3} align="start" w="full">
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <Icon as={FaInstagram} color="pink.400" />
-            </InputLeftElement>
-            <Input
-              placeholder="Instagram username"
-              name="instagram"
-              value={userData.instagram || ""}
-              onChange={handleInputChange}
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <Icon as={FaSnapchatGhost} color="yellow.400" />
-            </InputLeftElement>
-            <Input
-              placeholder="Snapchat username"
-              name="snapchat"
-              value={userData.snapchat || ""}
-              onChange={handleInputChange}
-            />
-          </InputGroup>
-
-          <InputGroup>
-            <InputLeftElement pointerEvents="none">
-              <Icon as={FaTiktok} color={tiktok} />
-            </InputLeftElement>
-            <Input
-              placeholder="TikTok username"
-              name="tiktok"
-              value={userData.tiktok || ""}
-              onChange={handleInputChange}
-            />
-          </InputGroup>
-        </VStack>
-
-        <Button colorScheme="teal" mt={6} w="full" onClick={handleSaveChanges}>
-          Save Changes
-        </Button>
-      </Box>
-    </Flex>
+      {/* AlertDialog for empty fields */}
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        isCentered
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Missing Required Fields
+            </AlertDialogHeader>
+            <AlertDialogBody>
+              Please fill out all required fields: First Name, Last Name, and Bio.
+            </AlertDialogBody>
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onClose}>
+                OK
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
+    </>
   );
 };
 

@@ -1,7 +1,5 @@
 import dynamic from "next/dynamic";
-import React, { useState, useRef, useEffect } from "react";
-const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
-import { Smile } from "lucide-react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import {
   Box,
   VStack,
@@ -11,14 +9,18 @@ import {
   Text,
   Input,
 } from "@chakra-ui/react";
+import { Smile } from "lucide-react";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import startChat, {
+import {
   connectWebSocket,
   sendMessage,
+  startChat,
   generateRoomName,
 } from "@/services/axios/websocketService";
 import { getConnectedUser } from "@/services/axios/getConnectedUser";
 import api from "@/services/axios/api";
+
+const EmojiPicker = dynamic(() => import("emoji-picker-react"), { ssr: false });
 
 type Message = {
   text: string;
@@ -26,42 +28,119 @@ type Message = {
   timestamp: string;
   sender?: string;
 };
+
 type Props = {
   user: string;
 };
+
 const DmScreen = ({ user }: Props) => {
-  const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
   const { bg, textColor, borderColor, hoverColor } = useColorModeStyles();
+
   const [messages, setMessages] = useState<Message[]>([]);
-  const [inputValue, setInputValue] = useState<string>("");
-  const [token, setToken] = useState<string>("");
+  const [inputValue, setInputValue] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [roomId, setRoomId] = useState<string | null>(null);
   const [userData, setUserData] = useState<any>(null);
+  const [roomId, setRoomId] = useState<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const emojiPickerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchOldMessages = async () => {
-      try {
-        const response = await api.get(`/api/v1/messages/${user}/`);
-        const formattedMessages = response.data.map((msg: any) => ({
-          text: msg.content,
-          type: msg.sender === userData?.id ? "sent" : "received",
-          sender: msg.sender === userData?.id ? userData.username : user,
-          timestamp: msg.timestamp,
-        }));
-        setMessages(formattedMessages);
-      } catch (error) {
-        console.error("Failed to fetch old messages:", error);
-      }
-    };
-    if (userData) {
-      fetchOldMessages();
-    }
-  }, [user, userData]);
+  // Get the access token once
+  
+  const getToken = () => localStorage.getItem("accessToken") || "";
 
-  // Close emoji picker on outside click
+  const scrollToBottom = () =>
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+
+  const fetchMessages = async (authUserId: number) => {
+    try {
+      const response = await api.get(`/api/v1/messages/${user}/`);
+      const formatted = response.data.map((msg: any) => ({
+        text: msg.content,
+        type: msg.sender === authUserId ? "sent" : "received",
+        sender: msg.sender === authUserId ? userData?.username : user,
+        timestamp: msg.timestamp,
+      }));
+      setMessages(formatted);
+    } catch (err) {
+      console.error("Error fetching messages:", err);
+    }
+  };
+
+  const handleIncomingMessage = useCallback(
+    (event: MessageEvent) => {
+      if (!event.data || event.data === "{}") return;
+
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type !== "chat_message") return;
+
+        const { sender, message, timestamp, user: senderUsername } = data;
+
+        const formatted: Message = {
+          text: message,
+          type: sender === userData?.id ? "sent" : "received",
+          sender: sender === userData?.id ? userData?.username : senderUsername,
+          timestamp: `${timestamp.hour}:${timestamp.minute}`,
+        };
+
+        setMessages((prev) => [...prev, formatted]);
+      } catch (err) {
+        console.error("Failed to parse WebSocket message:", err);
+      }
+    },
+    [userData]
+  );
+
+  const initChat = async () => {
+    const token = getToken();
+    if (!token) return;
+
+    try {
+      const userProfile = await getConnectedUser();
+      setUserData(userProfile);
+
+      const room = generateRoomName(userProfile.username, user);
+      setRoomId(room);
+
+      startChat(token, room);
+      connectWebSocket(token, room);
+
+      await fetchMessages(userProfile.id);
+    } catch (error) {
+      console.error("Initialization error:", error);
+    }
+  };
+
+  const handleSendMessage = () => {
+    if (!inputValue.trim() || !userData) return;
+
+    sendMessage({
+      user: userData.username,
+      sender: userData.id,
+      content: inputValue,
+    });
+
+    setInputValue("");
+  };
+
+  const toggleEmojiPicker = () => setShowEmojiPicker((prev) => !prev);
+
+  const addEmoji = (emojiObject: { emoji: string }) => {
+    setInputValue((prev) => prev + emojiObject.emoji);
+  };
+
+  // Mount logic
+  useEffect(() => {
+    initChat();
+  }, [user]);
+
+  // Scroll on new messages
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Handle outside click to close emoji picker
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -72,121 +151,21 @@ const DmScreen = ({ user }: Props) => {
       }
     };
 
-    if (showEmojiPicker) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
+    document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showEmojiPicker]);
-
-  // Fetch user profile and token
-  useEffect(() => {
-    setToken(localStorage.getItem("accessToken") || "");
-    if (!token) {
-      return;
-    }
-
-    const fetchUserProfile = async () => {
-      try {
-        const userData = await getConnectedUser();
-        setUserData(userData);
-        const room_name = generateRoomName(userData.username, user);
-        setRoomId(room_name);
-        startChat(token || "", room_name || "");
-      } catch (error) {
-        console.log("Failed to load user profile:", error);
-      }
-    };
-
-    fetchUserProfile();
   }, []);
-
-  // Connect WebSocket on user change
-  useEffect(() => {
-    if (user) {
-      const token = localStorage.getItem("accessToken") || "";
-
-      connectWebSocket(token || "", "2");
-    }
-  }, [user]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // Scroll to bottom whenever the messages array changes
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   // Handle incoming WebSocket messages
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (!event.data || event.data === "{}") {
-        console.error("Received an empty WebSocket message:", event.data);
-        return;
-      }
-      try {
-        const data = JSON.parse(event.data);
-        // console.log("------------------->[", data, "]");
-
-        switch (data.type) {
-          case "chat_message":
-            const { sender, message, timestamp } = data;
-            // console.log("timestamp -->|", timestamp);
-            const formattedTimestamp = `${timestamp.hour}:${timestamp.hour}`;
-            setMessages((prev) => [
-              ...prev,
-              {
-                text: message,
-                type: userData.id === sender ? "sent" : "received",
-                sender: userData.id === sender ? userData.username : data.user,
-                timestamp: formattedTimestamp,
-              },
-            ]);
-            break;
-
-          default:
-            console.log("Unknown message type:", data);
-        }
-      } catch (error) {
-        console.log(
-          "-->|Failed to parse WebSocket message:",
-          event.data,
-          error
-        );
-        return;
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
+    window.addEventListener("message", handleIncomingMessage);
     return () => {
-      window.removeEventListener("message", handleMessage);
+      window.removeEventListener("message", handleIncomingMessage);
     };
-  }, [userData, roomId]);
+  }, [handleIncomingMessage]);
 
-  // Handle sending messages
-  const handleSendMessage = () => {
-    if (inputValue && inputValue.trim()) {
-      sendMessage({
-        user: userData.username,
-        sender: userData.id,
-        content: inputValue,
-      });
-      setInputValue("");
-    }
-  };
-
-  const addEmoji = (emojiObject: { emoji: string }) => {
-    setInputValue((prev) => prev + emojiObject.emoji);
-  };
-
-  // Sort messages by timestamp before rendering
   const sortedMessages = [...messages].sort(
-    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    (a, b) =>
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
   );
 
   return (
@@ -208,7 +187,7 @@ const DmScreen = ({ user }: Props) => {
     >
       <Box mb={4} textAlign="center">
         <Text fontSize="xl" fontWeight="bold">
-          Chating with {user}
+          Chatting with {user}
         </Text>
       </Box>
 
@@ -223,7 +202,6 @@ const DmScreen = ({ user }: Props) => {
         flexGrow={1}
         p={2}
       >
-        {}
         {sortedMessages.map((message, index) => (
           <HStack
             key={index}
@@ -256,8 +234,6 @@ const DmScreen = ({ user }: Props) => {
             </Box>
           </HStack>
         ))}
-
-        {/* Reference div for scrolling */}
         <div ref={messagesEndRef} />
       </VStack>
 
@@ -266,17 +242,12 @@ const DmScreen = ({ user }: Props) => {
           <Smile />
         </Button>
 
-        {/* Emoji Picker */}
         {showEmojiPicker && (
-          <Box
-            position="absolute"
-            bottom="50px"
-            zIndex="2"
-            ref={emojiPickerRef}
-          >
+          <Box position="absolute" bottom="50px" zIndex="2" ref={emojiPickerRef}>
             <EmojiPicker onEmojiClick={addEmoji} />
           </Box>
         )}
+
         <Input
           height={10}
           value={inputValue}

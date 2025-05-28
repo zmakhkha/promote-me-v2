@@ -9,14 +9,15 @@ import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
 import MainProfile from "@/components/mainpages/MainProfile";
+import { use } from "react"; 
+
 type Props = {
   user: string;
 };
 
-const Profilepage = ({ params }: { params: Props }) => {
-  const { user } = params;
+const Profilepage = ({ params }: { params: Promise<Props> }) => {
+  const { user } = use(params);
   const { bg, textColor, navBgColor } = useColorModeStyles();
-
   const router = useRouter();
 
   useEffect(() => {
@@ -26,13 +27,12 @@ const Profilepage = ({ params }: { params: Props }) => {
     }
     socketConnect("2");
   }, [router]);
+
   return (
     <Grid
       templateAreas={{
-        base: `"header"
-               "main"`,
-        md: `"nav header"
-             "nav main"`,
+        base: `"header" "main"`,
+        md: `"nav header" "nav main"`,
       }}
       gridTemplateRows={{ base: "auto 1fr", md: "60px 1fr" }}
       gridTemplateColumns={{ base: "1fr", md: "200px 1fr" }}
@@ -41,12 +41,10 @@ const Profilepage = ({ params }: { params: Props }) => {
       color={textColor}
       fontWeight="bold"
     >
-      {/* Header Section */}
       <GridItem area="header" position="sticky" top="0" zIndex="2" bg={bg}>
         <Header />
       </GridItem>
 
-      {/* Sidebar Section */}
       <GridItem
         area="nav"
         bg={navBgColor}
@@ -55,7 +53,6 @@ const Profilepage = ({ params }: { params: Props }) => {
         <Sidebar />
       </GridItem>
 
-      {/* Main Content Section */}
       <GridItem
         area="main"
         position="sticky"
@@ -64,7 +61,6 @@ const Profilepage = ({ params }: { params: Props }) => {
         pl="2"
         bg={navBgColor}
       >
-        {/* Pass the user query parameter to MainProfile as a prop */}
         <MainProfile username={user} />
       </GridItem>
     </Grid>

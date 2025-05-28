@@ -48,12 +48,14 @@ interface MainProfileProps {
 }
 
 const MainProfile = ({ username }: MainProfileProps) => {
-  const { bg, textColor, borderColor, navBgColor } =
+  const { bg, textColor, borderColor, navBgColor, tiktok } =
     useColorModeStyles();
 
   const [liked, setLiked] = useState(false);
  const [userData, setUserData] = useState<USerProfile>({
+  id: 0,
   username: "",
+  email: "",
   first_name: "Loading...",
   last_name: "",
   age: 18,
@@ -62,12 +64,15 @@ const MainProfile = ({ username }: MainProfileProps) => {
   bio: "",
   interests: [],
   image_url: placeholderAvatar.src,
+  image_link: "",
   views: 0,
   likes: 0,
   points: 0,
   instagram: "null",
   snapchat: "null",
   tiktok: "null",
+  isOnline: false,
+  status: "",
 });
 
 

@@ -10,7 +10,6 @@
 //   const instagramTextColor = useColorModeValue('#d62976', '#feda75');
 //   const instagramIconColor = useColorModeValue('#d62976', '#feda75');
 
-//   const tiktok = useColorModeValue('#010101', '#ffffff');
 //   const tiktokHoverColor = useColorModeValue('#00F2EA', '#FE2C55'); // TikTok cyan/pink
 //   const tiktokTextColor = useColorModeValue('#FE2C55', '#00F2EA');  // Alternate hover
 
@@ -72,6 +71,8 @@ const useColorModeStyles = () => {
   const instagramTextColor = useColorModeValue('#d62976', '#feda75');
   const snapchatTextColor = useColorModeValue("gray.100", "gray.800");
   const tiktokTextColor = useColorModeValue('#FE2C55', '#00F2EA');  // Alternate hover
+  const tiktok = useColorModeValue('#010101', '#ffffff');
+
 
 
   return {
@@ -79,6 +80,7 @@ const useColorModeStyles = () => {
     primaryColor,
     secondaryColor,
     accentColor,
+    tiktok,
     bg,
     textColor,
     borderColor,
