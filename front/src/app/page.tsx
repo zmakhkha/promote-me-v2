@@ -6,20 +6,22 @@ import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
 import MainHome from "@/components/mainpages/MainHome";
-import { useRouter } from "next/navigation";
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
-import socketConnect from "@/services/axios/socketConnect";
+import { CheckAuthAndConnect } from "@/services/axios/CheckAuthAndConnect";
+// import { useRouter } from "next/navigation";
+// import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
+// import socketConnect from "@/services/axios/socketConnect";
 
 const Page = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
-  const router = useRouter();
-  useEffect(() => {
-    const isAuthenticated = checkAuthTokens();
-    if (!isAuthenticated) {
-      router.push("/login");
-    }
-    socketConnect("1");
-  }, [router]);
+  // const router = useRouter();
+  // useEffect(() => {
+  //   const isAuthenticated = checkAuthTokens();
+  //   if (!isAuthenticated) {
+  //     router.push("/login");
+  //   }
+  //   socketConnect("1");
+  // }, [router]);
+  CheckAuthAndConnect ("1");
 
   return (
     <Grid

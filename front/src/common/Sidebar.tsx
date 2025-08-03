@@ -10,8 +10,7 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 
-import { FaComments } from "react-icons/fa";
-import { FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
+import { FaSnapchat, FaInstagram, FaTiktok, FaHeart } from "react-icons/fa6";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
@@ -50,6 +49,7 @@ const Sidebar = () => {
           <Flex direction="column" width="100%">
             {[
               // { label: "Chat", icon: <FaComments />, href: "/chat/random" },
+              { label: "Discover", icon: <FaHeart />, href: "/discover" },
               { label: "Snapchat", icon: <FaSnapchat />, href: "/snapchat" },
               { label: "Instagram", icon: <FaInstagram />, href: "/instagram" },
               { label: "TikTok", icon: <FaTiktok />, href: "/tiktok" },
