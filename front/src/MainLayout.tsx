@@ -62,7 +62,7 @@ const MainLayout = ({ MainComponent }: MainLayoutProps) => {
         pl="2"
         bg={navBgColor}
       >
-        <MainComponent /> {/* Render the MainComponent here */}
+        <MainComponent />
       </GridItem>
     </Grid>
   );

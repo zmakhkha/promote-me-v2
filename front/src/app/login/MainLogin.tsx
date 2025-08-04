@@ -4,13 +4,12 @@ import { Box, Button, Input, Text, Flex, Link } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import api from "@/services/axios/api";
-
+import axios from "axios";
 const MainLogin = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // Loading state for animation
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { bg, textColor } = useColorModeStyles();
 
@@ -20,7 +19,7 @@ const MainLogin = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/api/v1/login/", {
+      const response = await axios.post("http://localhost:2000/api/v1/login/", {
         username,
         password,
       });

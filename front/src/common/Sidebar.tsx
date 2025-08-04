@@ -1,13 +1,6 @@
 "use client";
 import React from "react";
-import {
-  Flex,
-  IconButton,
-  Link,
-  Text,
-  useColorMode,
-  Button,
-} from "@chakra-ui/react";
+import { Flex, IconButton, Link, Text, useColorMode } from "@chakra-ui/react";
 import Image from "next/image";
 
 import { FaSnapchat, FaInstagram, FaTiktok, FaHeart } from "react-icons/fa6";
@@ -21,7 +14,6 @@ const Sidebar = () => {
   const { colorMode } = useColorMode();
   const { bg, hoverColor, textColor } = useColorModeStyles();
   const logo = colorMode === "light" ? logoLight : logoDark;
-  const isAth = 0;
 
   return (
     <>
@@ -77,21 +69,6 @@ const Sidebar = () => {
             ))}
           </Flex>
         </Flex>
-
-        {/* Bottom Section (Login Button) */}
-        {!isAth && (
-          <Flex width="100%" justify="center" mt={4}>
-            <Button
-              as={Link}
-              href="/login"
-              colorScheme="blue"
-              size="lg"
-              width="100%"
-            >
-              Login
-            </Button>
-          </Flex>
-        )}
       </Flex>
     </>
   );
