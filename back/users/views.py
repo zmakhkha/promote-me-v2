@@ -25,6 +25,7 @@ from .models import (OTPVerification,DefaultUser, ProfileView, ProfileLike)
 from .serializers import (
     AdminModifyUserSerializer,
     AdminUserSerializer,
+    RegisterUserSerializer,
     UserDetailSerializer,
     UserListSerializer,
     UserProfileSerializer,
@@ -79,7 +80,7 @@ class SignUpAPIView(APIView):
         # Log the request data for debugging purposes
         logger.debug(f"Request Data: {request.data}")
         
-        serializer = UserSerializer(data=request.data)
+        serializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
             username = serializer.validated_data.get('username')
             email = serializer.validated_data.get('email')
@@ -141,7 +142,7 @@ class SignUpAPIView(APIView):
 
 
 class UserListView(generics.ListAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserListSerializer
 
     def get_queryset(self):
@@ -189,6 +190,7 @@ class UserListView(generics.ListAPIView):
         return queryset
 
 class UserDetailView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = DefaultUser.objects.all()
     serializer_class = UserDetailSerializer
     lookup_field = 'username'
@@ -203,8 +205,8 @@ class UserDetailView(generics.RetrieveAPIView):
 
 
 class UserSettingsView(APIView):
-    # permission_classes = [IsAuthenticated]
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
 
     def get(self, request, *args, **kwargs):
         user = request.user
@@ -231,7 +233,8 @@ class UserProfileView(APIView):
 
 class AdminUserListView(APIView):
     # permission_classes = [IsAdminUser]
-    permission_classes = [AllowAny]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         # if not request.user.is_staff:  # Double-check admin status
@@ -283,6 +286,7 @@ class VerifyUSernameView(APIView):
         return Response({"error": "Username already used !!"}, status=status.HTTP_400_BAD_REQUEST)
 
 class SendOTPView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         email = request.data.get("email")
         if not email:
@@ -314,9 +318,11 @@ class SendOTPView(APIView):
 
 
 class VerifyOTPView(APIView):
+    permission_classes = [AllowAny]
     def post(self, request):
         email = request.data.get("email")
         otp = request.data.get("otp")
+        print(f"Received email: {email}, otp: {otp}")
 
         try:
             user = DefaultUser.objects.get(email=email)
@@ -363,7 +369,7 @@ class RecordProfileView(APIView):
             return Response({'detail': 'Viewed user not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 class LikeUser(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         liked_username = request.data.get('liked_username')
@@ -389,7 +395,7 @@ class LikeUser(APIView):
 
 
 class DislikeUser(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         disliked_username = request.data.get('disliked_username')
@@ -417,7 +423,7 @@ class DislikeUser(APIView):
             return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 class CheckLikeStatus(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     
     def get(self, request,username, *args, **kwargs):
         # username = request.data.get('username')        

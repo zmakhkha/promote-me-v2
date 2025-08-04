@@ -2,21 +2,14 @@
 
 import React, { useEffect } from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
 import NonAuthHeader from "@/common/NonAuthHeader"; // Keep your custom header
 import MainRegister from "@/components/auth/MainRegister";
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 
 const Page = () => {
-  const router = useRouter();
 
   useEffect(() => {
-    // Check for authentication tokens or handle routing logic
-    const isAuthenticated = checkAuthTokens();
-    if (isAuthenticated) {
-      router.push("/");
-    }
-  }, [router]);
+    localStorage.clear();
+  }, );
 
   return (
     <Grid
@@ -31,16 +24,12 @@ const Page = () => {
       color="gray.800"
       fontWeight="bold"
     >
-      {/* Header Section */}
       <GridItem area="header" position="sticky" top="0" zIndex="2">
-        {/* Header will stay on top */}
         <NonAuthHeader />
       </GridItem>
 
-      {/* Main Content Section */}
       <GridItem area="main" bg="white" overflow="auto">
-        {/* Main content goes here */}
-        <MainRegister /> {/* Assuming this is your main form/step component */}
+        <MainRegister />
       </GridItem>
     </Grid>
   );

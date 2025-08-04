@@ -1,14 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  Input,
-  Text,
-  Flex,
-  Link,
-  Spinner,
-} from "@chakra-ui/react";
+import { Box, Button, Input, Text, Flex, Link } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 
 import useColorModeStyles from "@/utils/useColorModeStyles";
@@ -24,7 +16,7 @@ const MainLogin = () => {
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setError(null); 
+    setError(null);
     setLoading(true);
 
     try {
@@ -38,8 +30,11 @@ const MainLogin = () => {
       // Store tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
-
-      is_staff ? router.push("/admin") : router.push("/");
+      if (is_staff) {
+        router.push("/admin");
+      } else {
+        router.push("/");
+      }
     } catch (err: any) {
       let message = "An unexpected error occurred. Please try again.";
       if (err.response?.status === 401) {
@@ -48,9 +43,9 @@ const MainLogin = () => {
         message = "Too many login attempts. Please try again later.";
       }
 
-      setError(message); // Set error message
+      setError(message); 
     } finally {
-      setLoading(false); // Stop loading animation
+      setLoading(false);
     }
   };
 
@@ -107,7 +102,7 @@ const MainLogin = () => {
               colorScheme="pink"
               variant="solid"
               w="full"
-              isLoading={loading} // This will show the loading spinner
+              isLoading={loading}
               loadingText="Logging in..."
             >
               Login

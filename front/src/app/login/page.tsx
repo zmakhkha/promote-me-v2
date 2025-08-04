@@ -2,21 +2,15 @@
 
 import React, { useEffect } from "react";
 import { Grid, GridItem } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
 import NonAuthHeader from "@/common/NonAuthHeader"; // Keep your custom header
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import MainLogin from "./MainLogin";
 
 const Page = () => {
-  const router = useRouter();
 
   useEffect(() => {
-    // Check for authentication tokens or handle routing logic
-    const isAuthenticated = checkAuthTokens();
-    if (isAuthenticated) {
-      router.push("/");
+    localStorage.clear();
     }
-  }, [router]);
+  );
 
   return (
     <Grid

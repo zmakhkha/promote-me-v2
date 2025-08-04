@@ -15,13 +15,13 @@ import useColorModeStyles from "@/utils/useColorModeStyles";
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 
-import { getIsAuth } from "@/services/axios/api";
+// import { getIsAuth } from "@/services/axios/api";
 
 const Sidebar = () => {
   const { colorMode } = useColorMode();
   const { bg, hoverColor, textColor } = useColorModeStyles();
   const logo = colorMode === "light" ? logoLight : logoDark;
-  const isAth = getIsAuth;
+  const isAth = 0;
 
   return (
     <>

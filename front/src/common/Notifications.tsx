@@ -31,7 +31,7 @@ const Notifications = () => {
   const [unseenMessages, setUnseenMessages] = useState<Message[]>([]);
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const router = useRouter();
-  const { isOpen, onToggle, onClose } = useDisclosure(); // Control dropdown state
+  const { isOpen, onToggle, onClose } = useDisclosure();
 
   const fetchNotifications = async () => {
     try {

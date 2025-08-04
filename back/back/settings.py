@@ -194,16 +194,16 @@ CHANNEL_LAYERS = {
 # EMAIL_HOST_PASSWORD = "your-app-password"  # Use an App Password (not your main password)
 
 
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 # settings.py
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'makhkhas.zakaria@gmail.com'
-EMAIL_HOST_PASSWORD = 'llys vmqq vwha ieqj'  # Use the app password here
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'makhkhas.zakaria@gmail.com'
+# EMAIL_HOST_PASSWORD = 'llys vmqq vwha ieqj'
 
 
 # LOGGING = {
@@ -229,3 +229,22 @@ EMAIL_HOST_PASSWORD = 'llys vmqq vwha ieqj'  # Use the app password here
 #         },
 #     },
 # }
+
+
+# REST FRAMEWORK CONFIGURATION
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',  # Use JWT Authentication
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Optionally, make endpoints require authentication by default
+    ),
+}
+
+# JWT CONFIGURATION
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Optional, set refresh token expiration
+    "ROTATE_REFRESH_TOKENS": False,  # Optional, whether to rotate refresh tokens
+    "BLACKLIST_AFTER_ROTATION": True,  # Optional, blacklist old refresh tokens after rotation
+}

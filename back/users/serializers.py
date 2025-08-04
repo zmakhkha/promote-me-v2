@@ -16,6 +16,32 @@ unique_email_validator = UniqueValidator(
 )
 
 
+class RegisterUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    # username = serializers.CharField(required=True, validators=[unique_username_validator, char_validator])
+    username = serializers.CharField(required=True, validators=[unique_username_validator])
+    email = serializers.EmailField(required=True, validators=[unique_email_validator, email_validator])
+    first_name = serializers.CharField(required=True, validators=[char_validator])
+    last_name = serializers.CharField(required=True, validators=[char_validator])
+
+
+    class Meta:
+        model = DefaultUser
+        fields = [
+            'id', 'username', 'email', 'password', 'first_name', 'last_name',
+        ]
+
+    def create(self, validated_data):
+        user = DefaultUser.objects.create(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     # username = serializers.CharField(required=True, validators=[unique_username_validator, char_validator])
