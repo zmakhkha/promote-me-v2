@@ -45,7 +45,7 @@ const BigMenu = () => {
   const fetchUsers = async () => {
     try {
       socketConnect("1");
-      const response = await api.get("/api/v1/profile/");
+      const response = await api.get("/profile/");
       setUsername(response.data.first_name);
     } catch (err) {
       console.log("[Header] [fetchUsers] There was an error.", err);

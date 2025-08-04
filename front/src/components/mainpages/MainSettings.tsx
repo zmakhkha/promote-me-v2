@@ -22,7 +22,7 @@ import {
   AlertDialogOverlay,
 } from "@chakra-ui/react";
 import { FaInstagram, FaSnapchatGhost, FaTiktok } from "react-icons/fa";
-import placeholderAvatar from "../../data/image/no-avatar.png";
+import placeholderAvatar from "@images/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import getCorrectImage from "@/services/axios/getCorrectImage";
@@ -117,7 +117,10 @@ const MainSettings = () => {
       Object.keys(userData).forEach((key) => {
         if (key !== "image_url") {
           const value = userData[key as keyof USerProfile];
-          formData.append(key, typeof value === "string" ? value : String(value));
+          formData.append(
+            key,
+            typeof value === "string" ? value : String(value)
+          );
         }
       });
 
@@ -165,9 +168,21 @@ const MainSettings = () => {
             Settings
           </Text>
 
-          <Flex justify="center" align="center" direction="column" mb={4} w="full">
+          <Flex
+            justify="center"
+            align="center"
+            direction="column"
+            mb={4}
+            w="full"
+          >
             <Avatar size="2xl" mb={1} src={imagePreview} />
-            <Button as="label" htmlFor="file-upload" colorScheme="teal" cursor="pointer" mt={2}>
+            <Button
+              as="label"
+              htmlFor="file-upload"
+              colorScheme="teal"
+              cursor="pointer"
+              mt={2}
+            >
               Choose File
             </Button>
             <Input
@@ -244,7 +259,12 @@ const MainSettings = () => {
             </InputGroup>
           </VStack>
 
-          <Button colorScheme="teal" mt={6} w="full" onClick={handleSaveChanges}>
+          <Button
+            colorScheme="teal"
+            mt={6}
+            w="full"
+            onClick={handleSaveChanges}
+          >
             Save Changes
           </Button>
         </Box>
@@ -263,7 +283,8 @@ const MainSettings = () => {
               Missing Required Fields
             </AlertDialogHeader>
             <AlertDialogBody>
-              Please fill out all required fields: First Name, Last Name, and Bio.
+              Please fill out all required fields: First Name, Last Name, and
+              Bio.
             </AlertDialogBody>
             <AlertDialogFooter>
               <Button ref={cancelRef} onClick={onClose}>

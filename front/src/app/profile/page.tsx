@@ -7,8 +7,8 @@ import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import MyProfile from "@/components/mainpages/MyProfile";
 import Header from "@/common/Header";
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import socketConnect from "@/services/axios/socketConnect";
+import { checkAuthTokens } from "@/services/axios/CheckAuthAndConnect";
 
 const MePage = () => {
   const router = useRouter();

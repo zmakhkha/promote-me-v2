@@ -20,7 +20,8 @@ import {
   FaSnapchatGhost,
   FaTiktok,
 } from "react-icons/fa";
-import placeholderAvatar from "../../data/image/no-avatar.png";
+import placeholderAvatar from "@images/no-avatar.png";
+
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import { USerProfile } from "../auth/types";
@@ -52,29 +53,28 @@ const MainProfile = ({ username }: MainProfileProps) => {
     useColorModeStyles();
 
   const [liked, setLiked] = useState(false);
- const [userData, setUserData] = useState<USerProfile>({
-  id: 0,
-  username: "",
-  email: "",
-  first_name: "Loading...",
-  last_name: "",
-  age: 18,
-  gender: "",
-  location: "",
-  bio: "",
-  interests: [],
-  image_url: placeholderAvatar.src,
-  image_link: "",
-  views: 0,
-  likes: 0,
-  points: 0,
-  instagram: "null",
-  snapchat: "null",
-  tiktok: "null",
-  isOnline: false,
-  status: "",
-});
-
+  const [userData, setUserData] = useState<USerProfile>({
+    id: 0,
+    username: "",
+    email: "",
+    first_name: "Loading...",
+    last_name: "",
+    age: 18,
+    gender: "",
+    location: "",
+    bio: "",
+    interests: [],
+    image_url: placeholderAvatar.src,
+    image_link: "",
+    views: 0,
+    likes: 0,
+    points: 0,
+    instagram: "null",
+    snapchat: "null",
+    tiktok: "null",
+    isOnline: false,
+    status: "",
+  });
 
   const [imagePreview, setImagePreview] = useState<string>(
     placeholderAvatar.src
@@ -83,9 +83,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
   // Fetch the like status from the backend
   const fetchLikeStatus = async () => {
     try {
-      const response = await api.get(
-        `/api/v1/profile/like-status/${username}/`
-      );
+      const response = await api.get(`/profile/like-status/${username}/`);
       console.log("---------->|", response.data);
       setLiked(response.data.detail); // Set the like status from backend
     } catch (error) {
@@ -95,7 +93,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
 
   const handleDislike = async () => {
     try {
-      const response = await api.post(`/api/v1/profile/dislike/`, {
+      const response = await api.post(`profile/dislike/`, {
         disliked_username: username,
       });
 
@@ -119,7 +117,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
         await handleDislike();
       } else {
         // Send like toggle request
-        const response = await api.post(`/api/v1/profile/like/`, {
+        const response = await api.post(`profile/like/`, {
           liked_username: username,
         });
 
@@ -142,7 +140,11 @@ const MainProfile = ({ username }: MainProfileProps) => {
       try {
         const response = await api.get(`/api/v1/users/${username}/`);
         setUserData(response.data);
-        setImagePreview(response.data.image_link || response.data.image_url || placeholderAvatar.src);
+        setImagePreview(
+          response.data.image_link ||
+            response.data.image_url ||
+            placeholderAvatar.src
+        );
 
         // Increment views
         await api.post(`api/v1/profile/view/`, { viewed_username: username });

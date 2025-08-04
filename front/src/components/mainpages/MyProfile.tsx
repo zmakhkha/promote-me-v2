@@ -21,7 +21,7 @@ import {
   FaSnapchatGhost,
   FaTiktok,
 } from "react-icons/fa";
-import placeholderAvatar from "../../data/image/no-avatar.png";
+import placeholderAvatar from "@images/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import getCorrectImage from "@/services/axios/getCorrectImage";
@@ -60,7 +60,7 @@ const MainProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await api.get("/api/v1/profile/");
+        const response = await api.get("/profile/");
         console.log(response.data);
 
         const data = response.data;

@@ -35,7 +35,7 @@ const Notifications = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await api.get("/api/v1/messages-notifications/");
+      const response = await api.get("/messages-notifications/");
       setUnseenMessages(response.data.unseen_messages || []);
     } catch (error) {
       console.log("Error fetching unseen messages:", error);

@@ -51,7 +51,7 @@ const MobileMenu = () => {
     const fetchUser = async () => {
       try {
         socketConnect("1");
-        const response = await api.get("/api/v1/profile/");
+        const response = await api.get("/profile/");
         setUsername(response.data.first_name);
       } catch (error) {
         console.log("[MobileMenu] Error fetching user data:", error);

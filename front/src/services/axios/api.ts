@@ -1,47 +1,83 @@
-import axios from "axios";
 import { API_URL } from "@/utils/config";
+import axios from "axios";
 
-// Create a mutable isAuth variable
-let isAuth = !!localStorage.getItem("accessToken");
-
-// Utility function to update isAuth
-export const updateAuthStatus = () => {
-  isAuth = !!localStorage.getItem("accessToken");
-};
-
-// Getter function to access current auth status
-export const getIsAuth = () => isAuth;
-
-const api = axios.create({
-  baseURL: API_URL,
+const API = axios.create({
+  baseURL: API_URL
 });
 
-// Request interceptor: attach token
-api.interceptors.request.use(
+API.interceptors.request.use(
   (config) => {
-    const accessToken = localStorage.getItem("accessToken");
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    const token = localStorage.getItem("accessToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: handle auth error
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem("accessToken");
+let isRefreshing = false;
+let failedQueue: any[] = [];
 
-      // Update isAuth on logout
-      updateAuthStatus();
-
-      window.location.href = "/login";
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
     }
+  });
+
+  failedQueue = [];
+};
+
+API.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes("/auth/refresh/")
+    ) {
+      if (isRefreshing) {
+        return new Promise(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axios(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const refreshToken = localStorage.getItem("refreshToken");
+        const res = await axios.post("http://localhost:2000/api/v1/token/refresh/", {
+          refresh: refreshToken,
+        });
+
+        const newAccessToken = res.data.access;
+        localStorage.setItem("accessToken", newAccessToken);
+
+        processQueue(null, newAccessToken);
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return API(originalRequest);
+      } catch (err) {
+        processQueue(err, null);
+        // Redirect to login or show error
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
     return Promise.reject(error);
   }
 );
 
-export default api;
+export default API;

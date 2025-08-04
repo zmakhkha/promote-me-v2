@@ -6,9 +6,9 @@ import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
 import { useRouter } from "next/navigation";
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import socketConnect from "@/services/axios/socketConnect";
 import { DiscoverProfileCard } from "@/components/mainpages/DiscoverProfileCard";
+import { checkAuthTokens } from "@/services/axios/CheckAuthAndConnect";
 
 const DiscoverPage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
