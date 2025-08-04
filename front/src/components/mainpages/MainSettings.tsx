@@ -21,6 +21,7 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
 } from "@chakra-ui/react";
+import { FocusableElement } from "@chakra-ui/utils";
 import { FaInstagram, FaSnapchatGhost, FaTiktok } from "react-icons/fa";
 import placeholderAvatar from "@images/no-avatar.png";
 import useColorModeStyles from "../../utils/useColorModeStyles";
@@ -32,7 +33,8 @@ const MainSettings = () => {
   const { bg, tiktok, borderColor } = useColorModeStyles();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = useRef<HTMLButtonElement>(null);
+  // const cancelRef = useRef<HTMLButtonElement>(null);
+  const cancelRef = useRef<FocusableElement>(null);
 
   const [userData, setUserData] = useState<USerProfile>({
     image_url: placeholderAvatar.src,
@@ -270,10 +272,9 @@ const MainSettings = () => {
         </Box>
       </Flex>
 
-      {/* AlertDialog for empty fields */}
       <AlertDialog
         isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
+        leastDestructiveRef={cancelRef as React.RefObject<FocusableElement>}
         onClose={onClose}
         isCentered
       >
@@ -287,7 +288,10 @@ const MainSettings = () => {
               Bio.
             </AlertDialogBody>
             <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
+              <Button
+                ref={cancelRef as React.RefObject<HTMLButtonElement>}
+                onClick={onClose}
+              >
                 OK
               </Button>
             </AlertDialogFooter>

@@ -17,7 +17,6 @@ import {
   FaHeart,
   FaComment,
   FaTimes,
-  FaQuestion,
   FaFlag,
   FaCog,
 } from "react-icons/fa";
@@ -41,11 +40,6 @@ export const DiscoverProfileCard = () => {
 
   const handleSkip = () => {
     console.log("Skipped", profile.name);
-    handleNext();
-  };
-
-  const handleNotSure = () => {
-    console.log("Not Sure about", profile.name);
     handleNext();
   };
 
@@ -118,12 +112,6 @@ export const DiscoverProfileCard = () => {
               size="md"
               onClick={handleSkip}
             />
-            {/* <IconButton
-              aria-label="Not Sure"
-              icon={<FaQuestion />}
-              size="md"
-              onClick={handleNotSure}
-            /> */}
             <IconButton
               aria-label="Chat"
               icon={<FaComment />}

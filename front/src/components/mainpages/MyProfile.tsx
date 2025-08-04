@@ -33,6 +33,7 @@ const MainProfile = () => {
 
   const [userData, setUserData] = useState<USerProfile>({
     image_url: placeholderAvatar.src,
+    image_link: "",
     first_name: "John",
     last_name: "wick",
     email: "",

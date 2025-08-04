@@ -26,24 +26,6 @@ import useColorModeStyles from "../../utils/useColorModeStyles";
 import api from "@/services/axios/api";
 import { USerProfile } from "../auth/types";
 
-interface UserData {
-  username: string;
-  image_url: string;
-  first_name: string;
-  last_name: string;
-  age: number | null;
-  gender: string;
-  location: string;
-  bio: string;
-  views: number;
-  likes: number;
-  points: number;
-  interests: string[];
-  instagram?: string | null;
-  snapchat?: string | null;
-  tiktok?: string | null;
-}
-
 interface MainProfileProps {
   username: string; // Expecting the username as a prop
 }
@@ -157,7 +139,7 @@ const MainProfile = ({ username }: MainProfileProps) => {
       fetchUserData();
       fetchLikeStatus(); // Fetch like status when the component mounts
     }
-  }, [username]); // Fetch user data when username changes
+  }, ); 
 
   return (
     <Flex justify="center" align="center" py={5} px={5}>
