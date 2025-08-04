@@ -36,7 +36,7 @@ const MainSnapchat = () => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.get("/api/v1/users-info/snap/", {
+      const response = await api.get("/users-info/snap/", {
 
         params: {
           page: currentPage,

@@ -1,38 +1,39 @@
 "use client";
 
 import { Grid, GridItem } from "@chakra-ui/react";
-import React, { useEffect } from "react";
+import React from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
-import MainProfile from "@/components/mainpages/MainProfile";
-import { use } from "react"; 
 import { checkAuthTokens } from "@/services/axios/CheckAuthAndConnect";
 
-type Props = {
-  user: string;
-};
+// Corrected typing for MainComponent prop
+interface MainLayoutProps {
+  MainComponent: React.ComponentType;
+}
 
-const Profilepage = ({ params }: { params: Promise<Props> }) => {
-  const { user } = use(params);
+const MainLayout = ({ MainComponent }: MainLayoutProps) => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
   const router = useRouter();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const isAuthenticated = checkAuthTokens();
+    console.log("isAuthenticated:", isAuthenticated);
     if (!isAuthenticated) {
       router.push("/login");
     }
-    socketConnect("2");
+    socketConnect("1");
   }, [router]);
 
   return (
     <Grid
       templateAreas={{
-        base: `"header" "main"`,
-        md: `"nav header" "nav main"`,
+        base: `"header"
+               "main"`,
+        md: `"nav header"
+             "nav main"`,
       }}
       gridTemplateRows={{ base: "auto 1fr", md: "60px 1fr" }}
       gridTemplateColumns={{ base: "1fr", md: "200px 1fr" }}
@@ -61,10 +62,10 @@ const Profilepage = ({ params }: { params: Promise<Props> }) => {
         pl="2"
         bg={navBgColor}
       >
-        <MainProfile username={user} />
+        <MainComponent /> {/* Render the MainComponent here */}
       </GridItem>
     </Grid>
   );
 };
 
-export default Profilepage;
+export default MainLayout;
