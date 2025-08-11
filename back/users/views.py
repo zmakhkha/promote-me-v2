@@ -25,6 +25,7 @@ from .models import (OTPVerification,DefaultUser, ProfileView, ProfileLike)
 from .serializers import (
     AdminModifyUserSerializer,
     AdminUserSerializer,
+    DiscoverProfileSerializer,
     RegisterUserSerializer,
     UserDetailSerializer,
     UserListSerializer,
@@ -437,3 +438,14 @@ class CheckLikeStatus(APIView):
             return Response({'detail': True}, status=status.HTTP_200_OK)
         else:
             return Response({'detail': False}, status=status.HTTP_200_OK)
+
+
+class DiscoverProfilesAPIView(APIView):
+    """
+    Get a list of profiles for discovery cards.
+    """
+
+    def get(self, request, *args, **kwargs):
+        users = DefaultUser.objects.filter(is_discoverable=True).order_by("-id")[:20]
+        serializer = DiscoverProfileSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

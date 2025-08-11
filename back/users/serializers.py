@@ -154,3 +154,61 @@ class ProfileLikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileLike
         fields = '__all__'
+
+###########
+# Discover card Profile Serializer
+###########
+
+from rest_framework import serializers
+from .models import DefaultUser
+from datetime import date
+
+class DiscoverProfileSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()
+    specs = serializers.SerializerMethodField()
+    favoriteThing = serializers.CharField(source="favorite_thing", allow_null=True)
+    distance = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DefaultUser
+        fields = [
+            "id",
+            "name",
+            "age",
+            "is_verified",
+            "bio",
+            "specs",
+            "looking_for",
+            "interests",
+            "favoriteThing",
+            "causes",
+            "boundary",
+            "location",
+            "distance",
+            "image_url",
+        ]
+
+    def get_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip()
+
+    def get_age(self, obj):
+        if obj.birth_date:
+            today = date.today()
+            return today.year - obj.birth_date.year - (
+                (today.month, today.day) < (obj.birth_date.month, obj.birth_date.day)
+            )
+        return None
+
+    def get_specs(self, obj):
+        """
+        Convert the specs JSON dict into a list of 'key: value' strings
+        for frontend tag rendering.
+        """
+        if isinstance(obj.specs, dict):
+            return [f"{key}: {value}" for key, value in obj.specs.items()]
+        return []
+
+    def get_distance(self, obj):
+        # For now just a placeholder — later you can add distance calculation from request.user
+        return "5 km"

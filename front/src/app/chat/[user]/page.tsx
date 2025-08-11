@@ -5,7 +5,6 @@ import React, { use, useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
 import DmScreen from "@/components/chat/DmScreen";

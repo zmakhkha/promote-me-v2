@@ -5,11 +5,11 @@ import React, { useEffect } from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 import Header from "@/common/Header";
-import { checkAuthTokens } from "@/services/axios/checkAuthTokens";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
-import ChatScreen from "@/components/chat/ChatScreen";
+// import ChatScreen from "@/components/chat/ChatScreen";
 import ComingSoon from "@/common/coming-soon";
+import { checkAuthTokens } from "@/services/axios/CheckAuthAndConnect";
 
 const HomePage = () => {
   const { bg, textColor, navBgColor } = useColorModeStyles();

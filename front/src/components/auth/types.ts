@@ -43,3 +43,28 @@ export interface ApiError {
 	};
 	message?: string; // Fallback error message
   }
+
+  export type DiscoverUser = {
+	id: string;
+	profileImage: string;
+	name: string;
+	age: number;
+	isVerified: boolean;
+	aboutMe: string;
+	specs: string[];
+	lookingFor: string[];
+	interests: string[];
+	favoriteThing: string;
+	causes: string[];
+	boundary: string;
+	location: string;
+	distance: string;
+  };
+  
+  export interface DiscoverProfileCardProps {
+	profile: DiscoverUser;
+	onNext: () => void;
+	onLike: () => void;
+	onSkip: () => void;
+	onChat: () => void;
+  }

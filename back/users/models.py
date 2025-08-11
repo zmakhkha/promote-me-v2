@@ -12,7 +12,16 @@ from datetime import date
 import random
 
 from .validators import max_size_validator
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from datetime import date
+from django.db import models
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from datetime import date
 
+# ==========================
+# Custom User Manager
+# ==========================
 class DefaultUserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
@@ -28,7 +37,17 @@ class DefaultUserManager(BaseUserManager):
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(username, email, password, **extra_fields)
 
+
+# ==========================
+# Main User Model
+# ==========================
 class DefaultUser(AbstractBaseUser, PermissionsMixin):
+    DEFAULT_SPECS = {
+    "height": "",
+    "religion": "",
+    "smoke": "",
+    "drink": ""
+}
     STATUS_ONLINE = 'O'
     STATUS_OFFLINE = 'F'
     STATUS_IDLE = 'I'
@@ -38,36 +57,66 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
         (STATUS_ONLINE, 'ONLINE'),
         (STATUS_OFFLINE, 'OFFLINE'),
         (STATUS_IDLE, 'IDLE'),
+        (STATUS_CHAT, 'CHAT'),
+    ]
+
+    ORIENTATION_CHOICES = [
+        ('male', 'Interested in Males'),
+        ('female', 'Interested in Females'),
+        ('bisexual', 'Bisexual'),
     ]
 
     username = models.CharField(max_length=150, unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.EmailField(unique=True)
+
     points = models.IntegerField(default=0)
     likes = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
-    birth_date = models.DateField(null=True, blank=True)  # Replaced age with birth_date
-    gender = models.CharField(max_length=10, choices=[('male', 'male'), ('female', 'female')])
-    location = models.CharField(max_length=100)
-    bio = models.TextField()
-    interests = models.JSONField(default=list)
+
+    birth_date = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=10, choices=[('male', 'Male'), ('female', 'Female')])
+    sexual_orientation = models.CharField(max_length=10, choices=ORIENTATION_CHOICES, default='bisexual')
+
+    bio = models.TextField(blank=True)
+
+    interests = models.JSONField(default=list)  # list of tags
+    specs = models.JSONField(default=DEFAULT_SPECS)
+    looking_for = models.JSONField(default=list)
+    favorite_thing = models.CharField(max_length=255, blank=True, null=True)
+    causes = models.JSONField(default=list)
+    boundary = models.CharField(max_length=255, blank=True, null=True)
+
+    # Location
+    location = models.CharField(max_length=100, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True)
+
+    # Profile picture (default)
+    image_url = models.ImageField(upload_to='images', default='images/default.png')
     image_link = models.CharField(max_length=255, blank=True, null=True)
-    image_url = models.ImageField(
-        upload_to='images',
-        validators=[max_size_validator],
-        default='images/default.png'
-    )
-    status = models.CharField(
-        max_length=1, choices=STATUS_CHOICES, default=STATUS_OFFLINE)
-    snapchat = models.CharField(max_length=50, blank=True, null=True)
-    instagram = models.CharField(max_length=50, blank=True, null=True)
-    tiktok = models.CharField(max_length=50, blank=True, null=True)
+
+    is_verified = models.BooleanField(default=False)
+    is_discoverable = models.BooleanField(default=False)
+
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default=STATUS_OFFLINE)
+
+    # Blocking/Reporting
+    blocked_users = models.ManyToManyField('self', symmetrical=False, related_name='blocked_by', blank=True)
+    reported_fake = models.BooleanField(default=False)
+
+    # Social Media Links
+    snapchat = models.CharField(max_length=100, blank=True)
+    instagram = models.CharField(max_length=100, blank=True)
+    tiktok = models.CharField(max_length=100, blank=True)
+
+    # Django fields
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    
+
     objects = DefaultUserManager()
-    
+
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = ['email']
@@ -77,11 +126,30 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
 
     @property
     def age(self):
-        """Calculate age dynamically from birth_date."""
         if self.birth_date:
             today = date.today()
-            return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+            return today.year - self.birth_date.year - (
+                (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+            )
         return None
+
+    @property
+    def fame_rating(self):
+        """Example fame rating formula: likes + (views / 10) + points."""
+        return self.likes + (self.views / 10) + self.points
+
+
+# ==========================
+# Multiple Pictures Model
+# ==========================
+class UserPicture(models.Model):
+    user = models.ForeignKey(DefaultUser, related_name='pictures', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='user_pictures')
+    is_profile_picture = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} Picture"
+
     
 class OTPVerification(models.Model):
     user = models.OneToOneField(DefaultUser, on_delete=models.CASCADE)

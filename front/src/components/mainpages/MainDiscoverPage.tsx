@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -12,6 +13,7 @@ import {
   useColorModeValue,
   Flex,
   Img,
+  Spinner,
 } from "@chakra-ui/react";
 import {
   FaHeart,
@@ -20,35 +22,97 @@ import {
   FaFlag,
   FaCog,
 } from "react-icons/fa";
-import defaultImage from "@images/no-avatar.png";
 import { MdLocationOn } from "react-icons/md";
-import { useState } from "react";
-import discoverProfiles from "@/data/discoverProfiles";
+import defaultImage from "@images/no-avatar.png";
+import api from "@/services/axios/api";
+import getCorrectImage from "@/services/axios/getCorrectImage";
 
-export const DiscoverProfileCard = () => {
+
+type Profile = {
+  id: number;
+  name: string;
+  age: number | null;
+  is_verified: boolean;
+  bio: string;
+  specs: string[];
+  looking_for: string[];
+  interests: string[];
+  favoriteThing: string | null;
+  causes: string[];
+  boundary: string | null;
+  location: string;
+  distance: string;
+  image_url: string | null;
+};
+
+const MainDiscoverPage = () => {
+  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [index, setIndex] = useState(0);
-  const profile = discoverProfiles[index];
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const bg = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get<Profile[]>("discover/");
+        setProfiles(response.data);
+        setIndex(0);
+      } catch (err) {
+        setError("Failed to load profiles: "+ err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProfiles();
+  }, []);
 
   const handleNext = () => {
-    setIndex((prev) => (prev + 1) % discoverProfiles.length);
+    setIndex((prev) => (prev + 1) % profiles.length);
   };
 
   const handleLike = () => {
-    console.log("Liked", profile.name);
+    console.log("Liked", profiles[index]?.name);
     handleNext();
   };
 
   const handleSkip = () => {
-    console.log("Skipped", profile.name);
+    console.log("Skipped", profiles[index]?.name);
     handleNext();
   };
 
   const handleChat = () => {
-    console.log("Chat with", profile.name);
+    console.log("Chat with", profiles[index]?.name);
   };
 
-  const bg = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.600");
+  if (loading) {
+    return (
+      <Flex justify="center" align="center" minH="60vh">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  if (error) {
+    return (
+      <Flex justify="center" align="center" minH="60vh">
+        <Text color="red.500">{error}</Text>
+      </Flex>
+    );
+  }
+
+  if (!profiles.length) {
+    return (
+      <Flex justify="center" align="center" minH="60vh">
+        <Text>No profiles found.</Text>
+      </Flex>
+    );
+  }
+
+  const profile = profiles[index];
 
   return (
     <Flex justify="center" align="center" py={5} px={5}>
@@ -89,8 +153,7 @@ export const DiscoverProfileCard = () => {
         <VStack spacing={4} align="center" pt={10} pb={6}>
           {/* Profile Image */}
           <Img
-            // src={ profile.profileImage || defaultImage.src}
-            src={defaultImage.src}
+            src={profile.image_url || defaultImage.src || getCorrectImage(profile.image_url)}
             alt={`${profile.name}'s profile`}
             borderRadius="xl"
             objectFit="cover"
@@ -98,7 +161,7 @@ export const DiscoverProfileCard = () => {
             w="full"
           />
           <Text fontSize="sm" color="green.500" fontWeight="semibold">
-            {profile.isVerified ? "✔ Profile Verified" : ""}
+            {profile.is_verified ? "✔ Profile Verified" : ""}
           </Text>
           <Text fontSize="2xl" fontWeight="bold">
             {profile.name}, {profile.age}
@@ -132,7 +195,7 @@ export const DiscoverProfileCard = () => {
           {/* About Section */}
           <VStack align="start" spacing={3} w="full" fontSize="sm">
             <Text fontWeight="bold">About Me</Text>
-            <Text>{profile.aboutMe}</Text>
+            <Text>{profile.bio}</Text>
 
             <Text fontWeight="bold">Specs</Text>
             <Wrap>
@@ -143,8 +206,8 @@ export const DiscoverProfileCard = () => {
 
             <Text fontWeight="bold">I&apos;m Looking For</Text>
             <Wrap>
-              {profile.lookingFor.map((item, idx) => (
-                <Tag key={idx} colorScheme="blue">
+              {profile.looking_for.map((item, idx) => (
+                <Tag key={idx} colorScheme="blue" >
                   {item}
                 </Tag>
               ))}
@@ -153,7 +216,7 @@ export const DiscoverProfileCard = () => {
             <Text fontWeight="bold">My Interests</Text>
             <Wrap>
               {profile.interests.map((item, idx) => (
-                <Tag key={idx} colorScheme="purple">
+                <Tag key={idx} colorScheme="purple" >
                   {item}
                 </Tag>
               ))}
@@ -165,7 +228,7 @@ export const DiscoverProfileCard = () => {
             <Text fontWeight="bold">My Causes and Communities</Text>
             <Wrap>
               {profile.causes.map((item, idx) => (
-                <Tag key={idx} colorScheme="teal">
+                <Tag key={idx} colorScheme="teal" >
                   {item}
                 </Tag>
               ))}
@@ -212,3 +275,5 @@ export const DiscoverProfileCard = () => {
     </Flex>
   );
 };
+
+export default MainDiscoverPage;
