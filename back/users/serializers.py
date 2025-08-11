@@ -1,11 +1,11 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
+from datetime import date
 
 from .validators import *
 from .models import DefaultUser, ProfileView, ProfileLike
 
-# serializers.py
 
 
 unique_username_validator = UniqueValidator(
@@ -109,8 +109,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
 
-from rest_framework import serializers
-from .models import DefaultUser
+
 
 class UserSettingsSerializer(serializers.ModelSerializer):
     # image_url = serializers.URLField(required=False)
@@ -155,13 +154,7 @@ class ProfileLikeSerializer(serializers.ModelSerializer):
         model = ProfileLike
         fields = '__all__'
 
-###########
-# Discover card Profile Serializer
-###########
 
-from rest_framework import serializers
-from .models import DefaultUser
-from datetime import date
 
 class DiscoverProfileSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -212,3 +205,54 @@ class DiscoverProfileSerializer(serializers.ModelSerializer):
     def get_distance(self, obj):
         # For now just a placeholder — later you can add distance calculation from request.user
         return "5 km"
+
+
+
+class UserProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DefaultUser
+        fields = [
+            "first_name",
+            "last_name",
+            "birth_date",
+            "gender",
+            "sexual_orientation",
+            "bio",
+            "interests",
+            "specs",
+            "looking_for",
+            "favorite_thing",
+            "causes",
+            "boundary",
+            "latitude",
+            "longitude",
+        ]
+
+    def validate(self, data):
+        gender = data.get("gender")
+        if gender and gender not in ["male", "female"]:
+            raise serializers.ValidationError({"gender": "Gender must be 'male' or 'female'."})
+
+
+        return data
+
+
+class UserPersonalInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DefaultUser
+        fields = [
+            "first_name",
+            "last_name",
+            "birth_date",
+            "gender",
+            "sexual_orientation",
+            "bio",
+        ]
+
+    def validate(self, data):
+        gender = data.get("gender")
+        if gender and gender not in ["male", "female"]:
+            raise serializers.ValidationError({"gender": "Gender must be 'male' or 'female'."})
+
+
+        return data

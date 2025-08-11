@@ -24,25 +24,27 @@ const MainLogin = () => {
         password,
       });
 
-      const { access, refresh, is_staff } = response.data;
+      const { access, refresh, is_staff, is_complete } = response.data;
 
       // Store tokens in localStorage
       localStorage.setItem("accessToken", access);
       localStorage.setItem("refreshToken", refresh);
       if (is_staff) {
         router.push("/admin");
+      } else if (is_complete) {
+        router.push("/discover");
       } else {
-        router.push("/");
+        router.push("/complete-profile");
       }
     } catch (err: any) {
-      let message = "An unexpected error occurred. Please try again.";
+      let message = "An unexpected error occurred. Please try again." + err;
       if (err.response?.status === 401) {
         message = "Invalid username or password.";
       } else if (err.response?.status === 429) {
         message = "Too many login attempts. Please try again later.";
       }
 
-      setError(message); 
+      setError(message);
     } finally {
       setLoading(false);
     }

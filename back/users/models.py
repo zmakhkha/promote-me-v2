@@ -138,6 +138,45 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
         """Example fame rating formula: likes + (views / 10) + points."""
         return self.likes + (self.views / 10) + self.points
 
+    def is_profile_complete(self) -> bool:
+        required_fields = [
+            'first_name',
+            'last_name',
+            'birth_date',
+            'gender',
+            'sexual_orientation',
+            'bio',
+            'interests',
+            'specs',
+            'looking_for',
+            'favorite_thing',
+            'causes',
+            'boundary',
+            'latitude',
+            'longitude',
+            'image_url',
+        ]
+
+        for field in required_fields:
+            value = getattr(self, field, None)
+
+            # Special check for JSON fields and image_url
+            if field in ['interests', 'specs', 'looking_for', 'causes']:
+                # They should be a non-empty list or dict
+                if not value:
+                    return False
+                if isinstance(value, (list, dict)) and len(value) == 0:
+                    return False
+            elif field == 'image_url':
+                # Check if image is default or empty
+                if not value or str(value) == 'images/default.png':
+                    return False
+            else:
+                if value in [None, '', []]:
+                    return False
+
+        return True
+
 
 # ==========================
 # Multiple Pictures Model
@@ -149,6 +188,35 @@ class UserPicture(models.Model):
 
     def __str__(self):
         return f"{self.user.username} Picture"
+    
+# from django.core.exceptions import ValidationError
+
+# class UserPicture(models.Model):
+#     user = models.ForeignKey(DefaultUser, related_name='pictures', on_delete=models.CASCADE)
+#     image = models.ImageField(upload_to='user_pictures')
+#     is_profile_picture = models.BooleanField(default=False)
+
+#     def __str__(self):
+#         return f"{self.user.username} Picture"
+
+#     def clean(self):
+#         # Enforce max 5 pictures per user
+#         if not self.pk and self.user.pictures.count() >= 5:
+#             raise ValidationError("You cannot upload more than 5 pictures.")
+
+#         # Ensure only one profile picture per user
+#         if self.is_profile_picture:
+#             existing_profile_pics = UserPicture.objects.filter(user=self.user, is_profile_picture=True)
+#             # Exclude self if updating
+#             if self.pk:
+#                 existing_profile_pics = existing_profile_pics.exclude(pk=self.pk)
+#             if existing_profile_pics.exists():
+#                 raise ValidationError("There can be only one profile picture.")
+
+#     def save(self, *args, **kwargs):
+#         self.full_clean()  # Calls clean() and runs validation
+#         super().save(*args, **kwargs)
+
 
     
 class OTPVerification(models.Model):

@@ -30,6 +30,7 @@ from .serializers import (
     UserDetailSerializer,
     UserListSerializer,
     UserProfileSerializer,
+    UserProfileUpdateSerializer,
     UserSerializer,
     UserSettingsSerializer,
 )
@@ -68,7 +69,8 @@ class SignInAPIView(APIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
-                'is_staff' : user.is_staff
+                'is_staff' : user.is_staff,
+                'is_complete': user.is_profile_complete(),
             }, status=status.HTTP_200_OK)
         else:
             cache.set(cache_key, attempts + 1, timeout=300)
@@ -449,3 +451,30 @@ class DiscoverProfilesAPIView(APIView):
         users = DefaultUser.objects.filter(is_discoverable=True).order_by("-id")[:20]
         serializer = DiscoverProfileSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserProfileUpdateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        user = request.user
+        serializer = UserProfileUpdateSerializer(user, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserPersonalInfo(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data)
+    def put(self, request):
+        user = request.user
+        serializer = UserProfileUpdateSerializer(user, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -5,7 +5,7 @@ from .views import (DiscoverProfilesAPIView, SendOTPView,
  SignInAPIView,
  SignUpAPIView,
  UserListView,
- UserDetailView,
+ UserDetailView, UserPersonalInfo, UserProfileUpdateAPIView,
  UserProfileView,
  UserSettingsView,
  AdminUserListView,
@@ -53,4 +53,7 @@ urlpatterns = [
 	
     # Discover card
 	path("discover/", DiscoverProfilesAPIView.as_view(), name="discover_profiles"),
+	
+    # Complete profile 
+    path('profile/complete/personal-info', UserPersonalInfo.as_view(), name='profile-complete'),
 ]
