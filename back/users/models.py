@@ -14,10 +14,11 @@ import random
 from .validators import max_size_validator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-from datetime import date
-from django.db import models
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.db import models
 from datetime import date
+
 
 # ==========================
 # Custom User Manager
@@ -115,6 +116,14 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
+    # images
+    image_profile = models.ImageField(upload_to='images', validators=[max_size_validator], default='images/default.png')
+    image_2 = models.ImageField(upload_to='images', validators=[max_size_validator], default='images/default.png')
+    image_3 = models.ImageField(upload_to='images', validators=[max_size_validator], default='images/default.png')
+    image_4 = models.ImageField(upload_to='images', validators=[max_size_validator], default='images/default.png')
+    image_5 = models.ImageField(upload_to='images', validators=[max_size_validator], default='images/default.png')
+
+
     objects = DefaultUserManager()
 
     USERNAME_FIELD = 'username'
@@ -176,46 +185,8 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
                     return False
 
         return True
-
-
-# ==========================
-# Multiple Pictures Model
-# ==========================
-class UserPicture(models.Model):
-    user = models.ForeignKey(DefaultUser, related_name='pictures', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='user_pictures')
-    is_profile_picture = models.BooleanField(default=False)
-
-    def __str__(self):
-        return f"{self.user.username} Picture"
     
-# from django.core.exceptions import ValidationError
-
-# class UserPicture(models.Model):
-#     user = models.ForeignKey(DefaultUser, related_name='pictures', on_delete=models.CASCADE)
-#     image = models.ImageField(upload_to='user_pictures')
-#     is_profile_picture = models.BooleanField(default=False)
-
-#     def __str__(self):
-#         return f"{self.user.username} Picture"
-
-#     def clean(self):
-#         # Enforce max 5 pictures per user
-#         if not self.pk and self.user.pictures.count() >= 5:
-#             raise ValidationError("You cannot upload more than 5 pictures.")
-
-#         # Ensure only one profile picture per user
-#         if self.is_profile_picture:
-#             existing_profile_pics = UserPicture.objects.filter(user=self.user, is_profile_picture=True)
-#             # Exclude self if updating
-#             if self.pk:
-#                 existing_profile_pics = existing_profile_pics.exclude(pk=self.pk)
-#             if existing_profile_pics.exists():
-#                 raise ValidationError("There can be only one profile picture.")
-
-#     def save(self, *args, **kwargs):
-#         self.full_clean()  # Calls clean() and runs validation
-#         super().save(*args, **kwargs)
+    
 
 
     

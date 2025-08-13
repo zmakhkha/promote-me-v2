@@ -130,6 +130,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
         ]
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    # image_url = serializers.URLField(required=False)
+    class Meta:
+        model = DefaultUser
+        # fields = [ 'first_name', 'last_name', 'bio', 'snapchat', 'tiktok', 'instagram']
+        fields = [
+            'id', 'username', 'first_name', 'last_name',
+            'age', 'gender', 'location', 'bio', 'interests', 'status', 'image_url', 'image_link',
+            'snapchat', 'instagram', 'tiktok', 'points', 'likes', 'views'
+        ]
+
 class AdminModifyUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DefaultUser
@@ -214,27 +225,27 @@ class UserProfileUpdateSerializer(serializers.ModelSerializer):
         fields = [
             "first_name",
             "last_name",
-            "birth_date",
             "gender",
-            "sexual_orientation",
+            "birth_date",
             "bio",
             "interests",
-            "specs",
-            "looking_for",
-            "favorite_thing",
-            "causes",
-            "boundary",
+            "sexual_orientation",
             "latitude",
             "longitude",
+            "image_profile",
+            "image_2",
+            "image_3",
+            "image_4",
+            "image_5"
         ]
 
-    def validate(self, data):
-        gender = data.get("gender")
-        if gender and gender not in ["male", "female"]:
-            raise serializers.ValidationError({"gender": "Gender must be 'male' or 'female'."})
+    # def validate(self, data):
+    #     gender = data.get("gender")
+    #     if gender and gender not in ["male", "female"]:
+    #         raise serializers.ValidationError({"gender": "Gender must be 'male' or 'female'."})
 
 
-        return data
+    #     return data
 
 
 class UserPersonalInfoSerializer(serializers.ModelSerializer):

@@ -452,24 +452,12 @@ class DiscoverProfilesAPIView(APIView):
         serializer = DiscoverProfileSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class UserProfileUpdateAPIView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def put(self, request):
-        user = request.user
-        serializer = UserProfileUpdateSerializer(user, data=request.data, partial=False)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 class UserPersonalInfo(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
-        serializer = UserProfileSerializer(user)
+        serializer = UserProfileUpdateSerializer(user)
         return Response(serializer.data)
     def put(self, request):
         user = request.user
