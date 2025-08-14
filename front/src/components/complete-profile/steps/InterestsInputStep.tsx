@@ -20,10 +20,11 @@ const InterestsInputStep = ({ formData, setFormData }: Props) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleAddTag = () => {
-    if (inputValue && !formData.interests.includes(inputValue)) {
+    const trimmed = inputValue.trim();
+    if (trimmed && !formData.interests.includes(trimmed)) {
       setFormData((prev) => ({
         ...prev,
-        interests: [...prev.interests, inputValue],
+        interests: [...prev.interests, trimmed],
       }));
       setInputValue("");
     }
@@ -36,13 +37,26 @@ const InterestsInputStep = ({ formData, setFormData }: Props) => {
     }));
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleAddTag();
+    }
+  };
+
+  const handleBlur = () => {
+    // Add tag on input blur
+    handleAddTag();
+  };
+
   return (
     <FormControl>
       <FormLabel>Interests</FormLabel>
       <Input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        onKeyPress={(e) => (e.key === "Enter" ? handleAddTag() : null)}
+        onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
         placeholder="Add interest (e.g. #vegan)"
       />
       <Wrap spacing={2} mt={2}>

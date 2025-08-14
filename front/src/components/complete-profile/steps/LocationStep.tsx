@@ -7,15 +7,13 @@ import {
   HStack, 
   Text, 
   useToast,
-  Spinner,
+  // Spinner,
   Box,
   Icon,
   useColorModeValue
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { FormDataType } from "../CompleteProfileModal";
-
-// You'll need to install react-icons: npm install react-icons
 import { MdLocationOn, MdEdit } from "react-icons/md";
 
 interface Props {
@@ -38,7 +36,7 @@ const LocationStep = ({ formData, setFormData }: Props) => {
   const bgColor = useColorModeValue("gray.50", "gray.700");
   const borderColor = useColorModeValue("gray.200", "gray.600");
 
-  const handleAutoLocation = async () => {
+  const handleAutoLocation = () => {
     if (!navigator.geolocation) {
       toast({
         title: "Location Not Supported",
@@ -47,84 +45,54 @@ const LocationStep = ({ formData, setFormData }: Props) => {
         duration: 3000,
         isClosable: true,
       });
+      setShowManualInput(true);
       return;
     }
 
     setIsDetecting(true);
 
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         const { latitude, longitude } = position.coords;
-        
-        try {
-          // Optional: Reverse geocoding to get address from coordinates
-          // You can use services like Google Maps, OpenStreetMap, etc.
-          const locationData: LocationData = {
-            latitude,
-            longitude,
-            address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`, // Fallback to coordinates
-          };
 
-          setCurrentLocation(locationData);
-          setFormData((prev) => ({
-            ...prev,
-            location: {
-              latitude,
-              longitude,
-              address: locationData.address,
-            },
-          }));
+        const locationData: LocationData = {
+          latitude,
+          longitude,
+          address: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+        };
 
-          toast({
-            title: "Location Detected",
-            description: "Your current location has been detected successfully!",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          });
+        setCurrentLocation(locationData);
+        setFormData((prev) => ({
+          ...prev,
+          latitude,
+          longitude,
+          location: locationData.address,
+        }));
 
-          setShowManualInput(false);
-        } catch (error) {
-          toast({
-            title: "Error",
-            description: "Failed to process location data.",
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          });
-        } finally {
-          setIsDetecting(false);
-        }
+        toast({
+          title: "Location Detected",
+          description: "Your current location has been detected successfully!",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+
+        setShowManualInput(false);
+        setIsDetecting(false);
       },
       (error) => {
         setIsDetecting(false);
-        let errorMessage = "Failed to detect location.";
-        
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            errorMessage = "Location access denied. Please enable location permissions.";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            errorMessage = "Location information is unavailable.";
-            break;
-          case error.TIMEOUT:
-            errorMessage = "Location request timed out.";
-            break;
-        }
-
         toast({
           title: "Location Error",
-          description: errorMessage,
-          status: "error",
+          description:
+            "Failed to detect location. Please enter your approximate location manually.",
+          status: "warning",
           duration: 5000,
           isClosable: true,
         });
+        setShowManualInput(true);
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 
@@ -136,10 +104,9 @@ const LocationStep = ({ formData, setFormData }: Props) => {
   const handleAddressChange = (address: string) => {
     setFormData((prev) => ({
       ...prev,
-      location: {
-        ...prev.location,
-        address,
-      },
+      location: address,
+      latitude: null,
+      longitude: null,
     }));
   };
 
@@ -148,7 +115,9 @@ const LocationStep = ({ formData, setFormData }: Props) => {
     setShowManualInput(false);
     setFormData((prev) => ({
       ...prev,
-      location: undefined,
+      latitude: null,
+      longitude: null,
+      location: "",
     }));
   };
 
@@ -167,8 +136,6 @@ const LocationStep = ({ formData, setFormData }: Props) => {
             onClick={handleAutoLocation}
             isLoading={isDetecting}
             loadingText="Detecting Location..."
-            spinner={<Spinner size="sm" />}
-            _hover={{ transform: "translateY(-1px)" }}
           >
             Use My Current Location
           </Button>
@@ -182,7 +149,6 @@ const LocationStep = ({ formData, setFormData }: Props) => {
             variant="outline"
             size="lg"
             onClick={handleManualAddress}
-            _hover={{ transform: "translateY(-1px)" }}
           >
             Enter My Address Manually
           </Button>
@@ -204,7 +170,6 @@ const LocationStep = ({ formData, setFormData }: Props) => {
                 Location Detected
               </Text>
             </HStack>
-            
             <VStack spacing={1} align="start" pl={6}>
               <Text fontSize="sm">
                 <strong>Latitude:</strong> {currentLocation.latitude.toFixed(6)}
@@ -218,7 +183,6 @@ const LocationStep = ({ formData, setFormData }: Props) => {
                 </Text>
               )}
             </VStack>
-
             <HStack spacing={2} pt={2}>
               <Button size="sm" variant="outline" onClick={resetLocation}>
                 Change Location
@@ -234,18 +198,14 @@ const LocationStep = ({ formData, setFormData }: Props) => {
       {showManualInput && (
         <VStack spacing={3} align="stretch">
           <Input
-            placeholder="Enter your address (City, Country)"
+            placeholder="Enter your approximate location (City, Country)"
             value={formData.location || ""}
             onChange={(e) => handleAddressChange(e.target.value)}
             size="lg"
           />
           
           <HStack spacing={2}>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={resetLocation}
-            >
+            <Button size="sm" variant="outline" onClick={resetLocation}>
               Back to Options
             </Button>
             <Button

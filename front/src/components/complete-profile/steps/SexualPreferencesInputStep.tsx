@@ -10,20 +10,18 @@ const SexualPreferencesInputStep = ({ formData, setFormData }: Props) => (
   <FormControl>
     <FormLabel>Sexual Preferences</FormLabel>
     <Select
-      value={formData.sexualPreferences}
+      value={formData.sexual_orientation}
       onChange={(e) =>
         setFormData((prev) => ({
           ...prev,
-          sexualPreferences: e.target.value,
+          sexual_orientation: e.target.value,
         }))
       }
       placeholder="Select preferences"
     >
-      <option value="heterosexual">Heterosexual</option>
-      <option value="homosexual">Homosexual</option>
-      <option value="bisexual">Bisexual</option>
-      <option value="pansexual">Pansexual</option>
-      <option value="asexual">Asexual</option>
+      <option value="male">interested in Males</option>
+      <option value="female">interested in Females</option>
+      <option value="bisexual">interested in Both</option>
     </Select>
   </FormControl>
 );

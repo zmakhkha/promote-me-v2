@@ -18,18 +18,19 @@ import { useState, useEffect } from "react";
 // Step Components
 import NameInputStep from "./steps/NameInputStep";
 import GenderInputStep from "./steps/GenderInputStep";
-import BiographyInputStep from "./steps/BiographyInputStep";
 import InterestsInputStep from "./steps/InterestsInputStep";
 import ProfilePicturesInputStep from "./steps/ProfilePicturesInputStep";
 import SexualPreferencesInputStep from "./steps/SexualPreferencesInputStep";
 import api from "@/services/axios/api";
+import LocationStep from "./steps/LocationStep";
+import BiographyInputStep from "./steps/BiographyInputStep";
 
 // Type for form data
 export type FormDataType = {
   first_name: string;
   last_name: string;
   gender: string;
-  biography: string;
+  bio: string;
   longitude: number | null;
   latitude: number | null;
   location: string;
@@ -39,7 +40,7 @@ export type FormDataType = {
   image_3: string | File;
   image_4: string | File;
   image_5: string | File;
-  sexualPreferences: string;
+  sexual_orientation: string;
 };
 
 interface ProfileModalProps {
@@ -57,9 +58,9 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
     first_name: "",
     last_name: "",
     gender: "",
-    biography: "",
+    bio: "",
     interests: [],
-    sexualPreferences: "",
+    sexual_orientation: "",
     image_profile: "",
     image_2: "",
     image_3: "",
@@ -78,21 +79,22 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
       try {
         setIsLoading(true);
         setLoadError(null);
-        
+
         // Use GET method to fetch existing data from the same endpoint
         const response = await api.get("/profile/complete/personal-info");
-        
+
         if (response.data) {
           const profileData = response.data;
-          
+
           setFormData({
             first_name: profileData.first_name || "",
             last_name: profileData.last_name || "",
             gender: profileData.gender || "",
-            biography: profileData.biography || "",
+            bio: profileData.bio || "",
             interests: profileData.interests || [],
-            sexualPreferences: profileData.sexual_preferences || profileData.sexualPreferences || "",
-            image_profile: profileData.image_profile || "/media/images/default.png",
+            sexual_orientation: profileData.sexual_orientation || "",
+            image_profile:
+              profileData.image_profile || "/media/images/default.png",
             image_2: profileData.image_2 || "/media/images/default.png",
             image_3: profileData.image_3 || "/media/images/default.png",
             image_4: profileData.image_4 || "/media/images/default.png",
@@ -105,7 +107,7 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
       } catch (error: any) {
         console.error("Failed to fetch profile data:", error);
         setLoadError("Failed to load profile data. Please try again.");
-        
+
         // If it's a 404 or similar, we can still proceed with empty form
         if (error.response?.status === 404) {
           console.log("No existing profile found, starting with empty form");
@@ -129,22 +131,19 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
   }, [toast]);
 
   const handleNext = async () => {
-    if (step < 6) {
+    if (step < 7) {
       setStep(step + 1);
     } else {
       try {
         setIsSubmitting(true);
         const form = new FormData();
-        
+
         form.append("first_name", formData.first_name);
         form.append("last_name", formData.last_name);
         form.append("gender", formData.gender);
-        form.append("biography", formData.biography);
-        
-        formData.interests.forEach((interest, i) =>
-          form.append(`interests[${i}]`, interest)
-        );
-        
+        form.append("bio", formData.bio);
+        form.append("interests", JSON.stringify(formData.interests));
+
         // Append location data
         if (formData.latitude !== null) {
           form.append("latitude", formData.latitude.toString());
@@ -155,7 +154,7 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
         if (formData.location) {
           form.append("location", formData.location);
         }
-        
+
         // Append image files if they have been uploaded
         if (formData.image_profile instanceof File) {
           form.append("image_profile", formData.image_profile);
@@ -173,11 +172,11 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
           form.append("image_5", formData.image_5);
         }
 
-        form.append("sexual_preferences", formData.sexualPreferences);
+        form.append("sexual_orientation", formData.sexual_orientation);
 
         await api.put("/profile/complete/personal-info", form, {
           headers: {
-            'Content-Type': 'multipart/form-data',
+            "Content-Type": "multipart/form-data",
           },
         });
 
@@ -303,6 +302,9 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
       );
       break;
     case 6:
+      content = <LocationStep formData={formData} setFormData={setFormData} />;
+      break;
+    case 7:
       content = (
         <ProfilePicturesInputStep
           formData={formData}
@@ -334,16 +336,16 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
         </ModalBody>
 
         <ModalFooter>
-          <Button 
-            variant="ghost" 
-            onClick={handlePrev} 
+          <Button
+            variant="ghost"
+            onClick={handlePrev}
             isDisabled={step === 1 || isSubmitting}
           >
             Prev
           </Button>
-          <Button 
-            colorScheme="blue" 
-            onClick={handleNext} 
+          <Button
+            colorScheme="blue"
+            onClick={handleNext}
             ml={3}
             isLoading={isSubmitting}
             loadingText={step === 6 ? "Submitting..." : "Next"}

@@ -10,9 +10,9 @@ const BiographyInputStep = ({ formData, setFormData }: Props) => (
   <FormControl>
     <FormLabel>Biography</FormLabel>
     <Textarea
-      value={formData.biography}
+      value={formData.bio}
       onChange={(e) =>
-        setFormData((prev) => ({ ...prev, biography: e.target.value }))
+        setFormData((prev) => ({ ...prev, bio: e.target.value }))
       }
       placeholder="Tell us about yourself..."
     />
