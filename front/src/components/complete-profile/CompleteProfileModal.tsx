@@ -154,7 +154,6 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
         if (formData.location) {
           form.append("location", formData.location);
         }
-
         // Append image files if they have been uploaded
         if (formData.image_profile instanceof File) {
           form.append("image_profile", formData.image_profile);

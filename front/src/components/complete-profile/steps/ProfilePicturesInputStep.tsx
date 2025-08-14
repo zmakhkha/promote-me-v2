@@ -18,6 +18,7 @@ import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useRef } from "react";
 import { FormDataType } from "../CompleteProfileModal";
 import getCorrectImage from "@/services/axios/getCorrectImage";
+import api from "@/services/axios/api";
 
 interface Props {
   formData: FormDataType;
@@ -62,9 +63,16 @@ const ProfilePicturesInputStep = ({ formData, setFormData }: Props) => {
     fileInputRefs.current[index]?.click();
   };
 
-  const removeImage = (key: keyof FormDataType) => {
-    // empty string signals "clear" to backend
-    setFormData((prev) => ({ ...prev, [key]: "" }));
+  const removeImage = async (key: keyof FormDataType) => {
+    try{
+      await api.delete("/profile/delete-image",{
+        data: {image_field: key},
+      })
+    
+      setFormData((prev) => ({ ...prev, [key]: "" }));
+    } catch (err){
+      console.error("Error deleting image:", err);
+    }
   };
 
   const hasImage = (val: FormDataType[keyof FormDataType]) => {
