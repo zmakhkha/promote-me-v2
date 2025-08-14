@@ -3,7 +3,7 @@
 import CompleteProfileModal from "@/components/complete-profile/CompleteProfileModal";
 
 const CompleteProfilePage = () => {
-  return <CompleteProfileModal title="Complete Your Profile" />;
+  return <CompleteProfileModal />;
 };
 
 export default CompleteProfilePage;

@@ -1,9 +1,9 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .views import (DiscoverProfilesAPIView, SendOTPView,
+from .views import (DiscoverProfilesAPIView, DiscoverUserListView, SendOTPView,
  SignInAPIView,
- SignUpAPIView,
+ SignUpAPIView, UserImageDelete,
  UserListView,
  UserDetailView, UserPersonalInfo,
  UserProfileView,
@@ -52,8 +52,9 @@ urlpatterns = [
     path('profile/like-status/<str:username>/', CheckLikeStatus.as_view(), name='like-status'),
 	
     # Discover card
-	path("discover/", DiscoverProfilesAPIView.as_view(), name="discover_profiles"),
+	path("discover/", DiscoverUserListView.as_view(), name="discover_profiles"),
 	
     # Complete profile 
     path('profile/complete/personal-info', UserPersonalInfo.as_view(), name='profile-complete'),
+    path('profile/delete-image', UserImageDelete.as_view(), name='delete-image'),
 ]

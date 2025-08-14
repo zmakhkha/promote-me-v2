@@ -108,42 +108,6 @@ class SignUpAPIView(APIView):
         # Return serializer errors as response
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class UserListView(generics.ListAPIView):
-#     permission_classes = [AllowAny]
-#     serializer_class = UserListSerializer
-
-#     def get_queryset(self):
-#         queryset = DefaultUser.objects.all()
-#         # queryset = queryset.exclude(id = self.request.user.id)
-
-#         # Get query parameters
-#         age_from = self.request.query_params.get('age_from')
-#         age_to = self.request.query_params.get('age_to')
-#         gender = self.request.query_params.get('gender')
-
-#         # Filter by age range
-#         current_year = datetime.now().year
-#         if age_from or age_to:
-#             try:
-#                 if age_from:
-#                     birth_year_to = current_year - int(age_from)
-#                     queryset = queryset.filter(birth_date__year__lte=birth_year_to)
-#                 if age_to:
-#                     birth_year_from = current_year - int(age_to)
-#                     queryset = queryset.filter(birth_date__year__gte=birth_year_from)
-#             except ValueError:
-#                 raise ValidationError("Age parameters must be valid integers.")
-
-#         # Filter by gender
-#         if gender:
-#             valid_genders = ['male', 'female', 'other']
-#             if gender not in valid_genders:
-#                 raise ValidationError(f"Gender must be one of {valid_genders}.")
-#             queryset = queryset.filter(gender=gender)
-
-#         return queryset
-
-
 class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = UserListSerializer
@@ -466,3 +430,180 @@ class UserPersonalInfo(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserImageDelete(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        user = request.user
+        image_field = request.data.get('image_field')
+
+        allowed_fields = [
+            'image_profile',
+            'image_2',
+            'image_3',
+            'image_4',
+            'image_5',
+        ]
+        if image_field not in allowed_fields:
+            return Response (
+                {'error': 'Invalid image field.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        setattr(user, image_field, '')
+        user.save()
+        return Response(
+                {"message": f"{image_field} deleted successfully."},
+                status= status.HTTP_200_OK
+            
+        )
+
+
+from rest_framework import generics, permissions
+from django.db.models import Q, Count
+from .models import DefaultUser
+from .serializers import DiscoverUserSerializer
+from rest_framework import serializers
+from .models import DefaultUser
+from datetime import date
+from math import radians, cos, sin, asin, sqrt
+
+def haversine(lon1, lat1, lon2, lat2):
+    # Calculate the great circle distance between two points in km
+    # from https://stackoverflow.com/a/4913653
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    km = 6371 * c
+    return km
+
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from .serializers import DiscoverUserSerializer
+from .models import DefaultUser
+from django.db.models import Q
+from datetime import date
+
+class DiscoverUserListView(generics.ListAPIView):
+    serializer_class = DiscoverUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # Exclude self and admins
+        qs = DefaultUser.objects.filter(is_active=True, is_staff=False).exclude(id=user.id)
+
+        # Sexual orientation matching logic
+        user_orientation = user.sexual_orientation or "bisexual"
+        user_gender = user.gender
+
+        # Build gender filter based on orientation
+        if user_orientation == "bisexual":
+            gender_filter = Q()
+        elif user_orientation == "male":
+            gender_filter = Q(gender="male")
+        elif user_orientation == "female":
+            gender_filter = Q(gender="female")
+        else:
+            gender_filter = Q()
+
+        # Users to show must be interested in user's gender (handle bisexuality of other users)
+        interested_in_user_gender = Q(
+            sexual_orientation="bisexual") | Q(sexual_orientation=user_gender)
+
+        qs = qs.filter(gender_filter).filter(interested_in_user_gender)
+        return qs
+
+    def list(self, request, *args, **kwargs):
+        # Override to add sorting, filtering, and common tags count
+        queryset = self.get_queryset()
+        user = request.user
+        user_interests = set(user.interests or [])
+
+        # Fetch all candidates
+        candidates = list(queryset)
+
+        # Calculate common tags count and distances
+        results = []
+        for candidate in candidates:
+            candidate_interests = set(candidate.interests or [])
+            common_tags = len(user_interests.intersection(candidate_interests))
+
+            dist = None
+            if user.latitude and user.longitude and candidate.latitude and candidate.longitude:
+                dist = haversine(user.longitude, user.latitude, candidate.longitude, candidate.latitude)
+            else:
+                dist = 9999  # far if no location
+
+            results.append({
+                "user": candidate,
+                "common_tags": common_tags,
+                "distance": dist,
+                "age": candidate.age or 0,
+                "fame_rating": candidate.fame_rating,
+            })
+
+        # Apply filtering (example filters from query params)
+        age_min = request.query_params.get("age_min")
+        age_max = request.query_params.get("age_max")
+        max_distance = request.query_params.get("max_distance")
+        min_fame = request.query_params.get("min_fame")
+        min_common_tags = request.query_params.get("min_common_tags")
+
+        if age_min:
+            results = [r for r in results if r["age"] >= int(age_min)]
+        if age_max:
+            results = [r for r in results if r["age"] <= int(age_max)]
+        if max_distance:
+            results = [r for r in results if r["distance"] <= float(max_distance)]
+        if min_fame:
+            results = [r for r in results if r["fame_rating"] >= float(min_fame)]
+        if min_common_tags:
+            results = [r for r in results if r["common_tags"] >= int(min_common_tags)]
+
+        # Sorting param
+        sort_by = request.query_params.get("sort_by", "distance")  # default sort by distance
+        reverse = False
+
+        if sort_by == "age":
+            key = lambda x: x["age"]
+        elif sort_by == "fame_rating":
+            key = lambda x: x["fame_rating"]
+            reverse = True
+        elif sort_by == "common_tags":
+            key = lambda x: x["common_tags"]
+            reverse = True
+        else:  # distance or default
+            key = lambda x: x["distance"]
+
+        results.sort(key=key, reverse=reverse)
+
+        # Paginate manually or return full list for now
+        page_size = 20
+        page = int(request.query_params.get("page", 1))
+        start = (page - 1) * page_size
+        end = start + page_size
+        paged_results = results[start:end]
+
+        # Serialize only the user objects
+        serializer = self.get_serializer(
+            [r["user"] for r in paged_results],
+            many=True,
+            context={"current_user": user}
+        )
+
+        # Add common_tags and distance to each serialized item
+        data = serializer.data
+        for idx, item in enumerate(data):
+            item["common_tags"] = paged_results[idx]["common_tags"]
+            item["distance"] = round(paged_results[idx]["distance"], 1) if paged_results[idx]["distance"] is not None else None
+
+        return Response({
+            "results": data,
+            "page": page,
+            "page_size": page_size,
+            "total": len(results),
+        })

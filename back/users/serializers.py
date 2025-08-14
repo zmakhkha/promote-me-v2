@@ -267,3 +267,72 @@ class UserPersonalInfoSerializer(serializers.ModelSerializer):
 
 
         return data
+
+from rest_framework import serializers
+from .models import DefaultUser
+from datetime import date
+from math import radians, cos, sin, asin, sqrt
+from rest_framework import serializers
+from .models import DefaultUser
+from datetime import date
+import math
+
+def haversine(lon1, lat1, lon2, lat2):
+    # Radius of the Earth in kilometers
+    R = 6371.0
+
+    # Convert degrees to radians
+    lon1, lat1, lon2, lat2 = map(math.radians, [lon1, lat1, lon2, lat2])
+
+    # Differences in coordinates
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+
+    # Haversine formula
+    a = math.sin(dlat / 2)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2)**2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+
+    # Distance in kilometers
+    distance = R * c
+    return distance
+
+
+
+class DiscoverUserSerializer(serializers.ModelSerializer):
+    age = serializers.SerializerMethodField()
+    distance = serializers.SerializerMethodField()
+    common_tags = serializers.IntegerField(read_only=True)
+    
+    class Meta:
+        model = DefaultUser
+        fields = [
+            "id",
+            "first_name",
+            "last_name",
+            "is_verified",
+            "age",
+            "bio",
+            "interests",
+            "location",
+            "latitude",
+            "longitude",
+            "points",
+            "image_profile",
+            "distance",
+            "common_tags",  # Add common_tags here
+        ]
+
+    def get_age(self, obj):
+        if obj.birth_date:
+            today = date.today()
+            return today.year - obj.birth_date.year - (
+                (today.month, today.day) < (obj.birth_date.month, obj.birth_date.day)
+            )
+        return None
+
+    def get_distance(self, obj):
+        current_user = self.context.get("current_user")
+        if not current_user or not obj.latitude or not obj.longitude or not current_user.latitude or not current_user.longitude:
+            return None
+        # Assuming haversine is already implemented
+        return haversine(current_user.longitude, current_user.latitude, obj.longitude, obj.latitude)

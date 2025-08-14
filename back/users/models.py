@@ -156,28 +156,15 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
             'sexual_orientation',
             'bio',
             'interests',
-            'specs',
-            'looking_for',
-            'favorite_thing',
-            'causes',
-            'boundary',
             'latitude',
             'longitude',
-            'image_url',
+            'image_profile',
         ]
 
         for field in required_fields:
             value = getattr(self, field, None)
 
-            # Special check for JSON fields and image_url
-            if field in ['interests', 'specs', 'looking_for', 'causes']:
-                # They should be a non-empty list or dict
-                if not value:
-                    return False
-                if isinstance(value, (list, dict)) and len(value) == 0:
-                    return False
-            elif field == 'image_url':
-                # Check if image is default or empty
+            if field == "image_profile":
                 if not value or str(value) == 'images/default.png':
                     return False
             else:
@@ -185,8 +172,9 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
                     return False
 
         return True
-    
-    
+
+        
+        
 
 
     

@@ -27,22 +27,20 @@ import defaultImage from "@images/no-avatar.png";
 import api from "@/services/axios/api";
 import getCorrectImage from "@/services/axios/getCorrectImage";
 
-
 type Profile = {
   id: number;
-  name: string;
-  age: number | null;
+  first_name: string;
+  last_name: string;
   is_verified: boolean;
+  age: number;
   bio: string;
-  specs: string[];
-  looking_for: string[];
   interests: string[];
-  favoriteThing: string | null;
-  causes: string[];
-  boundary: string | null;
   location: string;
-  distance: string;
-  image_url: string | null;
+  distance: number;
+  image_profile: string;
+  points: number;
+  latitude: number;
+  longitude: number;
 };
 
 const MainDiscoverPage = () => {
@@ -58,11 +56,11 @@ const MainDiscoverPage = () => {
     const fetchProfiles = async () => {
       try {
         setLoading(true);
-        const response = await api.get<Profile[]>("discover/");
-        setProfiles(response.data);
+        const response = await api.get<Profile[]>("/discover/");
+        setProfiles(response.data.results); // Assuming the results array is part of the response
         setIndex(0);
       } catch (err) {
-        setError("Failed to load profiles: "+ err);
+        setError("Failed to load profiles: " + err);
       } finally {
         setLoading(false);
       }
@@ -75,17 +73,17 @@ const MainDiscoverPage = () => {
   };
 
   const handleLike = () => {
-    console.log("Liked", profiles[index]?.name);
+    console.log("Liked", profiles[index]?.first_name);
     handleNext();
   };
 
   const handleSkip = () => {
-    console.log("Skipped", profiles[index]?.name);
+    console.log("Skipped", profiles[index]?.first_name);
     handleNext();
   };
 
   const handleChat = () => {
-    console.log("Chat with", profiles[index]?.name);
+    console.log("Chat with", profiles[index]?.first_name);
   };
 
   if (loading) {
@@ -123,9 +121,10 @@ const MainDiscoverPage = () => {
         boxShadow="xl"
         borderColor={borderColor}
         borderWidth="1px"
-        width={{ base: "100%", sm: "90%", md: "500px", lg: "600px" }}
-        maxHeight="85vh"
-        overflowY="auto"
+        width={{ base: "90%", md: "80%" }}
+        height={{ base: "90%", md: "80%" }}
+        // maxHeight="85vh"
+        overflow="hidden"
         position="relative"
       >
         {/* Hide / Report Icons */}
@@ -150,127 +149,121 @@ const MainDiscoverPage = () => {
           />
         </HStack>
 
-        <VStack spacing={4} align="center" pt={10} pb={6}>
+        <Flex
+          direction={{ base: "column", md: "row" }} // Image on top in small, left in large
+          align="center"
+          gap={4}
+        >
           {/* Profile Image */}
-          <Img
-            src={profile.image_url || defaultImage.src || getCorrectImage(profile.image_url)}
-            alt={`${profile.name}'s profile`}
-            borderRadius="xl"
-            objectFit="cover"
-            maxH="65vh"
-            w="full"
-          />
-          <Text fontSize="sm" color="green.500" fontWeight="semibold">
-            {profile.is_verified ? "✔ Profile Verified" : ""}
-          </Text>
-          <Text fontSize="2xl" fontWeight="bold">
-            {profile.name}, {profile.age}
-          </Text>
-
-          {/* Interaction Buttons under image */}
-          <HStack spacing={4}>
-            <IconButton
-              aria-label="Skip"
-              icon={<FaTimes />}
-              size="md"
-              onClick={handleSkip}
+          <Box
+            flexShrink={0}
+            w={{ base: "100%", md: "40%" }}
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Img
+              src={getCorrectImage(profile.image_profile) || defaultImage.src}
+              alt={`${profile.first_name}'s profile`}
+              borderRadius="xl"
+              objectFit="cover"
+              maxH="65vh"
+              w="full"
             />
-            <IconButton
-              aria-label="Chat"
-              icon={<FaComment />}
-              size="md"
-              onClick={handleChat}
-            />
-            <IconButton
-              aria-label="Like"
-              icon={<FaHeart />}
-              size="md"
-              onClick={handleLike}
-              colorScheme="red"
-            />
-          </HStack>
+          </Box>
 
-          <Divider />
-
-          {/* About Section */}
-          <VStack align="start" spacing={3} w="full" fontSize="sm">
-            <Text fontWeight="bold">About Me</Text>
-            <Text>{profile.bio}</Text>
-
-            <Text fontWeight="bold">Specs</Text>
-            <Wrap>
-              {profile.specs.map((spec, idx) => (
-                <Tag key={idx}>{spec}</Tag>
-              ))}
-            </Wrap>
-
-            <Text fontWeight="bold">I&apos;m Looking For</Text>
-            <Wrap>
-              {profile.looking_for.map((item, idx) => (
-                <Tag key={idx} colorScheme="blue" >
-                  {item}
-                </Tag>
-              ))}
-            </Wrap>
-
-            <Text fontWeight="bold">My Interests</Text>
-            <Wrap>
-              {profile.interests.map((item, idx) => (
-                <Tag key={idx} colorScheme="purple" >
-                  {item}
-                </Tag>
-              ))}
-            </Wrap>
-
-            <Text fontWeight="bold">My Favourite Thing To Do</Text>
-            <Text>{profile.favoriteThing}</Text>
-
-            <Text fontWeight="bold">My Causes and Communities</Text>
-            <Wrap>
-              {profile.causes.map((item, idx) => (
-                <Tag key={idx} colorScheme="teal" >
-                  {item}
-                </Tag>
-              ))}
-            </Wrap>
-
-            <Text fontWeight="bold">My Most Important Boundary</Text>
-            <Text>{profile.boundary}</Text>
-
-            <Text fontWeight="bold">My Location</Text>
-            <HStack>
-              <MdLocationOn />
-              <Text>
-                {profile.location} — ~{profile.distance} away
+          {/* Content */}
+          <Box
+            flex="1"
+            overflowY="auto"
+            maxHeight="65vh"
+            display="flex"
+            flexDirection="column"
+            justifyContent="space-between"
+          >
+            <VStack spacing={4} align="start" pt={4} pb={6}>
+              <Text fontSize="sm" color="green.500" fontWeight="semibold">
+                {profile.is_verified ? "✔ Profile Verified" : ""}
               </Text>
-            </HStack>
-          </VStack>
+              <Text fontSize="2xl" fontWeight="bold">
+                {profile.first_name} {profile.last_name}, {profile.age}
+              </Text>
 
-          <Divider />
+              {/* Interaction Buttons under image */}
+              <HStack spacing={4}>
+                <IconButton
+                  aria-label="Skip"
+                  icon={<FaTimes />}
+                  size="md"
+                  onClick={handleSkip}
+                />
+                <IconButton
+                  aria-label="Chat"
+                  icon={<FaComment />}
+                  size="md"
+                  onClick={handleChat}
+                />
+                <IconButton
+                  aria-label="Like"
+                  icon={<FaHeart />}
+                  size="md"
+                  onClick={handleLike}
+                  colorScheme="red"
+                />
+              </HStack>
 
-          {/* Footer Buttons */}
-          <HStack justify="space-between" pt={4} w="full">
-            <IconButton
-              aria-label="Skip"
-              icon={<FaTimes />}
-              onClick={handleSkip}
-              size="md"
-            />
-            <IconButton
-              aria-label="Chat"
-              icon={<FaComment />}
-              onClick={handleChat}
-              size="md"
-            />
-            <IconButton
-              aria-label="Like"
-              icon={<FaHeart />}
-              onClick={handleLike}
-              size="md"
-              colorScheme="red"
-            />
-          </HStack>
-        </VStack>
+              <Divider />
+
+              {/* About Section */}
+              <VStack align="start" spacing={3} w="full" fontSize="sm">
+                <Text fontWeight="bold">About Me</Text>
+                <Text>{profile.bio}</Text>
+
+                <Text fontWeight="bold">My Interests</Text>
+                <Wrap>
+                  {profile.interests.map((item, idx) => (
+                    <Tag key={idx} colorScheme="purple">
+                      {item}
+                    </Tag>
+                  ))}
+                </Wrap>
+
+                <Text fontWeight="bold">My Location</Text>
+                <HStack>
+                  <MdLocationOn />
+                  <Text>
+                    {profile.location} — ~{profile.distance} km away
+                  </Text>
+                </HStack>
+              </VStack>
+
+              <Divider />
+
+              {/* Footer Buttons */}
+              <HStack justify="space-between" pt={4} w="full">
+                <IconButton
+                  aria-label="Skip"
+                  icon={<FaTimes />}
+                  onClick={handleSkip}
+                  size="md"
+                />
+                <IconButton
+                  aria-label="Chat"
+                  icon={<FaComment />}
+                  onClick={handleChat}
+                  size="md"
+                />
+                <IconButton
+                  aria-label="Like"
+                  icon={<FaHeart />}
+                  onClick={handleLike}
+                  size="md"
+                  colorScheme="red"
+                />
+              </HStack>
+            </VStack>
+          </Box>
+        </Flex>
       </Box>
     </Flex>
   );

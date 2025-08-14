@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 
 # from .models import DefaultUser
 def max_size_validator(file):
-    max_size_mb = 2
+    max_size_mb = 10
     if (file.size > max_size_mb * 10**6):
         raise ValidationError(f"File can not be larger that {max_size_mb}MB!")
     
