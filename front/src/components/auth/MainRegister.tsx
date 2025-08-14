@@ -239,28 +239,28 @@ const MainRegister = () => {
         />
       ),
     },
-    {
-      title: "First Name",
-      key: "first_name",
-      component: (
-        <Input
-          placeholder="First Name"
-          value={formData.first_name}
-          onChange={(e) => updateFormData("first_name", e.target.value)}
-        />
-      ),
-    },
-    {
-      title: "Last Name",
-      key: "last_name",
-      component: (
-        <Input
-          placeholder="Last Name"
-          value={formData.last_name}
-          onChange={(e) => updateFormData("last_name", e.target.value)}
-        />
-      ),
-    },
+    // {
+    //   title: "First Name",
+    //   key: "first_name",
+    //   component: (
+    //     <Input
+    //       placeholder="First Name"
+    //       value={formData.first_name}
+    //       onChange={(e) => updateFormData("first_name", e.target.value)}
+    //     />
+    //   ),
+    // },
+    // {
+    //   title: "Last Name",
+    //   key: "last_name",
+    //   component: (
+    //     <Input
+    //       placeholder="Last Name"
+    //       value={formData.last_name}
+    //       onChange={(e) => updateFormData("last_name", e.target.value)}
+    //     />
+    //   ),
+    // },
    
   ];
 

@@ -121,7 +121,7 @@ const ProfilePicturesInputStep = ({ formData, setFormData }: Props) => {
             <Box key={String(key)} position="relative">
               {/* hidden input */}
               <input
-                ref={(el) => (fileInputRefs.current[index] = el)}
+                ref={(el) => {fileInputRefs.current[index] = el}}
                 type="file"
                 accept="image/*"
                 style={{ display: "none" }}

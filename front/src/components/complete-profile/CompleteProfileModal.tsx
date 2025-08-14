@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Modal,
   ModalOverlay,
@@ -24,6 +26,7 @@ import SexualPreferencesInputStep from "./steps/SexualPreferencesInputStep";
 import api from "@/services/axios/api";
 import LocationStep from "./steps/LocationStep";
 import BiographyInputStep from "./steps/BiographyInputStep";
+import { useRouter } from "next/navigation";
 
 // Type for form data
 export type FormDataType = {
@@ -43,17 +46,12 @@ export type FormDataType = {
   sexual_orientation: string;
 };
 
-interface ProfileModalProps {
-  title: string;
-  stepLevel: number;
-}
-
-const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
+const CompleteProfileModal = () => {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-
+  const [title, setTitle] = useState<string | null>("Complete Your Profile");
   const [formData, setFormData] = useState<FormDataType>({
     first_name: "",
     last_name: "",
@@ -72,6 +70,79 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
   });
 
   const toast = useToast();
+  const router = useRouter();
+
+useEffect(() => {
+  switch (step) {
+    case 1:
+      setTitle("What's your name? 💌");
+      break;
+    case 2:
+      setTitle("How do you identify? 🧑‍🤝‍🧑");
+      break;
+    case 3:
+      setTitle("Tell us about yourself 📝");
+      break;
+    case 4:
+      setTitle("What are you into? 🎯");
+      break;
+    case 5:
+      setTitle("Who do you vibe with? ❤️");
+      break;
+    case 6:
+      setTitle("Where can we find you? 📍");
+      break;
+    case 7:
+      setTitle("Let's see your best smile 📸");
+      break;
+    default:
+      setTitle("Let's complete your profile! ✨");
+  }
+}, [step]);
+
+
+  let content;
+  switch (step) {
+    case 1:
+      content = <NameInputStep formData={formData} setFormData={setFormData} />;
+      break;
+    case 2:
+      content = (
+        <GenderInputStep formData={formData} setFormData={setFormData} />
+      );
+      break;
+    case 3:
+      content = (
+        <BiographyInputStep formData={formData} setFormData={setFormData} />
+      );
+      break;
+    case 4:
+      content = (
+        <InterestsInputStep formData={formData} setFormData={setFormData} />
+      );
+      break;
+    case 5:
+      content = (
+        <SexualPreferencesInputStep
+          formData={formData}
+          setFormData={setFormData}
+        />
+      );
+      break;
+    case 6:
+      content = <LocationStep formData={formData} setFormData={setFormData} />;
+      break;
+    case 7:
+      content = (
+        <ProfilePicturesInputStep
+          formData={formData}
+          setFormData={setFormData}
+        />
+      );
+      break;
+    default:
+      content = <Spinner />;
+  }
 
   // Fetch existing profile data on component mount
   useEffect(() => {
@@ -179,7 +250,9 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
           },
         });
 
-        console.log("Profile completed successfully!");
+        console.log(
+          "Profile completed successfully! Redirecting to discover page..."
+        );
         toast({
           title: "Profile updated",
           description: "Your profile has been completed successfully!",
@@ -188,6 +261,7 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
           isClosable: true,
           position: "bottom",
         });
+        router.push("/discover");
       } catch (error) {
         console.error("Failed to complete profile:", error);
         toast({
@@ -214,17 +288,18 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
     window.location.reload(); // Simple retry by reloading
   };
 
-  const modalWidth = useBreakpointValue({ base: "90%", md: "80%" });
-  const modalHeight = useBreakpointValue({ base: "8vh", md: "80%" });
+  const modalWidth = useBreakpointValue({ base: "95%", sm: "45%" });
+  const modalHeight = useBreakpointValue({ base: "95%", sm: "60%" });
 
   // Show loading spinner while fetching initial data
   if (isLoading) {
     return (
-      <Modal isOpen={true} onClose={() => {}} size="full">
+      <Modal isOpen={true} onClose={() => {}}>
         <ModalOverlay />
         <ModalContent
           maxWidth={modalWidth}
           maxHeight={modalHeight}
+          h={modalHeight}
           m="auto"
           display="flex"
           flexDirection="column"
@@ -245,11 +320,12 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
   // Show error state if loading failed
   if (loadError) {
     return (
-      <Modal isOpen={true} onClose={() => {}} size="full">
+      <Modal isOpen={true} onClose={() => {}}>
         <ModalOverlay />
         <ModalContent
           maxWidth={modalWidth}
           maxHeight={modalHeight}
+          h={modalHeight}
           m="auto"
           display="flex"
           flexDirection="column"
@@ -272,56 +348,13 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
     );
   }
 
-  let content;
-  switch (step) {
-    case 1:
-      content = <NameInputStep formData={formData} setFormData={setFormData} />;
-      break;
-    case 2:
-      content = (
-        <GenderInputStep formData={formData} setFormData={setFormData} />
-      );
-      break;
-    case 3:
-      content = (
-        <BiographyInputStep formData={formData} setFormData={setFormData} />
-      );
-      break;
-    case 4:
-      content = (
-        <InterestsInputStep formData={formData} setFormData={setFormData} />
-      );
-      break;
-    case 5:
-      content = (
-        <SexualPreferencesInputStep
-          formData={formData}
-          setFormData={setFormData}
-        />
-      );
-      break;
-    case 6:
-      content = <LocationStep formData={formData} setFormData={setFormData} />;
-      break;
-    case 7:
-      content = (
-        <ProfilePicturesInputStep
-          formData={formData}
-          setFormData={setFormData}
-        />
-      );
-      break;
-    default:
-      content = <Spinner />;
-      break;
-  }
-
   return (
-    <Modal isOpen={true} onClose={() => {}} size="full">
+    <Modal isOpen={true} onClose={() => {}}>
       <ModalOverlay />
       <ModalContent
         maxWidth={modalWidth}
         maxHeight={modalHeight}
+        h={modalHeight}
         m="auto"
         display="flex"
         flexDirection="column"
@@ -329,7 +362,7 @@ const CompleteProfileModal = ({ title, stepLevel }: ProfileModalProps) => {
         <ModalHeader>{title}</ModalHeader>
         <ModalBody>
           <div>
-            <p>Step {stepLevel}</p>
+            {/* <p>Step {stepLevel}</p> */}
             {content}
           </div>
         </ModalBody>
