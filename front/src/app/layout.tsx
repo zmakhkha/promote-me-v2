@@ -2,6 +2,7 @@
 
 import { ChakraProvider } from '@chakra-ui/react'
 import theme from '../theme'
+import "./globals.css";
 
 export default function RootLayout({
   children,
