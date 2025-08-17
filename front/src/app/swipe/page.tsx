@@ -1,6 +1,7 @@
 "use client"
 
-import React, { useRef, useState } from "react"
+import type React from "react"
+import { useRef, useState, useEffect } from "react"
 import {
   Box,
   Button,
@@ -32,9 +33,12 @@ import {
   Container,
   Wrap,
   WrapItem,
+  Spinner,
 } from "@chakra-ui/react"
 import { Heart, X, MapPin, Star, Users, Settings, Flag, Sun, Moon } from "lucide-react"
 import { useDisclosure } from "@chakra-ui/react"
+import api from "@/services/axios/api"
+import getCorrectImage from "@/services/axios/getCorrectImage"
 
 interface UserProfile {
   id: number
@@ -53,6 +57,8 @@ interface UserProfile {
   common_tags: number
 }
 
+type UserStage = "filter_users" | "other_users" | "no_more_users"
+
 const SwipeableCardsPage = () => {
   const { colorMode, toggleColorMode } = useColorMode()
   const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure()
@@ -65,101 +71,68 @@ const SwipeableCardsPage = () => {
   const [locationFilter, setLocationFilter] = useState("")
   const [interestFilter, setInterestFilter] = useState("")
   const [reportReason, setReportReason] = useState("")
-  const [showAnyUsers, setShowAnyUsers] = useState(false)
+
+  const [currentStage, setCurrentStage] = useState<UserStage>("filter_users")
+
+  const [filterUsers, setFilterUsers] = useState<UserProfile[]>([])
+  const [otherUsers, setOtherUsers] = useState<UserProfile[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   const bgColor = colorMode === "light" ? "gray.50" : "gray.900"
   const cardBg = colorMode === "light" ? "white" : "gray.800"
   const textColor = colorMode === "light" ? "gray.800" : "white"
 
-  const [profiles] = useState<UserProfile[]>([
-    {
-      id: 7,
-      first_name: "Janet",
-      last_name: "Hood",
-      is_verified: false,
-      age: 36,
-      bio: "Member agree ask be nice clear up the.",
-      interests: ["special", "cover", "discover", "as", "can"],
-      location: "South Jonstad",
-      latitude: 56.582316,
-      longitude: -51.729593,
-      points: 85,
-      image_profile: "/woman-profile.png",
-      distance: 4295.6,
-      common_tags: 0,
-    },
-    {
-      id: 8,
-      first_name: "Marcus",
-      last_name: "Johnson",
-      is_verified: true,
-      age: 29,
-      bio: "Adventure seeker and fitness enthusiast. Love exploring new places and meeting interesting people.",
-      interests: ["fitness", "travel", "photography", "music", "cooking"],
-      location: "Downtown Metro",
-      latitude: 40.7128,
-      longitude: -74.006,
-      points: 92,
-      image_profile: "/man-profile.png",
-      distance: 2.5,
-      common_tags: 3,
-    },
-    {
-      id: 9,
-      first_name: "Sofia",
-      last_name: "Martinez",
-      is_verified: true,
-      age: 28,
-      bio: "Artist and coffee lover. Always looking for inspiration in everyday moments.",
-      interests: ["art", "coffee", "books", "nature", "yoga"],
-      location: "Arts District",
-      latitude: 34.0522,
-      longitude: -118.2437,
-      points: 78,
-      image_profile: "/artist-woman-profile.png",
-      distance: 1.2,
-      common_tags: 2,
-    },
-  ])
+  const fetchUsers = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      console.log("[v0] Fetching users from API...")
 
-  // Additional profiles for "any users"
-  const [anyUserProfiles] = useState<UserProfile[]>([
-    {
-      id: 10,
-      first_name: "Alex",
-      last_name: "Chen",
-      is_verified: false,
-      age: 32,
-      bio: "Tech enthusiast and weekend hiker. Always up for trying new restaurants.",
-      interests: ["technology", "hiking", "food", "movies"],
-      location: "Tech District",
-      latitude: 37.7749,
-      longitude: -122.4194,
-      points: 67,
-      image_profile: "/tech-person-profile.png",
-      distance: 15.3,
-      common_tags: 0,
-    },
-    {
-      id: 11,
-      first_name: "Emma",
-      last_name: "Wilson",
-      is_verified: true,
-      age: 26,
-      bio: "Yoga instructor and plant mom. Love spending time in nature and good conversations.",
-      interests: ["yoga", "plants", "meditation", "reading"],
-      location: "Green Valley",
-      latitude: 33.4484,
-      longitude: -112.074,
-      points: 89,
-      image_profile: "/yoga-instructor-woman.png",
-      distance: 8.7,
-      common_tags: 1,
-    },
-  ])
+      const response = await api.get("/discover/")
+      const data = response.data
+      console.log("[v0] API response received:", data)
+
+      setFilterUsers(data.filter_users || [])
+      setOtherUsers(data.other_users || [])
+      setCurrentStage("filter_users")
+
+      toast({
+        title: "Users loaded",
+        description: `Found ${data.filter_users?.length || 0} common users and ${data.other_users?.length || 0} other users`,
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+      })
+    } catch (err) {
+      console.error("[v0] Error fetching users:", err)
+      setError(err instanceof Error ? err.message : "Failed to fetch users")
+      toast({
+        title: "Error loading users",
+        description: "Please check your connection and try again",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
   const getFilteredProfiles = () => {
-    const profilesToFilter = showAnyUsers ? [...profiles, ...anyUserProfiles] : profiles
+    let profilesToFilter: UserProfile[] = []
+
+    if (currentStage === "filter_users") {
+      profilesToFilter = filterUsers
+    } else if (currentStage === "other_users") {
+      profilesToFilter = otherUsers
+    } else {
+      return [] // no_more_users stage
+    }
 
     return profilesToFilter
       .filter((profile) => {
@@ -187,16 +160,27 @@ const SwipeableCardsPage = () => {
       })
   }
 
-  const [currentCards, setCurrentCards] = useState(getFilteredProfiles())
+  const [currentCards, setCurrentCards] = useState<UserProfile[]>([])
   const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
   const [startPos, setStartPos] = useState({ x: 0, y: 0 })
   const cardRef = useRef<HTMLDivElement>(null)
 
-  React.useEffect(() => {
-    setCurrentCards(getFilteredProfiles())
-  }, [sortBy, ageRange, pointsRange, locationFilter, interestFilter, showAnyUsers])
+  useEffect(() => {
+    if (!isLoading) {
+      const filteredProfiles = getFilteredProfiles()
+      setCurrentCards(filteredProfiles)
+
+      if (filteredProfiles.length === 0) {
+        if (currentStage === "filter_users" && otherUsers.length > 0) {
+          // Don't auto-advance, let user choose
+        } else if (currentStage === "other_users") {
+          setCurrentStage("no_more_users")
+        }
+      }
+    }
+  }, [sortBy, ageRange, pointsRange, locationFilter, interestFilter, currentStage, filterUsers, otherUsers, isLoading])
 
   const handleStart = (clientX: number, clientY: number) => {
     setIsDragging(true)
@@ -232,16 +216,26 @@ const SwipeableCardsPage = () => {
   const swipeCard = (direction: "left" | "right") => {
     setFeedback(direction === "right" ? "like" : "dislike")
     setTimeout(() => {
-      setCurrentCards((prev) => prev.slice(1))
+      setCurrentCards((prev) => {
+        const newCards = prev.slice(1)
+        if (newCards.length === 0) {
+          if (currentStage === "filter_users" && otherUsers.length > 0) {
+            // Stay in filter_users stage, let user choose to see other_users
+          } else if (currentStage === "other_users") {
+            setCurrentStage("no_more_users")
+          }
+        }
+        return newCards
+      })
       setDragOffset({ x: 0, y: 0 })
       setFeedback(null)
     }, 300)
   }
 
-  const handleLoadAnyUsers = () => {
-    setShowAnyUsers(true)
+  const handleShowOtherUsers = () => {
+    setCurrentStage("other_users")
     toast({
-      title: "Loading all users",
+      title: "Loading other users",
       description: "Now showing users from all categories",
       status: "info",
       duration: 2000,
@@ -250,38 +244,29 @@ const SwipeableCardsPage = () => {
   }
 
   const handleReport = () => {
-    console.log("[v0] Reporting profile for:", reportReason)
+    // Placeholder for report handling logic
     toast({
-      title: "Report submitted",
-      description: "Thank you for helping keep our community safe",
+      title: "Report Submitted",
+      description: "Your report has been successfully submitted.",
       status: "success",
-      duration: 3000,
+      duration: 2000,
       isClosable: true,
     })
-    setReportReason("")
     onReportClose()
   }
 
   const rotation = dragOffset.x * 0.1
   const opacity = Math.max(0.7, 1 - Math.abs(dragOffset.x) / 200)
 
-  if (currentCards.length === 0) {
+  if (isLoading) {
     return (
       <Box minH="100vh" bg={bgColor}>
         <Container maxW="md" centerContent>
           <VStack spacing={6} justify="center" minH="100vh">
-            <Heart size={64} color="#E53E3E" />
+            <Spinner size="xl" color="pink.500" />
             <Text color={textColor} fontSize="lg">
-              {showAnyUsers ? "No more profiles!" : "No more common users!"}
+              Loading profiles...
             </Text>
-            <Text color="gray.500" textAlign="center">
-              {showAnyUsers ? "Check back later for more matches." : "You've seen all users with common interests."}
-            </Text>
-            {!showAnyUsers && (
-              <Button colorScheme="pink" size="lg" onClick={handleLoadAnyUsers} leftIcon={<Users size={20} />}>
-                Load Any Users
-              </Button>
-            )}
             <IconButton
               aria-label="Toggle color mode"
               icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
@@ -292,6 +277,98 @@ const SwipeableCardsPage = () => {
         </Container>
       </Box>
     )
+  }
+
+  if (error) {
+    return (
+      <Box minH="100vh" bg={bgColor}>
+        <Container maxW="md" centerContent>
+          <VStack spacing={6} justify="center" minH="100vh">
+            <X size={64} color="#E53E3E" />
+            <Text color={textColor} fontSize="lg">
+              Failed to load profiles
+            </Text>
+            <Text color="gray.500" textAlign="center">
+              {error}
+            </Text>
+            <Button colorScheme="pink" size="lg" onClick={fetchUsers}>
+              Try Again
+            </Button>
+            <IconButton
+              aria-label="Toggle color mode"
+              icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
+              onClick={toggleColorMode}
+              variant="ghost"
+            />
+          </VStack>
+        </Container>
+      </Box>
+    )
+  }
+
+  if (currentCards.length === 0 && !isLoading && !error) {
+    if (currentStage === "filter_users" && otherUsers.length > 0) {
+      // Stage 1: Ask if user wants to see other users
+      return (
+        <Box minH="100vh" bg={bgColor}>
+          <Container maxW="md" centerContent>
+            <VStack spacing={6} justify="center" minH="100vh">
+              <Heart size={64} color="#E53E3E" />
+              <Text color={textColor} fontSize="lg">
+                No more common users!
+              </Text>
+              <Text color="gray.500" textAlign="center">
+                Would you like to see other users who might be a good match?
+              </Text>
+              <Button colorScheme="pink" size="lg" onClick={handleShowOtherUsers} leftIcon={<Users size={20} />}>
+                Show Other Users
+              </Button>
+              <Button colorScheme="blue" variant="outline" onClick={onSettingsOpen} leftIcon={<Settings size={20} />}>
+                Modify Search Options
+              </Button>
+              <Button colorScheme="gray" variant="outline" onClick={fetchUsers}>
+                Refresh
+              </Button>
+              <IconButton
+                aria-label="Toggle color mode"
+                icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                onClick={toggleColorMode}
+                variant="ghost"
+              />
+            </VStack>
+          </Container>
+        </Box>
+      )
+    } else {
+      // Stage 2 & 3: No more users available, suggest modifying settings
+      return (
+        <Box minH="100vh" bg={bgColor}>
+          <Container maxW="md" centerContent>
+            <VStack spacing={6} justify="center" minH="100vh">
+              <Heart size={64} color="#E53E3E" />
+              <Text color={textColor} fontSize="lg">
+                No more users available!
+              </Text>
+              <Text color="gray.500" textAlign="center">
+                Try modifying your search settings to discover more potential matches.
+              </Text>
+              <Button colorScheme="pink" size="lg" onClick={onSettingsOpen} leftIcon={<Settings size={20} />}>
+                Modify Search Settings
+              </Button>
+              <Button colorScheme="blue" variant="outline" onClick={fetchUsers}>
+                Refresh
+              </Button>
+              <IconButton
+                aria-label="Toggle color mode"
+                icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                onClick={toggleColorMode}
+                variant="ghost"
+              />
+            </VStack>
+          </Container>
+        </Box>
+      )
+    }
   }
 
   return (
@@ -360,7 +437,11 @@ const SwipeableCardsPage = () => {
                 <Box position="relative" h="full" overflowY="auto">
                   <Box position="relative" h="65%" minH="520px">
                     <Image
-                      src={profile.image_profile || "/placeholder.svg"}
+                      src={
+                        profile.image_profile?.startsWith("/")
+                          ? getCorrectImage(profile.image_profile)
+                          : `/placeholder.svg?height=520&width=450&query=${profile.first_name} profile photo`
+                      }
                       alt={`${profile.first_name} ${profile.last_name}`}
                       w="full"
                       h="full"
@@ -416,10 +497,10 @@ const SwipeableCardsPage = () => {
 
                     <Box position="absolute" bottom={4} left={4} color="white">
                       <HStack spacing={2} mb={1}>
-                        <Text color={textColor} fontSize="lg">
+                        <Text color="white" fontSize="lg">
                           {profile.first_name} {profile.last_name}
                         </Text>
-                        <Text color={textColor} fontSize="xl">
+                        <Text color="white" fontSize="xl">
                           {profile.age}
                         </Text>
                         {profile.is_verified && (
@@ -430,7 +511,7 @@ const SwipeableCardsPage = () => {
                       </HStack>
                       <HStack spacing={1} color="whiteAlpha.900">
                         <MapPin size={16} />
-                        <Text color={textColor} fontSize="sm">
+                        <Text color="white" fontSize="sm">
                           {profile.location} • {profile.distance.toFixed(1)} km
                         </Text>
                       </HStack>
@@ -491,7 +572,13 @@ const SwipeableCardsPage = () => {
                       <Wrap spacing={1}>
                         {profile.interests.map((interest) => (
                           <WrapItem key={interest}>
-                            <Badge variant="outline" fontSize="xs">
+                            <Badge
+                              variant="outline"
+                              fontSize="xs"
+                              colorScheme={colorMode === "light" ? "gray" : "whiteAlpha"}
+                              borderColor={colorMode === "light" ? "gray.300" : "gray.500"}
+                              color={textColor}
+                            >
                               {interest}
                             </Badge>
                           </WrapItem>
@@ -504,14 +591,6 @@ const SwipeableCardsPage = () => {
             )
           })}
         </Box>
-
-        <IconButton
-          aria-label="Toggle color mode"
-          icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
-          onClick={toggleColorMode}
-          variant="ghost"
-          size="lg"
-        />
       </Container>
 
       {/* Settings Modal */}

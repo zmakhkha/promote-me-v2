@@ -485,7 +485,6 @@ from .serializers import DiscoverUserSerializer
 from .models import DefaultUser
 from django.db.models import Q
 from datetime import date
-
 class DiscoverUserListView(generics.ListAPIView):
     serializer_class = DiscoverUserSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -553,16 +552,28 @@ class DiscoverUserListView(generics.ListAPIView):
         min_fame = request.query_params.get("min_fame")
         min_common_tags = request.query_params.get("min_common_tags")
 
-        if age_min:
-            results = [r for r in results if r["age"] >= int(age_min)]
-        if age_max:
-            results = [r for r in results if r["age"] <= int(age_max)]
-        if max_distance:
-            results = [r for r in results if r["distance"] <= float(max_distance)]
-        if min_fame:
-            results = [r for r in results if r["fame_rating"] >= float(min_fame)]
-        if min_common_tags:
-            results = [r for r in results if r["common_tags"] >= int(min_common_tags)]
+        filtered_results = []
+        other_results = []
+
+        for r in results:
+            # Check if result meets filter criteria
+            meets_criteria = True
+            
+            if age_min and r["age"] < int(age_min):
+                meets_criteria = False
+            if age_max and r["age"] > int(age_max):
+                meets_criteria = False
+            if max_distance and r["distance"] > float(max_distance):
+                meets_criteria = False
+            if min_fame and r["fame_rating"] < float(min_fame):
+                meets_criteria = False
+            if min_common_tags and r["common_tags"] < int(min_common_tags):
+                meets_criteria = False
+                
+            if meets_criteria:
+                filtered_results.append(r)
+            else:
+                other_results.append(r)
 
         # Sorting param
         sort_by = request.query_params.get("sort_by", "distance")  # default sort by distance
@@ -579,31 +590,50 @@ class DiscoverUserListView(generics.ListAPIView):
         else:  # distance or default
             key = lambda x: x["distance"]
 
-        results.sort(key=key, reverse=reverse)
+        filtered_results.sort(key=key, reverse=reverse)
+        other_results.sort(key=key, reverse=reverse)
 
-        # Paginate manually or return full list for now
+        # Paginate manually
         page_size = 20
         page = int(request.query_params.get("page", 1))
         start = (page - 1) * page_size
         end = start + page_size
-        paged_results = results[start:end]
+        
+        # Paginate filtered results
+        paged_filtered_results = filtered_results[start:end]
+        # Take a sample of other results (or all if few)
+        paged_other_results = other_results[:page_size]
 
-        # Serialize only the user objects
-        serializer = self.get_serializer(
-            [r["user"] for r in paged_results],
+        # Serialize filtered users
+        filter_users_serializer = self.get_serializer(
+            [r["user"] for r in paged_filtered_results],
             many=True,
             context={"current_user": user}
         )
 
-        # Add common_tags and distance to each serialized item
-        data = serializer.data
-        for idx, item in enumerate(data):
-            item["common_tags"] = paged_results[idx]["common_tags"]
-            item["distance"] = round(paged_results[idx]["distance"], 1) if paged_results[idx]["distance"] is not None else None
+        # Serialize other users
+        other_users_serializer = self.get_serializer(
+            [r["user"] for r in paged_other_results],
+            many=True,
+            context={"current_user": user}
+        )
+
+        # Add common_tags and distance to filtered users
+        filter_users_data = filter_users_serializer.data
+        for idx, item in enumerate(filter_users_data):
+            item["common_tags"] = paged_filtered_results[idx]["common_tags"]
+            item["distance"] = round(paged_filtered_results[idx]["distance"], 1) if paged_filtered_results[idx]["distance"] is not None else None
+
+        # Add common_tags and distance to other users
+        other_users_data = other_users_serializer.data
+        for idx, item in enumerate(other_users_data):
+            item["common_tags"] = paged_other_results[idx]["common_tags"]
+            item["distance"] = round(paged_other_results[idx]["distance"], 1) if paged_other_results[idx]["distance"] is not None else None
 
         return Response({
-            "results": data,
+            "filter_users": filter_users_data,
+            "other_users": other_users_data,
             "page": page,
             "page_size": page_size,
-            "total": len(results),
+            "total": len(filtered_results),
         })
