@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useRef, useState, useEffect } from "react"
+import type React from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -17,6 +17,7 @@ import {
   ModalHeader,
   ModalBody,
   ModalCloseButton,
+  ModalFooter,
   Input,
   FormControl,
   FormLabel,
@@ -34,214 +35,336 @@ import {
   Wrap,
   WrapItem,
   Spinner,
-} from "@chakra-ui/react"
-import { Heart, X, MapPin, Star, Users, Settings, Flag, Sun, Moon } from "lucide-react"
-import { useDisclosure } from "@chakra-ui/react"
-import api from "@/services/axios/api"
-import getCorrectImage from "@/services/axios/getCorrectImage"
+} from "@chakra-ui/react";
+import {
+  Heart,
+  X,
+  MapPin,
+  Star,
+  Users,
+  Settings,
+  Flag,
+  Sun,
+  Moon,
+} from "lucide-react";
+import { useDisclosure } from "@chakra-ui/react";
+import api from "@/services/axios/api";
+import getCorrectImage from "@/services/axios/getCorrectImage";
 
 interface UserProfile {
-  id: number
-  first_name: string
-  last_name: string
-  is_verified: boolean
-  age: number
-  bio: string
-  interests: string[]
-  location: string
-  latitude: number
-  longitude: number
-  points: number
-  image_profile: string
-  distance: number
-  common_tags: number
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  is_verified: boolean;
+  age: number;
+  bio: string;
+  interests: string[];
+  location: string;
+  latitude: number;
+  longitude: number;
+  points: number;
+  image_profile: string;
+  distance: number;
+  common_tags: number;
 }
 
-type UserStage = "filter_users" | "other_users" | "no_more_users"
+type UserStage = "filter_users" | "other_users" | "no_more_users";
 
 const SwipeableCardsPage = () => {
-  const { colorMode, toggleColorMode } = useColorMode()
-  const { isOpen: isSettingsOpen, onOpen: onSettingsOpen, onClose: onSettingsClose } = useDisclosure()
-  const { isOpen: isReportOpen, onOpen: onReportOpen, onClose: onReportClose } = useDisclosure()
-  const toast = useToast()
+  const { colorMode, toggleColorMode } = useColorMode();
+  const {
+    isOpen: isSettingsOpen,
+    onOpen: onSettingsOpen,
+    onClose: onSettingsClose,
+  } = useDisclosure();
+  const {
+    isOpen: isReportOpen,
+    onOpen: onReportOpen,
+    onClose: onReportClose,
+  } = useDisclosure();
+  const toast = useToast();
 
-  const [sortBy, setSortBy] = useState<"age" | "location" | "points" | "common_tags">("age")
-  const [ageRange, setAgeRange] = useState([18, 50])
-  const [pointsRange, setPointsRange] = useState([0, 100])
-  const [locationFilter, setLocationFilter] = useState("")
-  const [interestFilter, setInterestFilter] = useState("")
-  const [reportReason, setReportReason] = useState("")
+  const [sortBy, setSortBy] = useState<
+    "age" | "location" | "points" | "common_tags"
+  >("age");
+  const [ageRange, setAgeRange] = useState([18, 50]);
+  const [pointsRange, setPointsRange] = useState([0, 100]);
+  const [locationFilter, setLocationFilter] = useState("");
+  const [interestFilter, setInterestFilter] = useState("");
+  const [reportReason, setReportReason] = useState("");
+  const [isApplyingFilters, setIsApplyingFilters] = useState(false);
 
-  const [currentStage, setCurrentStage] = useState<UserStage>("filter_users")
+  const [currentStage, setCurrentStage] = useState<UserStage>("filter_users");
 
-  const [filterUsers, setFilterUsers] = useState<UserProfile[]>([])
-  const [otherUsers, setOtherUsers] = useState<UserProfile[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [filterUsers, setFilterUsers] = useState<UserProfile[]>([]);
+  const [otherUsers, setOtherUsers] = useState<UserProfile[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const bgColor = colorMode === "light" ? "gray.50" : "gray.900"
-  const cardBg = colorMode === "light" ? "white" : "gray.800"
-  const textColor = colorMode === "light" ? "gray.800" : "white"
+  const bgColor = colorMode === "light" ? "gray.50" : "gray.900";
+  const cardBg = colorMode === "light" ? "white" : "gray.800";
+  const textColor = colorMode === "light" ? "gray.800" : "white";
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (withFilters = false) => {
     try {
-      setIsLoading(true)
-      setError(null)
-      console.log("[v0] Fetching users from API...")
+      setIsLoading(true);
+      setError(null);
+      console.log("[v0] Fetching users from API...");
 
-      const response = await api.get("/discover/")
-      const data = response.data
-      console.log("[v0] API response received:", data)
+      let url = "/discover/";
 
-      setFilterUsers(data.filter_users || [])
-      setOtherUsers(data.other_users || [])
-      setCurrentStage("filter_users")
+      // Add query parameters if applying filters
+      if (withFilters) {
+        const params = new URLSearchParams();
+
+        // Sort parameter mapping
+        const sortMapping = {
+          age: "age",
+          location: "distance",
+          points: "fame_rating",
+          common_tags: "common_tags",
+        };
+        params.append("sort_by", sortMapping[sortBy] || "distance");
+
+        // Age filters
+        params.append("age_min", ageRange[0].toString());
+        params.append("age_max", ageRange[1].toString());
+
+        // Fame rating filters
+        params.append("min_fame", pointsRange[0].toString());
+
+        // Distance filter (if location is provided as distance in km)
+        if (locationFilter) {
+          const distanceValue = parseFloat(locationFilter);
+          if (!isNaN(distanceValue)) {
+            params.append("max_distance", distanceValue.toString());
+          }
+        }
+
+        // Common tags filter
+        if (interestFilter) {
+          const tagsValue = parseInt(interestFilter);
+          if (!isNaN(tagsValue)) {
+            params.append("min_common_tags", tagsValue.toString());
+          }
+        }
+
+        url += `?${params.toString()}`;
+      }
+
+      const response = await api.get(url);
+      const data = response.data;
+      console.log("[v0] API response received:", data);
+
+      setFilterUsers(data.filter_users || []);
+      setOtherUsers(data.other_users || []);
+      setCurrentStage("filter_users");
 
       toast({
-        title: "Users loaded",
-        description: `Found ${data.filter_users?.length || 0} common users and ${data.other_users?.length || 0} other users`,
+        title: withFilters ? "Filters applied" : "Users loaded",
+        description: `Found ${
+          data.filter_users?.length || 0
+        } filtered users and ${data.other_users?.length || 0} other users`,
         status: "success",
         duration: 2000,
         isClosable: true,
-      })
+      });
     } catch (err) {
-      console.error("[v0] Error fetching users:", err)
-      setError(err instanceof Error ? err.message : "Failed to fetch users")
+      console.error("[v0] Error fetching users:", err);
+      setError(err instanceof Error ? err.message : "Failed to fetch users");
       toast({
         title: "Error loading users",
         description: "Please check your connection and try again",
         status: "error",
         duration: 3000,
         isClosable: true,
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    fetchUsers();
+  }, []);
+
+  const handleApplyFilters = async () => {
+    setIsApplyingFilters(true);
+    try {
+      await fetchUsers(true);
+      onSettingsClose();
+    } catch (error) {
+      console.error("Error applying filters:", error);
+    } finally {
+      setIsApplyingFilters(false);
+    }
+  };
+
+  const handleResetFilters = () => {
+    setSortBy("age");
+    setLocationFilter("");
+    setAgeRange([18, 50]);
+    setPointsRange([0, 100]);
+    setInterestFilter("");
+  };
 
   const getFilteredProfiles = () => {
-    let profilesToFilter: UserProfile[] = []
+    let profilesToFilter: UserProfile[] = [];
 
     if (currentStage === "filter_users") {
-      profilesToFilter = filterUsers
+      profilesToFilter = filterUsers;
     } else if (currentStage === "other_users") {
-      profilesToFilter = otherUsers
+      profilesToFilter = otherUsers;
     } else {
-      return [] // no_more_users stage
+      return []; // no_more_users stage
     }
 
     return profilesToFilter
       .filter((profile) => {
-        const ageMatch = profile.age >= ageRange[0] && profile.age <= ageRange[1]
-        const pointsMatch = profile.points >= pointsRange[0] && profile.points <= pointsRange[1]
-        const locationMatch = !locationFilter || profile.location.toLowerCase().includes(locationFilter.toLowerCase())
+        const ageMatch =
+          profile.age >= ageRange[0] && profile.age <= ageRange[1];
+        const pointsMatch =
+          profile.points >= pointsRange[0] && profile.points <= pointsRange[1];
+        const locationMatch =
+          !locationFilter ||
+          profile.location.toLowerCase().includes(locationFilter.toLowerCase());
         const interestMatch =
           !interestFilter ||
-          profile.interests.some((interest) => interest.toLowerCase().includes(interestFilter.toLowerCase()))
-        return ageMatch && pointsMatch && locationMatch && interestMatch
+          profile.interests.some((interest) =>
+            interest.toLowerCase().includes(interestFilter.toLowerCase())
+          );
+        return ageMatch && pointsMatch && locationMatch && interestMatch;
       })
       .sort((a, b) => {
         switch (sortBy) {
           case "age":
-            return a.age - b.age
+            return a.age - b.age;
           case "location":
-            return a.distance - b.distance
+            return a.distance - b.distance;
           case "points":
-            return b.points - a.points
+            return b.points - a.points;
           case "common_tags":
-            return b.common_tags - a.common_tags
+            return b.common_tags - a.common_tags;
           default:
-            return 0
+            return 0;
         }
-      })
-  }
+      });
+  };
 
-  const [currentCards, setCurrentCards] = useState<UserProfile[]>([])
-  const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
-  const [startPos, setStartPos] = useState({ x: 0, y: 0 })
-  const cardRef = useRef<HTMLDivElement>(null)
+  const [currentCards, setCurrentCards] = useState<UserProfile[]>([]);
+  const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!isLoading) {
-      const filteredProfiles = getFilteredProfiles()
-      setCurrentCards(filteredProfiles)
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     const filteredProfiles = getFilteredProfiles();
+  //     setCurrentCards(filteredProfiles);
 
-      if (filteredProfiles.length === 0) {
-        if (currentStage === "filter_users" && otherUsers.length > 0) {
-          // Don't auto-advance, let user choose
-        } else if (currentStage === "other_users") {
-          setCurrentStage("no_more_users")
-        }
-      }
-    }
-  }, [sortBy, ageRange, pointsRange, locationFilter, interestFilter, currentStage, filterUsers, otherUsers, isLoading])
+  //     // if (filteredProfiles.length === 0) {
+  //     //   if (currentStage === "filter_users" && otherUsers.length > 0) {
+  //     //     // Don't auto-advance, let user choose
+  //     //   } else if (currentStage === "other_users") {
+  //     //     // setCurrentStage("no_more_users");
+  //     //     console.log("no more users,");
+  //     //   }
+  //     // }
+  //   }
+  //   // }, [sortBy, ageRange, pointsRange, locationFilter, interestFilter, currentStage, filterUsers, otherUsers, isLoading])
+  // }, []);
 
   const handleStart = (clientX: number, clientY: number) => {
-    setIsDragging(true)
-    setStartPos({ x: clientX, y: clientY })
-  }
+    setIsDragging(true);
+    setStartPos({ x: clientX, y: clientY });
+  };
 
   const handleMove = (clientX: number, clientY: number) => {
-    if (!isDragging) return
-    const deltaX = clientX - startPos.x
-    const deltaY = clientY - startPos.y
-    setDragOffset({ x: deltaX, y: deltaY })
-  }
+    if (!isDragging) return;
+    const deltaX = clientX - startPos.x;
+    const deltaY = clientY - startPos.y;
+    setDragOffset({ x: deltaX, y: deltaY });
+  };
 
   const handleEnd = () => {
-    if (!isDragging) return
-    const threshold = 100
+    if (!isDragging) return;
+    const threshold = 100;
     if (Math.abs(dragOffset.x) > threshold) {
-      swipeCard(dragOffset.x > 0 ? "right" : "left")
+      swipeCard(dragOffset.x > 0 ? "right" : "left");
     } else {
-      setDragOffset({ x: 0, y: 0 })
+      setDragOffset({ x: 0, y: 0 });
     }
-    setIsDragging(false)
+    setIsDragging(false);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) =>
+    handleStart(e.clientX, e.clientY);
+  const handleMouseMove = (e: React.MouseEvent) =>
+    handleMove(e.clientX, e.clientY);
+  const handleMouseUp = () => handleEnd();
+
+  const handleTouchStart = (e: React.TouchEvent) =>
+    handleStart(e.touches[0].clientX, e.touches[0].clientY);
+  const handleTouchMove = (e: React.TouchEvent) =>
+    handleMove(e.touches[0].clientX, e.touches[0].clientY);
+  const handleTouchEnd = () => handleEnd();
+
+const sendSwipeToBackend = async (action: "like" | "dislike") => {
+  if (!currentCards.length) return
+
+  const targetUserId = currentCards[0].username
+
+  try {
+    console.log(`Sending swipe action: ${action} to backend...`)
+
+    const response = await api.post(
+      `/users/${targetUserId}/action/`,
+      { action },
+      
+    )
+
+    console.log("Swipe response:", response.data)
+  } catch (error) {
+    console.error("Error sending swipe:", error)
   }
-
-  const handleMouseDown = (e: React.MouseEvent) => handleStart(e.clientX, e.clientY)
-  const handleMouseMove = (e: React.MouseEvent) => handleMove(e.clientX, e.clientY)
-  const handleMouseUp = () => handleEnd()
-
-  const handleTouchStart = (e: React.TouchEvent) => handleStart(e.touches[0].clientX, e.touches[0].clientY)
-  const handleTouchMove = (e: React.TouchEvent) => handleMove(e.touches[0].clientX, e.touches[0].clientY)
-  const handleTouchEnd = () => handleEnd()
-
+}
   const swipeCard = (direction: "left" | "right") => {
-    setFeedback(direction === "right" ? "like" : "dislike")
+    if (direction === "right") {
+      sendSwipeToBackend("like");
+    } else {
+      sendSwipeToBackend("dislike");
+    }
+    setFeedback(direction === "right" ? "like" : "dislike");
     setTimeout(() => {
       setCurrentCards((prev) => {
-        const newCards = prev.slice(1)
+        const newCards = prev.slice(1);
         if (newCards.length === 0) {
-          if (currentStage === "filter_users" && otherUsers.length > 0) {
+          // if (currentStage === "filter_users" && otherUsers.length > 0) {
+          if (currentStage === "filter_users" ) {
             // Stay in filter_users stage, let user choose to see other_users
           } else if (currentStage === "other_users") {
-            setCurrentStage("no_more_users")
+            setCurrentStage("no_more_users");
           }
         }
-        return newCards
-      })
-      setDragOffset({ x: 0, y: 0 })
-      setFeedback(null)
-    }, 300)
-  }
+        return newCards;
+      });
+      setDragOffset({ x: 0, y: 0 });
+      setFeedback(null);
+    }, 300);
+  };
 
   const handleShowOtherUsers = () => {
-    setCurrentStage("other_users")
+    setCurrentStage("other_users");
     toast({
       title: "Loading other users",
       description: "Now showing users from all categories",
       status: "info",
       duration: 2000,
       isClosable: true,
-    })
-  }
+    });
+  };
 
   const handleReport = () => {
     // Placeholder for report handling logic
@@ -251,12 +374,12 @@ const SwipeableCardsPage = () => {
       status: "success",
       duration: 2000,
       isClosable: true,
-    })
-    onReportClose()
-  }
+    });
+    onReportClose();
+  };
 
-  const rotation = dragOffset.x * 0.1
-  const opacity = Math.max(0.7, 1 - Math.abs(dragOffset.x) / 200)
+  const rotation = dragOffset.x * 0.1;
+  const opacity = Math.max(0.7, 1 - Math.abs(dragOffset.x) / 200);
 
   if (isLoading) {
     return (
@@ -269,14 +392,16 @@ const SwipeableCardsPage = () => {
             </Text>
             <IconButton
               aria-label="Toggle color mode"
-              icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
+              icon={
+                colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />
+              }
               onClick={toggleColorMode}
               variant="ghost"
             />
           </VStack>
         </Container>
       </Box>
-    )
+    );
   }
 
   if (error) {
@@ -291,23 +416,26 @@ const SwipeableCardsPage = () => {
             <Text color="gray.500" textAlign="center">
               {error}
             </Text>
-            <Button colorScheme="pink" size="lg" onClick={fetchUsers}>
+            <Button colorScheme="pink" size="lg" onClick={() => fetchUsers()}>
               Try Again
             </Button>
             <IconButton
               aria-label="Toggle color mode"
-              icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
+              icon={
+                colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />
+              }
               onClick={toggleColorMode}
               variant="ghost"
             />
           </VStack>
         </Container>
       </Box>
-    )
+    );
   }
 
   if (currentCards.length === 0 && !isLoading && !error) {
-    if (currentStage === "filter_users" && otherUsers.length > 0) {
+    // if (currentStage === "filter_users" && otherUsers.length > 0) {
+    if (currentStage === "otherUsers" ) {
       // Stage 1: Ask if user wants to see other users
       return (
         <Box minH="100vh" bg={bgColor}>
@@ -320,25 +448,41 @@ const SwipeableCardsPage = () => {
               <Text color="gray.500" textAlign="center">
                 Would you like to see other users who might be a good match?
               </Text>
-              <Button colorScheme="pink" size="lg" onClick={handleShowOtherUsers} leftIcon={<Users size={20} />}>
+              <Button
+                colorScheme="pink"
+                size="lg"
+                onClick={handleShowOtherUsers}
+                leftIcon={<Users size={20} />}
+              >
                 Show Other Users
               </Button>
-              <Button colorScheme="blue" variant="outline" onClick={onSettingsOpen} leftIcon={<Settings size={20} />}>
+              <Button
+                colorScheme="blue"
+                variant="outline"
+                onClick={onSettingsOpen}
+                leftIcon={<Settings size={20} />}
+              >
                 Modify Search Options
               </Button>
-              <Button colorScheme="gray" variant="outline" onClick={fetchUsers}>
+              <Button
+                colorScheme="gray"
+                variant="outline"
+                onClick={() => fetchUsers()}
+              >
                 Refresh
               </Button>
               <IconButton
                 aria-label="Toggle color mode"
-                icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                icon={
+                  colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />
+                }
                 onClick={toggleColorMode}
                 variant="ghost"
               />
             </VStack>
           </Container>
         </Box>
-      )
+      );
     } else {
       // Stage 2 & 3: No more users available, suggest modifying settings
       return (
@@ -350,24 +494,37 @@ const SwipeableCardsPage = () => {
                 No more users available!
               </Text>
               <Text color="gray.500" textAlign="center">
-                Try modifying your search settings to discover more potential matches.
+                Try modifying your search settings to discover more potential
+                matches.
               </Text>
-              <Button colorScheme="pink" size="lg" onClick={onSettingsOpen} leftIcon={<Settings size={20} />}>
+              <Button
+                colorScheme="pink"
+                size="lg"
+                onClick={onSettingsOpen}
+                leftIcon={<Settings size={20} />}
+              >
                 Modify Search Settings
               </Button>
-              <Button colorScheme="blue" variant="outline" onClick={fetchUsers}>
+              <Button
+                colorScheme="blue"
+                variant="outline"
+                onClick={() => fetchUsers()}
+              >
                 Refresh
               </Button>
               <IconButton
                 aria-label="Toggle color mode"
-                icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
-                onClick={toggleColorMode}
+                icon={
+                  colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />
+                }
+                // onClick={toggleColorMode}
+                onClick={()=>{ setCurrentStage("filter_users")}}
                 variant="ghost"
               />
             </VStack>
           </Container>
         </Box>
-      )
+      );
     }
   }
 
@@ -399,10 +556,10 @@ const SwipeableCardsPage = () => {
       <Container maxW="lg" centerContent py={8}>
         <Box position="relative" w="450px" h="800px" mb={8}>
           {currentCards.slice(0, 3).map((profile, index) => {
-            const isTopCard = index === 0
-            const zIndex = currentCards.length - index
-            const scale = 1 - index * 0.05
-            const yOffset = index * 8
+            const isTopCard = index === 0;
+            const zIndex = currentCards.length - index;
+            const scale = 1 - index * 0.05;
+            const yOffset = index * 8;
 
             return (
               <Box
@@ -420,7 +577,9 @@ const SwipeableCardsPage = () => {
                 borderColor={colorMode === "light" ? "gray.200" : "gray.600"}
                 transform={
                   isTopCard
-                    ? `translateX(${dragOffset.x}px) translateY(${dragOffset.y + yOffset}px) rotate(${rotation}deg) scale(${scale})`
+                    ? `translateX(${dragOffset.x}px) translateY(${
+                        dragOffset.y + yOffset
+                      }px) rotate(${rotation}deg) scale(${scale})`
                     : `translateY(${yOffset}px) scale(${scale})`
                 }
                 zIndex={zIndex}
@@ -504,7 +663,11 @@ const SwipeableCardsPage = () => {
                           {profile.age}
                         </Text>
                         {profile.is_verified && (
-                          <Badge colorScheme="blue" variant="solid" fontSize="xs">
+                          <Badge
+                            colorScheme="blue"
+                            variant="solid"
+                            fontSize="xs"
+                          >
                             ✓
                           </Badge>
                         )}
@@ -566,7 +729,12 @@ const SwipeableCardsPage = () => {
                     </Text>
 
                     <Box>
-                      <Text color={textColor} fontSize="sm" fontWeight="semibold" mb={2}>
+                      <Text
+                        color={textColor}
+                        fontSize="sm"
+                        fontWeight="semibold"
+                        mb={2}
+                      >
                         Interests
                       </Text>
                       <Wrap spacing={1}>
@@ -575,8 +743,12 @@ const SwipeableCardsPage = () => {
                             <Badge
                               variant="outline"
                               fontSize="xs"
-                              colorScheme={colorMode === "light" ? "gray" : "whiteAlpha"}
-                              borderColor={colorMode === "light" ? "gray.300" : "gray.500"}
+                              colorScheme={
+                                colorMode === "light" ? "gray" : "whiteAlpha"
+                              }
+                              borderColor={
+                                colorMode === "light" ? "gray.300" : "gray.500"
+                              }
                               color={textColor}
                             >
                               {interest}
@@ -588,7 +760,7 @@ const SwipeableCardsPage = () => {
                   </VStack>
                 </Box>
               </Box>
-            )
+            );
           })}
         </Box>
       </Container>
@@ -604,7 +776,10 @@ const SwipeableCardsPage = () => {
               <HStack spacing={4} w="full">
                 <FormControl>
                   <FormLabel>Sort by</FormLabel>
-                  <Select value={sortBy} onChange={(e) => setSortBy(e.target.value as any)}>
+                  <Select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                  >
                     <option value="age">Age</option>
                     <option value="location">Distance</option>
                     <option value="points">Fame Rating</option>
@@ -613,11 +788,12 @@ const SwipeableCardsPage = () => {
                 </FormControl>
 
                 <FormControl>
-                  <FormLabel>Location</FormLabel>
+                  <FormLabel>Max Distance (km)</FormLabel>
                   <Input
+                    type="number"
                     value={locationFilter}
                     onChange={(e) => setLocationFilter(e.target.value)}
-                    placeholder="Filter by location"
+                    placeholder="Enter max distance in km"
                   />
                 </FormControl>
               </HStack>
@@ -626,7 +802,13 @@ const SwipeableCardsPage = () => {
                 <FormLabel>
                   Age Range: {ageRange[0]} - {ageRange[1]}
                 </FormLabel>
-                <Slider value={ageRange} onChange={setAgeRange} min={18} max={65} step={1}>
+                <Slider
+                  value={ageRange}
+                  onChange={setAgeRange}
+                  min={18}
+                  max={65}
+                  step={1}
+                >
                   <SliderTrack>
                     <SliderFilledTrack />
                   </SliderTrack>
@@ -639,7 +821,13 @@ const SwipeableCardsPage = () => {
                 <FormLabel>
                   Fame Rating: {pointsRange[0]} - {pointsRange[1]}
                 </FormLabel>
-                <Slider value={pointsRange} onChange={setPointsRange} min={0} max={100} step={5}>
+                <Slider
+                  value={pointsRange}
+                  onChange={setPointsRange}
+                  min={0}
+                  max={100}
+                  step={5}
+                >
                   <SliderTrack>
                     <SliderFilledTrack />
                   </SliderTrack>
@@ -649,15 +837,30 @@ const SwipeableCardsPage = () => {
               </FormControl>
 
               <FormControl>
-                <FormLabel>Interests</FormLabel>
+                <FormLabel>Min Common Tags</FormLabel>
                 <Input
+                  type="number"
                   value={interestFilter}
                   onChange={(e) => setInterestFilter(e.target.value)}
-                  placeholder="Filter by interests"
+                  placeholder="Minimum number of common interests"
                 />
               </FormControl>
             </VStack>
           </ModalBody>
+
+          <ModalFooter>
+            <Button variant="ghost" mr={3} onClick={handleResetFilters}>
+              Reset
+            </Button>
+            <Button
+              colorScheme="blue"
+              onClick={handleApplyFilters}
+              isLoading={isApplyingFilters}
+              loadingText="Applying..."
+            >
+              Apply
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
 
@@ -685,7 +888,11 @@ const SwipeableCardsPage = () => {
                 <Button variant="outline" onClick={onReportClose}>
                   Cancel
                 </Button>
-                <Button colorScheme="red" onClick={handleReport} isDisabled={!reportReason}>
+                <Button
+                  colorScheme="red"
+                  onClick={handleReport}
+                  isDisabled={!reportReason}
+                >
                   Submit Report
                 </Button>
               </HStack>
@@ -694,7 +901,7 @@ const SwipeableCardsPage = () => {
         </ModalContent>
       </Modal>
     </Box>
-  )
-}
+  );
+};
 
-export default SwipeableCardsPage
+export default SwipeableCardsPage;

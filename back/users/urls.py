@@ -1,22 +1,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from .views import (DiscoverProfilesAPIView, DiscoverUserListView, SendOTPView,
- SignInAPIView,
- SignUpAPIView, UserImageDelete,
- UserListView,
- UserDetailView, UserPersonalInfo,
- UserProfileView,
- UserSettingsView,
- AdminUserListView,
- ModifyUserView,
- VerifyOTPView,
- VerifyUSernameView,
- RecordProfileView,
- LikeUser,
- DislikeUser,
- CheckLikeStatus,
- )
+from .views import *
 
 urlpatterns = [
     #tokens
@@ -33,6 +18,7 @@ urlpatterns = [
 	path('users-info/<str:platform>/', UserListView.as_view(), name='user-list'),
 
     path('users/<str:username>/', UserDetailView.as_view(), name='user-detail'),
+    path('users/<str:username>/action/', UserActionView.as_view(), name='user-detail'),
 	path('settings/', UserSettingsView.as_view(), name='user-settings'),
 	path('profile/', UserProfileView.as_view(), name='user-profile'),
    
@@ -47,9 +33,9 @@ urlpatterns = [
 	
     #
     path('profile/view/', RecordProfileView.as_view(), name='record-profile-view'),
-    path('profile/like/', LikeUser.as_view(), name='like-user'),
-    path('profile/dislike/', DislikeUser.as_view(), name='dislike-user'),
-    path('profile/like-status/<str:username>/', CheckLikeStatus.as_view(), name='like-status'),
+    # path('profile/like/', LikeUser.as_view(), name='like-user'),
+    # path('profile/dislike/', DislikeUser.as_view(), name='dislike-user'),
+    # path('profile/like-status/<str:username>/', CheckLikeStatus.as_view(), name='like-status'),
 	
     # Discover card
 	path("discover/", DiscoverUserListView.as_view(), name="discover_profiles"),

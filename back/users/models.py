@@ -196,15 +196,33 @@ class ProfileView(models.Model):
         unique_together = ('viewer', 'viewed', 'date')
 
 
-class ProfileLike(models.Model):
-    liked_by = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='likes_given')
-    liked_user = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='likes_received')
+# class ProfileLike(models.Model):
+#     liked_by = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='likes_given')
+#     liked_user = models.ForeignKey('DefaultUser', on_delete=models.CASCADE, related_name='likes_received')
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         unique_together = ('liked_by', 'liked_user')
+
+class UserInteraction(models.Model):
+    ACTION_CHOICES = [
+        ('like', 'Like'),
+        ('dislike', 'Dislike'),
+    ]
+
+    from_user = models.ForeignKey(DefaultUser, on_delete=models.CASCADE, related_name="given_actions")
+    to_user = models.ForeignKey(DefaultUser, on_delete=models.CASCADE, related_name="received_actions")
+    action = models.CharField(max_length=10, choices=ACTION_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('liked_by', 'liked_user')
+        unique_together = ('from_user', 'to_user')  # prevents multiple duplicate actions
+
+    def __str__(self):
+        return f"{self.from_user} -> {self.action} -> {self.to_user}"
 
 
+# =================================================================================================================
 
 
 class TokenVerifyView(TokenVerifyView):
@@ -214,3 +232,34 @@ class TokenVerifyView(TokenVerifyView):
         except Exception as e:
             # Optional: log or customize error response here
             return Response({'detail': 'Invalid token'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import DefaultUser, UserInteraction
+
+class UserActionView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, user_id):
+        action = request.data.get("action")
+        if action not in ["like", "dislike"]:
+            return Response({"error": "Invalid action"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            to_user = DefaultUser.objects.get(id=user_id)
+        except DefaultUser.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        # Create or update interaction
+        interaction, created = UserInteraction.objects.update_or_create(
+            from_user=request.user,
+            to_user=to_user,
+            defaults={"action": action},
+        )
+
+        return Response({
+            "message": f"{action} recorded",
+            "created": created,
+        }, status=status.HTTP_200_OK)

@@ -4,7 +4,7 @@ from rest_framework import serializers
 from datetime import date
 
 from .validators import *
-from .models import DefaultUser, ProfileView, ProfileLike
+from .models import *
 
 
 
@@ -162,7 +162,7 @@ class ProfileViewSerializer(serializers.ModelSerializer):
 
 class ProfileLikeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ProfileLike
+        model = UserInteraction
         fields = '__all__'
 
 
@@ -178,6 +178,7 @@ class DiscoverProfileSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = [
             "id",
+            "username",
             "name",
             "age",
             "is_verified",
@@ -307,6 +308,7 @@ class DiscoverUserSerializer(serializers.ModelSerializer):
         model = DefaultUser
         fields = [
             "id",
+            "username",
             "first_name",
             "last_name",
             "is_verified",
