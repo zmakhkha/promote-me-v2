@@ -1,3 +1,24 @@
+
+from rest_framework import generics, permissions
+from django.db.models import Q, Count
+from .models import DefaultUser
+from .serializers import DiscoverUserSerializer
+from rest_framework import serializers
+from .models import DefaultUser
+from datetime import date
+from math import radians, cos, sin, asin, sqrt
+from rest_framework import generics, permissions
+from rest_framework.response import Response
+from .serializers import DiscoverUserSerializer
+from .models import DefaultUser
+from django.db.models import Q
+from datetime import date
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import DefaultUser, UserInteraction
 import logging
 from datetime import datetime
 from datetime import date
@@ -389,15 +410,6 @@ class UserImageDelete(APIView):
         )
 
 
-from rest_framework import generics, permissions
-from django.db.models import Q, Count
-from .models import DefaultUser
-from .serializers import DiscoverUserSerializer
-from rest_framework import serializers
-from .models import DefaultUser
-from datetime import date
-from math import radians, cos, sin, asin, sqrt
-
 def haversine(lon1, lat1, lon2, lat2):
     # Calculate the great circle distance between two points in km
     # from https://stackoverflow.com/a/4913653
@@ -409,170 +421,6 @@ def haversine(lon1, lat1, lon2, lat2):
     km = 6371 * c
     return km
 
-from rest_framework import generics, permissions
-from rest_framework.response import Response
-from .serializers import DiscoverUserSerializer
-from .models import DefaultUser
-from django.db.models import Q
-from datetime import date
-class DiscoverUserListView(generics.ListAPIView):
-    serializer_class = DiscoverUserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-
-        # Exclude self and admins
-        qs = DefaultUser.objects.filter(is_active=True, is_staff=False).exclude(id=user.id)
-
-        # Sexual orientation matching logic
-        user_orientation = user.sexual_orientation or "bisexual"
-        user_gender = user.gender
-
-        # Build gender filter based on orientation
-        if user_orientation == "bisexual":
-            gender_filter = Q()
-        elif user_orientation == "male":
-            gender_filter = Q(gender="male")
-        elif user_orientation == "female":
-            gender_filter = Q(gender="female")
-        else:
-            gender_filter = Q()
-
-        # Users to show must be interested in user's gender (handle bisexuality of other users)
-        interested_in_user_gender = Q(
-            sexual_orientation="bisexual") | Q(sexual_orientation=user_gender)
-
-        qs = qs.filter(gender_filter).filter(interested_in_user_gender)
-        return qs
-
-    def list(self, request, *args, **kwargs):
-        # Override to add sorting, filtering, and common tags count
-        queryset = self.get_queryset()
-        user = request.user
-        user_interests = set(user.interests or [])
-
-        # Fetch all candidates
-        candidates = list(queryset)
-
-        # Calculate common tags count and distances
-        results = []
-        for candidate in candidates:
-            candidate_interests = set(candidate.interests or [])
-            common_tags = len(user_interests.intersection(candidate_interests))
-
-            dist = None
-            if user.latitude and user.longitude and candidate.latitude and candidate.longitude:
-                dist = haversine(user.longitude, user.latitude, candidate.longitude, candidate.latitude)
-            else:
-                dist = 9999  # far if no location
-
-            results.append({
-                "user": candidate,
-                "common_tags": common_tags,
-                "distance": dist,
-                "age": candidate.age or 0,
-                "fame_rating": candidate.fame_rating,
-            })
-
-        # Apply filtering (example filters from query params)
-        age_min = request.query_params.get("age_min")
-        age_max = request.query_params.get("age_max")
-        max_distance = request.query_params.get("max_distance")
-        min_fame = request.query_params.get("min_fame")
-        min_common_tags = request.query_params.get("min_common_tags")
-
-        filtered_results = []
-        other_results = []
-
-        for r in results:
-            # Check if result meets filter criteria
-            meets_criteria = True
-            
-            if age_min and r["age"] < int(age_min):
-                meets_criteria = False
-            if age_max and r["age"] > int(age_max):
-                meets_criteria = False
-            if max_distance and r["distance"] > float(max_distance):
-                meets_criteria = False
-            if min_fame and r["fame_rating"] < float(min_fame):
-                meets_criteria = False
-            if min_common_tags and r["common_tags"] < int(min_common_tags):
-                meets_criteria = False
-                
-            if meets_criteria:
-                filtered_results.append(r)
-            else:
-                other_results.append(r)
-
-        # Sorting param
-        sort_by = request.query_params.get("sort_by", "distance")  # default sort by distance
-        reverse = False
-
-        if sort_by == "age":
-            key = lambda x: x["age"]
-        elif sort_by == "fame_rating":
-            key = lambda x: x["fame_rating"]
-            reverse = True
-        elif sort_by == "common_tags":
-            key = lambda x: x["common_tags"]
-            reverse = True
-        else:  # distance or default
-            key = lambda x: x["distance"]
-
-        filtered_results.sort(key=key, reverse=reverse)
-        other_results.sort(key=key, reverse=reverse)
-
-        # Paginate manually
-        page_size = 20
-        page = int(request.query_params.get("page", 1))
-        start = (page - 1) * page_size
-        end = start + page_size
-        
-        # Paginate filtered results
-        paged_filtered_results = filtered_results[start:end]
-        # Take a sample of other results (or all if few)
-        paged_other_results = other_results[:page_size]
-
-        # Serialize filtered users
-        filter_users_serializer = self.get_serializer(
-            [r["user"] for r in paged_filtered_results],
-            many=True,
-            context={"current_user": user}
-        )
-
-        # Serialize other users
-        other_users_serializer = self.get_serializer(
-            [r["user"] for r in paged_other_results],
-            many=True,
-            context={"current_user": user}
-        )
-
-        # Add common_tags and distance to filtered users
-        filter_users_data = filter_users_serializer.data
-        for idx, item in enumerate(filter_users_data):
-            item["common_tags"] = paged_filtered_results[idx]["common_tags"]
-            item["distance"] = round(paged_filtered_results[idx]["distance"], 1) if paged_filtered_results[idx]["distance"] is not None else None
-
-        # Add common_tags and distance to other users
-        other_users_data = other_users_serializer.data
-        for idx, item in enumerate(other_users_data):
-            item["common_tags"] = paged_other_results[idx]["common_tags"]
-            item["distance"] = round(paged_other_results[idx]["distance"], 1) if paged_other_results[idx]["distance"] is not None else None
-
-        return Response({
-            "filter_users": filter_users_data,
-            "other_users": other_users_data,
-            "page": page,
-            "page_size": page_size,
-            "total": len(filtered_results),
-        })
-
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status, permissions
-from .models import DefaultUser, UserInteraction
 
 class UserActionView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -598,3 +446,72 @@ class UserActionView(APIView):
             "message": f"{action} recorded",
             "created": created,
         }, status=status.HTTP_200_OK)
+
+
+
+class DiscoverUserListView(generics.ListAPIView):
+    serializer_class = DiscoverUserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # Exclude self, admins, and users the current user has already seen
+        seen_user_ids = UserInteraction.objects.filter(from_user=user).values_list('to_user_id', flat=True)
+        blocked_by_user = user.blocked_users.values_list('id', flat=True)
+        blocked_current_user = DefaultUser.objects.filter(blocked_users=user).values_list('id', flat=True)
+
+        # Filter users to show (active, not blocked, and not already seen)
+        return DefaultUser.objects.filter(
+            is_active=True, 
+            is_staff=False,
+            is_discoverable=True
+        ).exclude(
+            id__in=[user.id, *seen_user_ids, *blocked_by_user, *blocked_current_user]
+        )
+
+    def list(self, request, *args, **kwargs):
+        # Get the current user
+        user = request.user
+        # Fetch the users from the queryset
+        queryset = self.get_queryset()
+        candidates = list(queryset)
+
+        # Get the current user's interests
+        user_interests = set(user.interests or [])
+
+        # Calculate common tags and distances for each candidate
+        results = [
+            {
+                "user": candidate,
+                "common_tags": len(user_interests.intersection(set(candidate.interests or []))),
+                "distance": haversine(user.longitude, user.latitude, candidate.longitude, candidate.latitude) 
+                            if user.latitude and user.longitude and candidate.latitude and candidate.longitude 
+                            else 9999,
+            }
+            for candidate in candidates
+        ]
+
+        # Separate unseen users and other users based on whether they've been interacted with
+        unseen_users = [r for r in results if r["user"].id not in UserInteraction.objects.filter(from_user=user).values_list('to_user_id', flat=True)]
+        other_users = [r for r in results if r["user"].id in UserInteraction.objects.filter(from_user=user).values_list('to_user_id', flat=True)]
+
+        # Serialize the data for unseen and other users using your custom serializer
+        unseen_users_serializer = self.get_serializer([r["user"] for r in unseen_users], many=True, context={"current_user": user})
+        other_users_serializer = self.get_serializer([r["user"] for r in other_users], many=True, context={"current_user": user})
+
+        # Add common_tags and distance to serialized data
+        unseen_users_data = unseen_users_serializer.data
+        for idx, item in enumerate(unseen_users_data):
+            item["common_tags"] = unseen_users[idx]["common_tags"]
+            item["distance"] = round(unseen_users[idx]["distance"], 1) if unseen_users[idx]["distance"] is not None else None
+
+        other_users_data = other_users_serializer.data
+        for idx, item in enumerate(other_users_data):
+            item["common_tags"] = other_users[idx]["common_tags"]
+            item["distance"] = round(other_users[idx]["distance"], 1) if other_users[idx]["distance"] is not None else None
+
+        return Response({
+            "unseen_users": unseen_users_data,
+            "other_users": other_users_data,
+        })

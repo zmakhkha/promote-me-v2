@@ -69,7 +69,7 @@ interface UserProfile {
   common_tags: number;
 }
 
-type UserStage = "filter_users" | "other_users" | "no_more_users";
+type UserStage = "unseen_users" | "other_users" | "no_more_users";
 
 const SwipeableCardsPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -85,20 +85,12 @@ const SwipeableCardsPage = () => {
   } = useDisclosure();
   const toast = useToast();
 
-  const [sortBy, setSortBy] = useState<
-    "age" | "location" | "points" | "common_tags"
-  >("age");
-  const [ageRange, setAgeRange] = useState([18, 50]);
-  const [pointsRange, setPointsRange] = useState([0, 100]);
-  const [locationFilter, setLocationFilter] = useState("");
-  const [interestFilter, setInterestFilter] = useState("");
   const [reportReason, setReportReason] = useState("");
-  const [isApplyingFilters, setIsApplyingFilters] = useState(false);
 
-  const [currentStage, setCurrentStage] = useState<UserStage>("filter_users");
-
-  const [filterUsers, setFilterUsers] = useState<UserProfile[]>([]);
+  const [currentStage, setCurrentStage] = useState<UserStage>("unseen_users");
+  const [unseenUsers, setUnseenUsers] = useState<UserProfile[]>([]);
   const [otherUsers, setOtherUsers] = useState<UserProfile[]>([]);
+  const [currentCards, setCurrentCards] = useState<UserProfile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,72 +98,31 @@ const SwipeableCardsPage = () => {
   const cardBg = colorMode === "light" ? "white" : "gray.800";
   const textColor = colorMode === "light" ? "gray.800" : "white";
 
-  const fetchUsers = async (withFilters = false) => {
+  const fetchUsers = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      console.log("[v0] Fetching users from API...");
+      console.log("Fetching users from API...");
 
-      let url = "/discover/";
-
-      // Add query parameters if applying filters
-      if (withFilters) {
-        const params = new URLSearchParams();
-
-        // Sort parameter mapping
-        const sortMapping = {
-          age: "age",
-          location: "distance",
-          points: "fame_rating",
-          common_tags: "common_tags",
-        };
-        params.append("sort_by", sortMapping[sortBy] || "distance");
-
-        // Age filters
-        params.append("age_min", ageRange[0].toString());
-        params.append("age_max", ageRange[1].toString());
-
-        // Fame rating filters
-        params.append("min_fame", pointsRange[0].toString());
-
-        // Distance filter (if location is provided as distance in km)
-        if (locationFilter) {
-          const distanceValue = parseFloat(locationFilter);
-          if (!isNaN(distanceValue)) {
-            params.append("max_distance", distanceValue.toString());
-          }
-        }
-
-        // Common tags filter
-        if (interestFilter) {
-          const tagsValue = parseInt(interestFilter);
-          if (!isNaN(tagsValue)) {
-            params.append("min_common_tags", tagsValue.toString());
-          }
-        }
-
-        url += `?${params.toString()}`;
-      }
-
-      const response = await api.get(url);
+      const response = await api.get("/discover/");
       const data = response.data;
-      console.log("[v0] API response received:", data);
+      console.log("API response received:", data);
 
-      setFilterUsers(data.filter_users || []);
+      setUnseenUsers(data.unseen_users || []);
       setOtherUsers(data.other_users || []);
-      setCurrentStage("filter_users");
+      setCurrentStage("unseen_users");
 
       toast({
-        title: withFilters ? "Filters applied" : "Users loaded",
-        description: `Found ${
-          data.filter_users?.length || 0
-        } filtered users and ${data.other_users?.length || 0} other users`,
+        title: "Users loaded",
+        description: `Found ${data.unseen_users?.length || 0} new users and ${
+          data.other_users?.length || 0
+        } other users`,
         status: "success",
         duration: 2000,
         isClosable: true,
       });
     } catch (err) {
-      console.error("[v0] Error fetching users:", err);
+      console.error("Error fetching users:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch users");
       toast({
         title: "Error loading users",
@@ -189,92 +140,24 @@ const SwipeableCardsPage = () => {
     fetchUsers();
   }, []);
 
-  const handleApplyFilters = async () => {
-    setIsApplyingFilters(true);
-    try {
-      await fetchUsers(true);
-      onSettingsClose();
-    } catch (error) {
-      console.error("Error applying filters:", error);
-    } finally {
-      setIsApplyingFilters(false);
+  // Update current cards based on current stage
+  useEffect(() => {
+    if (!isLoading) {
+      if (currentStage === "unseen_users") {
+        setCurrentCards(unseenUsers);
+      } else if (currentStage === "other_users") {
+        setCurrentCards(otherUsers);
+      } else {
+        setCurrentCards([]);
+      }
     }
-  };
+  }, [currentStage, unseenUsers, otherUsers, isLoading]);
 
-  const handleResetFilters = () => {
-    setSortBy("age");
-    setLocationFilter("");
-    setAgeRange([18, 50]);
-    setPointsRange([0, 100]);
-    setInterestFilter("");
-  };
-
-  const getFilteredProfiles = () => {
-    let profilesToFilter: UserProfile[] = [];
-
-    if (currentStage === "filter_users") {
-      profilesToFilter = filterUsers;
-    } else if (currentStage === "other_users") {
-      profilesToFilter = otherUsers;
-    } else {
-      return []; // no_more_users stage
-    }
-
-    return profilesToFilter
-      .filter((profile) => {
-        const ageMatch =
-          profile.age >= ageRange[0] && profile.age <= ageRange[1];
-        const pointsMatch =
-          profile.points >= pointsRange[0] && profile.points <= pointsRange[1];
-        const locationMatch =
-          !locationFilter ||
-          profile.location.toLowerCase().includes(locationFilter.toLowerCase());
-        const interestMatch =
-          !interestFilter ||
-          profile.interests.some((interest) =>
-            interest.toLowerCase().includes(interestFilter.toLowerCase())
-          );
-        return ageMatch && pointsMatch && locationMatch && interestMatch;
-      })
-      .sort((a, b) => {
-        switch (sortBy) {
-          case "age":
-            return a.age - b.age;
-          case "location":
-            return a.distance - b.distance;
-          case "points":
-            return b.points - a.points;
-          case "common_tags":
-            return b.common_tags - a.common_tags;
-          default:
-            return 0;
-        }
-      });
-  };
-
-  const [currentCards, setCurrentCards] = useState<UserProfile[]>([]);
   const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     const filteredProfiles = getFilteredProfiles();
-  //     setCurrentCards(filteredProfiles);
-
-  //     // if (filteredProfiles.length === 0) {
-  //     //   if (currentStage === "filter_users" && otherUsers.length > 0) {
-  //     //     // Don't auto-advance, let user choose
-  //     //   } else if (currentStage === "other_users") {
-  //     //     // setCurrentStage("no_more_users");
-  //     //     console.log("no more users,");
-  //     //   }
-  //     // }
-  //   }
-  //   // }, [sortBy, ageRange, pointsRange, locationFilter, interestFilter, currentStage, filterUsers, otherUsers, isLoading])
-  // }, []);
 
   const handleStart = (clientX: number, clientY: number) => {
     setIsDragging(true);
@@ -311,25 +194,24 @@ const SwipeableCardsPage = () => {
     handleMove(e.touches[0].clientX, e.touches[0].clientY);
   const handleTouchEnd = () => handleEnd();
 
-const sendSwipeToBackend = async (action: "like" | "dislike") => {
-  if (!currentCards.length) return
+  const sendSwipeToBackend = async (action: "like" | "dislike") => {
+    if (!currentCards.length) return;
 
-  const targetUserId = currentCards[0].username
+    const targetUserId = currentCards[0].username;
 
-  try {
-    console.log(`Sending swipe action: ${action} to backend...`)
+    try {
+      console.log(`Sending swipe action: ${action} to backend...`);
 
-    const response = await api.post(
-      `/users/${targetUserId}/action/`,
-      { action },
-      
-    )
+      const response = await api.post(`/users/${targetUserId}/action/`, {
+        action,
+      });
 
-    console.log("Swipe response:", response.data)
-  } catch (error) {
-    console.error("Error sending swipe:", error)
-  }
-}
+      console.log("Swipe response:", response.data);
+    } catch (error) {
+      console.error("Error sending swipe:", error);
+    }
+  };
+
   const swipeCard = (direction: "left" | "right") => {
     if (direction === "right") {
       sendSwipeToBackend("like");
@@ -340,14 +222,25 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
     setTimeout(() => {
       setCurrentCards((prev) => {
         const newCards = prev.slice(1);
-        if (newCards.length === 0) {
-          // if (currentStage === "filter_users" && otherUsers.length > 0) {
-          if (currentStage === "filter_users" ) {
-            // Stay in filter_users stage, let user choose to see other_users
-          } else if (currentStage === "other_users") {
+        
+        // Update the original arrays based on current stage
+        if (currentStage === "unseen_users") {
+          setUnseenUsers(current => current.slice(1));
+          
+          // If no more unseen users, check if we should move to other users
+          if (newCards.length === 0 && otherUsers.length > 0) {
+            // Stay in unseen_users stage, let user choose to see other_users
+          } else if (newCards.length === 0) {
+            setCurrentStage("no_more_users");
+          }
+        } else if (currentStage === "other_users") {
+          setOtherUsers(current => current.slice(1));
+          
+          if (newCards.length === 0) {
             setCurrentStage("no_more_users");
           }
         }
+        
         return newCards;
       });
       setDragOffset({ x: 0, y: 0 });
@@ -359,7 +252,7 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
     setCurrentStage("other_users");
     toast({
       title: "Loading other users",
-      description: "Now showing users from all categories",
+      description: "Now showing users you've seen before",
       status: "info",
       duration: 2000,
       isClosable: true,
@@ -367,7 +260,6 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
   };
 
   const handleReport = () => {
-    // Placeholder for report handling logic
     toast({
       title: "Report Submitted",
       description: "Your report has been successfully submitted.",
@@ -434,8 +326,7 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
   }
 
   if (currentCards.length === 0 && !isLoading && !error) {
-    // if (currentStage === "filter_users" && otherUsers.length > 0) {
-    if (currentStage === "otherUsers" ) {
+    if (currentStage === "unseen_users" && otherUsers.length > 0) {
       // Stage 1: Ask if user wants to see other users
       return (
         <Box minH="100vh" bg={bgColor}>
@@ -443,10 +334,10 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
             <VStack spacing={6} justify="center" minH="100vh">
               <Heart size={64} color="#E53E3E" />
               <Text color={textColor} fontSize="lg">
-                No more common users!
+                No more new users!
               </Text>
               <Text color="gray.500" textAlign="center">
-                Would you like to see other users who might be a good match?
+                Would you like to see other users you've interacted with before?
               </Text>
               <Button
                 colorScheme="pink"
@@ -455,14 +346,6 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
                 leftIcon={<Users size={20} />}
               >
                 Show Other Users
-              </Button>
-              <Button
-                colorScheme="blue"
-                variant="outline"
-                onClick={onSettingsOpen}
-                leftIcon={<Settings size={20} />}
-              >
-                Modify Search Options
               </Button>
               <Button
                 colorScheme="gray"
@@ -484,7 +367,7 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
         </Box>
       );
     } else {
-      // Stage 2 & 3: No more users available, suggest modifying settings
+      // Stage 2 & 3: No more users available
       return (
         <Box minH="100vh" bg={bgColor}>
           <Container maxW="md" centerContent>
@@ -494,17 +377,8 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
                 No more users available!
               </Text>
               <Text color="gray.500" textAlign="center">
-                Try modifying your search settings to discover more potential
-                matches.
+                Check back later for new profiles or refresh to try again.
               </Text>
-              <Button
-                colorScheme="pink"
-                size="lg"
-                onClick={onSettingsOpen}
-                leftIcon={<Settings size={20} />}
-              >
-                Modify Search Settings
-              </Button>
               <Button
                 colorScheme="blue"
                 variant="outline"
@@ -512,13 +386,19 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
               >
                 Refresh
               </Button>
+              <Button
+                colorScheme="gray"
+                variant="ghost"
+                onClick={() => setCurrentStage("unseen_users")}
+              >
+                Back to Start
+              </Button>
               <IconButton
                 aria-label="Toggle color mode"
                 icon={
                   colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />
                 }
-                // onClick={toggleColorMode}
-                onClick={()=>{ setCurrentStage("filter_users")}}
+                onClick={toggleColorMode}
                 variant="ghost"
               />
             </VStack>
@@ -614,17 +494,6 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
                     />
 
                     <HStack position="absolute" top={4} left={4} spacing={2}>
-                      <IconButton
-                        aria-label="Settings"
-                        icon={<Settings size={16} />}
-                        size="sm"
-                        variant="ghost"
-                        bg="blackAlpha.500"
-                        color="white"
-                        _hover={{ bg: "blackAlpha.700" }}
-                        borderRadius="full"
-                        onClick={onSettingsOpen}
-                      />
                       <IconButton
                         aria-label="Report"
                         icon={<Flag size={16} />}
@@ -764,105 +633,6 @@ const sendSwipeToBackend = async (action: "like" | "dislike") => {
           })}
         </Box>
       </Container>
-
-      {/* Settings Modal */}
-      <Modal isOpen={isSettingsOpen} onClose={onSettingsClose} size="xl">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Filters & Settings</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <VStack spacing={6}>
-              <HStack spacing={4} w="full">
-                <FormControl>
-                  <FormLabel>Sort by</FormLabel>
-                  <Select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value as any)}
-                  >
-                    <option value="age">Age</option>
-                    <option value="location">Distance</option>
-                    <option value="points">Fame Rating</option>
-                    <option value="common_tags">Common Tags</option>
-                  </Select>
-                </FormControl>
-
-                <FormControl>
-                  <FormLabel>Max Distance (km)</FormLabel>
-                  <Input
-                    type="number"
-                    value={locationFilter}
-                    onChange={(e) => setLocationFilter(e.target.value)}
-                    placeholder="Enter max distance in km"
-                  />
-                </FormControl>
-              </HStack>
-
-              <FormControl>
-                <FormLabel>
-                  Age Range: {ageRange[0]} - {ageRange[1]}
-                </FormLabel>
-                <Slider
-                  value={ageRange}
-                  onChange={setAgeRange}
-                  min={18}
-                  max={65}
-                  step={1}
-                >
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb index={0} />
-                  <SliderThumb index={1} />
-                </Slider>
-              </FormControl>
-
-              <FormControl>
-                <FormLabel>
-                  Fame Rating: {pointsRange[0]} - {pointsRange[1]}
-                </FormLabel>
-                <Slider
-                  value={pointsRange}
-                  onChange={setPointsRange}
-                  min={0}
-                  max={100}
-                  step={5}
-                >
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb index={0} />
-                  <SliderThumb index={1} />
-                </Slider>
-              </FormControl>
-
-              <FormControl>
-                <FormLabel>Min Common Tags</FormLabel>
-                <Input
-                  type="number"
-                  value={interestFilter}
-                  onChange={(e) => setInterestFilter(e.target.value)}
-                  placeholder="Minimum number of common interests"
-                />
-              </FormControl>
-            </VStack>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button variant="ghost" mr={3} onClick={handleResetFilters}>
-              Reset
-            </Button>
-            <Button
-              colorScheme="blue"
-              onClick={handleApplyFilters}
-              isLoading={isApplyingFilters}
-              loadingText="Applying..."
-            >
-              Apply
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
       {/* Report Modal */}
       <Modal isOpen={isReportOpen} onClose={onReportClose}>
