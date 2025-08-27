@@ -1,73 +1,111 @@
 "use client";
 
-import React, { useState } from 'react'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import React from "react";
+import Image from "next/image";
+import NextLink from "next/link";
 import {
-  Heart,
-  ChevronDown,
-  Sun,
-  Moon,
-  Instagram,
-  MessageCircle,
-  Music,
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
-
+  Box,
+  Flex,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  IconButton,
+  Avatar,
+  Text,
+  Link as ChakraLink,
+  useColorModeValue,
+  useColorMode,
+} from "@chakra-ui/react";
+import { Search, Bell } from "lucide-react";
+import logoLight from "../../public/logo-light.png";
+import logoDark from "../../public/logo-dark.png";
 
 const Header = () => {
-	const [isDarkMode, setIsDarkMode] = useState(false)
-	
+  const borderColor = useColorModeValue("gray.200", "gray.700");
+  const bgColor = useColorModeValue("white", "gray.800");
+  const inputBg = useColorModeValue("gray.50", "gray.700");
+  const iconMuted = useColorModeValue("#6B7280", "#9CA3AF"); // gray-500 / gray-400
+  const { colorMode } = useColorMode();
+  const logo = colorMode === "light" ? logoLight : logoDark;
+
   return (
-	<header className="flex items-center justify-between p-4 border-b border-border bg-card">
-          <div className="flex items-center gap-2">
-            <Heart className="w-8 h-8 text-pink-500" />
-            <span className="text-xl font-bold text-foreground">DateApp</span>
-          </div>
+    <Box
+      as="header"
+      w="full"
+      borderBottom="1px"
+      borderColor={borderColor}
+      bg={bgColor}
+    >
+      <Flex h={16} align="center" justify="space-between" px={6} gap={4}>
+        {/* Logo */}
+        <>
+          <ChakraLink
+            as={NextLink}
+            href="/"
+            aria-label="Home"
+            _hover={{ textDecoration: "none" }}
+          >
+            <Image width={60} src={logo} alt="Logo" />
+          </ChakraLink>
 
-          <div className="flex items-center gap-4">
-            <Button variant="ghost">Discover</Button>
+          {/* Search */}
+          <Box flex="1" maxW="md">
+            <InputGroup>
+              <InputLeftElement pointerEvents="none">
+                <Search size={16} color={iconMuted} />
+              </InputLeftElement>
+              <Input
+                type="search"
+                placeholder="Search"
+                bg={inputBg}
+                variant="filled"
+                focusBorderColor="blue.500"
+              />
+            </InputGroup>
+          </Box>
+        </>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-1">
-                  Social <ChevronDown className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <Instagram className="w-4 h-4" />
-                  Instagram
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4" />
-                  Snapchat
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2">
-                  <Music className="w-4 h-4" />
-                  TikTok
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        {/* Right actions */}
+        <Flex align="center" gap={4}>
+          {/* Notifications */}
+          <Box position="relative">
+            <IconButton
+              variant="ghost"
+              size="sm"
+              aria-label="Notifications"
+              icon={<Bell size={20} />}
+              color={useColorModeValue("gray.600", "gray.300")}
+            />
+            <Box
+              position="absolute"
+              top="-2px"
+              right="-2px"
+              w="10px"
+              h="10px"
+              bg="red.500"
+              border="2px solid"
+              borderColor={bgColor}
+              borderRadius="full"
+            />
+          </Box>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center gap-1">
-                  Profile <ChevronDown className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Edit Profile</DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Log Out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {/* Username */}
+          <Text fontSize="sm" fontWeight="medium">
+            zmakhkha
+          </Text>
 
-            <Button variant="ghost" size="icon" onClick={() => setIsDarkMode(!isDarkMode)}>
-              {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-            </Button>
-          </div>
-        </header>
-  )
-}
+          {/* Avatar */}
+          <Avatar
+            size="sm"
+            name="zmakhkha"
+            src="/images/profile-avatar.png"
+            bg="blue.500"
+            color="white"
+          />
+        </Flex>
+      </Flex>
+    </Box>
+  );
+};
 
-export default Header
+export default Header;

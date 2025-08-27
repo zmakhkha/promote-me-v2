@@ -2,12 +2,12 @@
 
 import React from "react";
 import MainLayout from "@/MainLayout";
-import MainDiscoverPage from "@/components/mainpages/MainDiscoverPage";
+import MainSwipeableCardsPage from "./MainSwipeableCardsPage";
 
 const HomePage = () => {
 
   return (
-    <MainLayout MainComponent={MainDiscoverPage} />
+    <MainLayout MainComponent={MainSwipeableCardsPage} />
   );
 };
 

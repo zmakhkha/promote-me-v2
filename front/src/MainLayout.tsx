@@ -4,12 +4,11 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import React from "react";
 import Sidebar from "@/common/Sidebar";
 import useColorModeStyles from "@/utils/useColorModeStyles";
-import Header from "@/common/Header";
+import Header from "@/components/Header";
 import { useRouter } from "next/navigation";
 import socketConnect from "@/services/axios/socketConnect";
 import { checkAuthTokens } from "@/services/axios/CheckAuthAndConnect";
 
-// Corrected typing for MainComponent prop
 interface MainLayoutProps {
   MainComponent: React.ComponentType;
 }
@@ -20,9 +19,9 @@ const MainLayout = ({ MainComponent }: MainLayoutProps) => {
 
   React.useEffect(() => {
     const isAuthenticated = checkAuthTokens();
-    console.log("isAuthenticated:", isAuthenticated);
     if (!isAuthenticated) {
       router.push("/login");
+      return;
     }
     socketConnect("1");
   }, [router]);
@@ -32,13 +31,12 @@ const MainLayout = ({ MainComponent }: MainLayoutProps) => {
       templateAreas={{
         base: `"header"
                "main"`,
-        md: `"nav header"
+        md: `"header header"
              "nav main"`,
       }}
-      gridTemplateRows={{ base: "auto 1fr", md: "60px 1fr" }}
-      gridTemplateColumns={{ base: "1fr", md: "200px 1fr" }}
+      gridTemplateRows={{ base: "60px 1fr", md: "60px 1fr" }}
+      gridTemplateColumns={{ base: "1fr", md: "60px 1fr" }}
       height="100vh"
-      gap="0.5"
       color={textColor}
       fontWeight="bold"
     >
@@ -56,8 +54,6 @@ const MainLayout = ({ MainComponent }: MainLayoutProps) => {
 
       <GridItem
         area="main"
-        position="sticky"
-        zIndex="1"
         overflowY="auto"
         pl="2"
         bg={navBgColor}

@@ -71,7 +71,7 @@ interface UserProfile {
 
 type UserStage = "unseen_users" | "other_users" | "no_more_users";
 
-const SwipeableCardsPage = () => {
+const MainSwipeableCardsPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const {
     isOpen: isSettingsOpen,
@@ -674,4 +674,4 @@ const SwipeableCardsPage = () => {
   );
 };
 
-export default SwipeableCardsPage;
+export default MainSwipeableCardsPage;
