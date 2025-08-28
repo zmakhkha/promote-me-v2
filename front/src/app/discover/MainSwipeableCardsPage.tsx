@@ -419,7 +419,7 @@ const MainSwipeableCardsPage = () => {
           alignItems="center"
           justifyContent="center"
           pointerEvents="none"
-          zIndex={50}
+          zIndex={5}
         >
           <Box
             p={4}

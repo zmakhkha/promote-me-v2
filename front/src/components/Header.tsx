@@ -16,7 +16,8 @@ import {
   useColorModeValue,
   useColorMode,
 } from "@chakra-ui/react";
-import { Search, Bell } from "lucide-react";
+import { Search, Sun, Moon } from "lucide-react";
+import NotificationBell from "./NotificationBell"; // Import the new component
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
 
@@ -25,7 +26,7 @@ const Header = () => {
   const bgColor = useColorModeValue("white", "gray.800");
   const inputBg = useColorModeValue("gray.50", "gray.700");
   const iconMuted = useColorModeValue("#6B7280", "#9CA3AF"); // gray-500 / gray-400
-  const { colorMode } = useColorMode();
+  const { colorMode, toggleColorMode } = useColorMode();
   const logo = colorMode === "light" ? logoLight : logoDark;
 
   return (
@@ -67,27 +68,18 @@ const Header = () => {
 
         {/* Right actions */}
         <Flex align="center" gap={4}>
-          {/* Notifications */}
-          <Box position="relative">
-            <IconButton
-              variant="ghost"
-              size="sm"
-              aria-label="Notifications"
-              icon={<Bell size={20} />}
-              color={useColorModeValue("gray.600", "gray.300")}
-            />
-            <Box
-              position="absolute"
-              top="-2px"
-              right="-2px"
-              w="10px"
-              h="10px"
-              bg="red.500"
-              border="2px solid"
-              borderColor={bgColor}
-              borderRadius="full"
-            />
-          </Box>
+          {/* Color Mode Toggle */}
+          <IconButton
+            variant="ghost"
+            size="sm"
+            aria-label={`Switch to ${colorMode === "light" ? "dark" : "light"} mode`}
+            icon={colorMode === "light" ? <Moon size={20} /> : <Sun size={20} />}
+            color={useColorModeValue("gray.600", "gray.300")}
+            onClick={toggleColorMode}
+          />
+
+          {/* Notifications Bell Component */}
+          <NotificationBell />
 
           {/* Username */}
           <Text fontSize="sm" fontWeight="medium">
