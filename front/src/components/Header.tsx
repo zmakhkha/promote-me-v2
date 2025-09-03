@@ -20,6 +20,8 @@ import { Search, Sun, Moon } from "lucide-react";
 import NotificationBell from "./NotificationBell"; // Import the new component
 import logoLight from "../../public/logo-light.png";
 import logoDark from "../../public/logo-dark.png";
+import SearchInput from "./SearchInput";
+
 
 const Header = () => {
   const borderColor = useColorModeValue("gray.200", "gray.700");
@@ -28,6 +30,7 @@ const Header = () => {
   const iconMuted = useColorModeValue("#6B7280", "#9CA3AF"); // gray-500 / gray-400
   const { colorMode, toggleColorMode } = useColorMode();
   const logo = colorMode === "light" ? logoLight : logoDark;
+  const onSearch  = () =>{}
 
   return (
     <Box
@@ -37,9 +40,9 @@ const Header = () => {
       borderColor={borderColor}
       bg={bgColor}
     >
-      <Flex h={16} align="center" justify="space-between" px={6} gap={4}>
+      <Flex h={16} align="center" justify="space-between" px={6} >
         {/* Logo */}
-        <>
+        
           <ChakraLink
             as={NextLink}
             href="/"
@@ -50,22 +53,7 @@ const Header = () => {
           </ChakraLink>
 
           {/* Search */}
-          <Box flex="1" maxW="md">
-            <InputGroup>
-              <InputLeftElement pointerEvents="none">
-                <Search size={16} color={iconMuted} />
-              </InputLeftElement>
-              <Input
-                type="search"
-                placeholder="Search"
-                bg={inputBg}
-                variant="filled"
-                focusBorderColor="blue.500"
-              />
-            </InputGroup>
-          </Box>
-        </>
-
+          <SearchInput onSearch={onSearch} />
         {/* Right actions */}
         <Flex align="center" gap={4}>
           {/* Color Mode Toggle */}

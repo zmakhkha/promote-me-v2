@@ -58,7 +58,7 @@ const Sidebar = () => {
         bg={bg}
         p={4}
         w="100%"
-        h="100vh"
+        h="95vh"
         position="sticky"
         top="0"
       >

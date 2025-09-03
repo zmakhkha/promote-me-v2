@@ -1,3 +1,4 @@
+// MainLayout.tsx
 "use client";
 
 import { Grid, GridItem } from "@chakra-ui/react";
@@ -12,6 +13,8 @@ import { checkAuthTokens } from "@/services/axios/CheckAuthAndConnect";
 interface MainLayoutProps {
   MainComponent: React.ComponentType;
 }
+
+const HEADER_H = 60; // px
 
 const MainLayout = ({ MainComponent }: MainLayoutProps) => {
   const { bg, textColor, navBgColor } = useColorModeStyles();
@@ -29,14 +32,13 @@ const MainLayout = ({ MainComponent }: MainLayoutProps) => {
   return (
     <Grid
       templateAreas={{
-        base: `"header"
-               "main"`,
-        md: `"header header"
-             "nav main"`,
+        base: `"header" "main"`,
+        md: `"header header" "nav main"`,
       }}
-      gridTemplateRows={{ base: "60px 1fr", md: "60px 1fr" }}
+      gridTemplateRows={{ base: `${HEADER_H}px 1fr`, md: `${HEADER_H}px 1fr` }}
       gridTemplateColumns={{ base: "1fr", md: "60px 1fr" }}
-      height="100vh"
+      height="100dvh"                // <- exact viewport height, mobile-safe
+      overflow="hidden"              // <- kill page scrollbars
       color={textColor}
       fontWeight="bold"
     >
@@ -48,15 +50,16 @@ const MainLayout = ({ MainComponent }: MainLayoutProps) => {
         area="nav"
         bg={navBgColor}
         display={{ base: "none", md: "block" }}
+        overflow="hidden"
       >
         <Sidebar />
       </GridItem>
 
       <GridItem
         area="main"
-        overflowY="auto"
-        pl="2"
         bg={navBgColor}
+        overflow="hidden"           // <- prevent vertical/horizontal scroll here
+        p={0}
       >
         <MainComponent />
       </GridItem>

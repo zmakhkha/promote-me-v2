@@ -78,7 +78,7 @@ const MainInstagram = () => {
         bg={bg}
       >
         <Text fontSize="3xl" fontWeight="bold" color={textColor}>
-          Tiktok Users
+          Instagram Users
         </Text>
       </Box>
 
