@@ -338,3 +338,41 @@ class DiscoverUserSerializer(serializers.ModelSerializer):
             return None
         # Assuming haversine is already implemented
         return haversine(current_user.longitude, current_user.latitude, obj.longitude, obj.latitude)
+
+from rest_framework import serializers
+from .models import DefaultUser
+
+class UserSearchSerializer(serializers.ModelSerializer):
+    fullName = serializers.SerializerMethodField()
+    avatarUrl = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DefaultUser
+        fields = ("id", "fullName", "username", "location", "avatarUrl")
+
+    def get_fullName(self, obj):
+        return f"{obj.first_name} {obj.last_name}".strip()
+
+    def get_avatarUrl(self, obj):
+        # use main profile image; adjust if you want image_url instead
+        request = self.context.get("request")
+        if obj.image_profile and hasattr(obj.image_profile, "url"):
+            return request.build_absolute_uri(obj.image_profile.url) if request else obj.image_profile.url
+        return ""
+
+# users/serializers.py
+from rest_framework import serializers
+from .models import DefaultUser
+
+class UserSearchSerializer(serializers.ModelSerializer):
+    avatarUrl = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DefaultUser
+        fields = ("id", "first_name", "last_name","username", "location", "avatarUrl")
+
+    def get_avatarUrl(self, obj):
+        request = self.context.get("request")
+        if obj.image_profile and hasattr(obj.image_profile, "url"):
+            return request.build_absolute_uri(obj.image_profile.url) if request else obj.image_profile.url
+        return ""

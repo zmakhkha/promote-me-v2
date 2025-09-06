@@ -43,4 +43,6 @@ urlpatterns = [
     # Complete profile 
     path('profile/complete/personal-info', UserPersonalInfo.as_view(), name='profile-complete'),
     path('profile/delete-image', UserImageDelete.as_view(), name='delete-image'),
+
+	path("search/", UserSearchView.as_view(), name="user-search"),
 ]

@@ -170,14 +170,10 @@ class DefaultUser(AbstractBaseUser, PermissionsMixin):
             else:
                 if value in [None, '', []]:
                     return False
-
         return True
-
         
         
-
-
-    
+        
 class OTPVerification(models.Model):
     user = models.OneToOneField(DefaultUser, on_delete=models.CASCADE)
     otp = models.CharField(max_length=6)

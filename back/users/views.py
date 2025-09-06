@@ -515,3 +515,36 @@ class DiscoverUserListView(generics.ListAPIView):
             "unseen_users": unseen_users_data,
             "other_users": other_users_data,
         })
+
+
+# users/views.py
+from django.db.models import Q
+from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .models import DefaultUser
+from .serializers import UserSearchSerializer
+
+class UserSearchView(ListAPIView):
+    serializer_class = UserSearchSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        q = self.request.query_params.get("q", "").strip()
+        limit = int(self.request.query_params.get("limit", 8))
+        # qs = DefaultUser.objects.filter(is_active=True, is_discoverable=True)
+        qs = DefaultUser.objects.filter(is_active=True)
+        if q:
+            qs = qs.filter(
+                Q(username__icontains=q) |
+                Q(first_name__icontains=q) |
+                Q(last_name__icontains=q) 
+                # Q(location__icontains=q)
+            )
+        return qs.order_by("username")[:limit]
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True, context={"request": request})
+        print("[USER_SEARCH_RESULTS]", serializer.data)  # or use logging
+        return Response(serializer.data)

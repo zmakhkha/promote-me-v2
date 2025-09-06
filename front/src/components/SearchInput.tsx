@@ -11,11 +11,22 @@ import {
   useColorModeValue,
   Spinner,
 } from "@chakra-ui/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { BsSearch } from "react-icons/bs";
 import { useOutsideClick } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { User, USERS } from "@/lib/data";
+import { AxiosError } from "axios";
+import api from "@/services/axios/api";
+
+// User interface matching your Django model
+interface User {
+  id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  location: string;
+  avatar?: string;
+}
 
 interface Props {
   onSearch: (searchText: string) => void;
@@ -26,31 +37,89 @@ const SearchInput = ({ onSearch }: Props) => {
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState<number>(-1);
   const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState<User[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const cancelTokenRef = useRef<any>(null);
+
   useOutsideClick({ ref: containerRef, handler: () => setOpen(false) });
 
-  // Simulate async filtering latency (debounce-ish, feels real)
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  useEffect(() => {
-    setLoading(true);
-    const t = setTimeout(() => {
-      setDebouncedQuery(query.trim());
-      setLoading(false);
-    }, 150);
-    return () => clearTimeout(t);
-  }, [query]);
+  // Search function using your axios instance
+  const searchUsers = useCallback(async (searchQuery: string) => {
+    // Cancel previous request if it exists
+    if (cancelTokenRef.current) {
+      cancelTokenRef.current.cancel('Request canceled due to new search');
+    }
 
-  const results = useMemo<User[]>(() => {
-    if (!debouncedQuery) return [];
-    const q = debouncedQuery.toLowerCase();
-    return USERS.filter(
-      (u) =>
-        u.fullName.toLowerCase().includes(q) ||
-        u.username.toLowerCase().includes(q) ||
-        u.location.toLowerCase().includes(q)
-    ).slice(0, 8); // cap results for UX
-  }, [debouncedQuery]);
+    if (!searchQuery.trim()) {
+      setResults([]);
+      setError(null);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    // Create cancel token for this request
+    const CancelToken = require('axios').CancelToken;
+    const source = CancelToken.source();
+    cancelTokenRef.current = source;
+
+    try {
+      const response = await api.get('/search/', {
+        params: {
+          q: searchQuery,
+          // limit: 8
+        },
+        cancelToken: source.token
+      });
+
+      setResults(response.data);
+    } catch (err) {
+      if (!require('axios').isCancel(err)) {
+        if (err instanceof AxiosError) {
+          if (err.response?.status === 401) {
+            setError('Please log in to search users');
+          } else if (err.response?.status === 403) {
+            setError('You do not have permission to search users');
+          } else if (err.response?.status >= 500) {
+            setError('Server error. Please try again later.');
+          } else if (err.code === 'NETWORK_ERROR') {
+            setError('Network error. Please check your connection.');
+          } else {  
+            setError(err.response?.data?.message || 'Failed to search users');
+          }
+        } else {
+          setError('An unexpected error occurred');
+        }
+        setResults([]);
+      }
+    } finally {
+      setLoading(false);
+      cancelTokenRef.current = null;
+    }
+  }, []);
+
+  // Debounce effect
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      searchUsers(query);
+    }, 300);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [query, searchUsers]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current.cancel('Component unmounted');
+      }
+    };
+  }, []);
 
   const itemBg = useColorModeValue("white", "gray.800");
   const itemHover = useColorModeValue("gray.50", "gray.700");
@@ -77,13 +146,27 @@ const SearchInput = ({ onSearch }: Props) => {
       setHighlight((h) => (h - 1 + results.length) % results.length);
     } else if (e.key === "Enter") {
       if (highlight >= 0 && highlight < results.length) {
-        // Simulate navigation/selection: call onSearch with username
         onSearch(results[highlight].username);
         setOpen(false);
       }
     } else if (e.key === "Escape") {
       setOpen(false);
     }
+  };
+
+  const getFullName = (user: User) => {
+    return `${user.first_name} ${user.last_name}`.trim() || user.username;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+    setOpen(true);
+    setHighlight(-1);
+  };
+
+  const handleUserSelect = (username: string) => {
+    onSearch(username);
+    setOpen(false);
   };
 
   return (
@@ -99,11 +182,7 @@ const SearchInput = ({ onSearch }: Props) => {
           <InputLeftElement pointerEvents="none" children={<BsSearch />} />
           <Input
             value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setOpen(true);
-              setHighlight(-1);
-            }}
+            onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             borderRadius={20}
             placeholder="Search users by name, username, or location…"
@@ -136,25 +215,41 @@ const SearchInput = ({ onSearch }: Props) => {
             </Flex>
           )}
 
-          {!loading && !query && (
+          {/* Error state */}
+          {error && !loading && (
+            <Box p={3}>
+              <Text fontSize="sm" color="red.500" mb={1}>
+                {error}
+              </Text>
+              <Text fontSize="xs" color="gray.500">
+                Try again or contact support if the problem persists.
+              </Text>
+            </Box>
+          )}
+
+          {/* Empty state - no query */}
+          {!loading && !error && !query && (
             <Text p={3} fontSize="sm" color="gray.500">
               Start typing to search users.
             </Text>
           )}
 
-          {!loading && query && results.length === 0 && (
+          {/* Empty state - no results */}
+          {!loading && !error && query && results.length === 0 && (
             <Text p={3} fontSize="sm" color="gray.500">
-              No matches found.
+              No matches found for "{query}".
             </Text>
           )}
 
+          {/* Results */}
           {!loading &&
-            results.map((u, idx) => (
+            !error &&
+            results.map((user, idx) => (
               <Box
-                key={u.id}
+                key={user.id}
                 as={NextLink}
-                href={`/users/${u.username}`} // adjust to your route
-                onClick={() => setOpen(false)}
+                href={`/profile/${user.username}`}
+                onClick={() => handleUserSelect(user.username)}
                 _hover={{ textDecoration: "none" }}
               >
                 <Flex
@@ -166,19 +261,31 @@ const SearchInput = ({ onSearch }: Props) => {
                   cursor="pointer"
                   role="option"
                   aria-selected={idx === highlight}
+                  _hover={{ bg: itemHover }}
                 >
-                  <Avatar size="sm" name={u.fullName} src={u.avatarUrl} />
-                  <Box minW={0}>
+                  <Avatar 
+                    size="sm" 
+                    name={getFullName(user)} 
+                    src={user.avatar} 
+                  />
+                  <Box minW={0} flex="1">
                     <Text fontWeight="semibold" noOfLines={1}>
-                      {u.fullName}
+                      {getFullName(user)}
                     </Text>
-                    <Flex gap={2} wrap="wrap">
+                    <Flex gap={2} wrap="wrap" align="center">
                       <Text fontSize="sm" color="gray.500" noOfLines={1}>
-                        @{u.username}
+                        @{user.username}
                       </Text>
-                      <Text fontSize="sm" color="gray.500" noOfLines={1}>
-                        • {u.location}
-                      </Text>
+                      {user.location && (
+                        <>
+                          <Text fontSize="sm" color="gray.400">
+                            •
+                          </Text>
+                          <Text fontSize="sm" color="gray.500" noOfLines={1}>
+                            {user.location}
+                          </Text>
+                        </>
+                      )}
                     </Flex>
                   </Box>
                 </Flex>
