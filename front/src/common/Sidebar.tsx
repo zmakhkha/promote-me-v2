@@ -17,7 +17,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from "@chakra-ui/react";
-import { FaHeart, FaSnapchat, FaInstagram, FaTiktok } from "react-icons/fa6";
+import { FaHeart, FaSnapchat, FaInstagram, FaTiktok, FaCommentDots } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
 import useColorModeStyles from "@/utils/useColorModeStyles";
 
@@ -32,6 +32,7 @@ const Sidebar = () => {
 
   const navItems = [
     { href: "/discover", icon: <FaHeart />, label: "Discover" },
+    { href: "/chat", icon: <FaCommentDots />, label: "Chat" },
     { href: "/snapchat", icon: <FaSnapchat />, label: "Snapchat" },
     { href: "/instagram", icon: <FaInstagram />, label: "Instagram" },
     { href: "/tiktok", icon: <FaTiktok />, label: "TikTok" },

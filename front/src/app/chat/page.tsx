@@ -2,12 +2,12 @@
 
 import React from "react";
 import MainLayout from "@/MainLayout";
-import MainHome from "@/components/mainpages/MainHome";
+import MainChat from "@/components/mainpages/MainChat";
 
 const HomePage = () => {
 
   return (
-    <MainLayout MainComponent={MainHome} />
+    <MainLayout MainComponent={MainChat} />
   );
 };
 
