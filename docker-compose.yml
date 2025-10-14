@@ -1,40 +1,36 @@
 services:
   back-end:
     build: ./back
-    ports:
-      - "2000:2000"
     container_name: backEnd
+    ports: ["2000:2000"]
     volumes:
       - ./back:/code
     depends_on:
-      - db
-    networks:
-      - promote
+      db:
+        condition: service_healthy
+    networks: [promote]
     restart: unless-stopped
-  
+
   db:
     container_name: database
-    image: postgres
+    image: postgres:16
     volumes:
       - data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
-      interval: 1s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 2s
       timeout: 5s
-      retries: 10
+      retries: 20
     env_file:
       - back/.env
-    networks:
-      - promote
+    networks: [promote]
     restart: unless-stopped
 
   adminer:
     container_name: adminer
     image: adminer
-    ports:
-      - "8080:8080"
-    networks:
-      - promote
+    ports: ["8080:8080"]
+    networks: [promote]
     restart: unless-stopped
 
   frontend:
@@ -43,42 +39,30 @@ services:
       dockerfile: Dockerfile
     image: frontend
     container_name: frontend
-    ports:
-      - "3000:3000"
+    ports: ["3000:3000"]
     depends_on:
-      - back-end
-    # env_file:
-    #   - .env
-    networks:
-      - promote
-    restart: unless-stopped
+      back-end:
+        condition: service_started
+    # --- OPTION A: image-only (copy at build; no hot reload) ---
+    # no volumes here
 
-  # frontend:
-  #   build:
-  #     context: ./front
-  #     dockerfile: Dockerfile
-  #   image: frontend
-  #   container_name: frontend
-  #   ports:
-  #     - "3001:3000"               # Next.js dev server runs on 3000 by default
-  #   depends_on:
-  #     - backend
-  #   volumes:
-  #     - ./front:/app
-  #     - /app/node_modules
-  #   environment:
-  #     - HOST=0.0.0.0
-  #     - CHOKIDAR_USEPOLLING=true 
-  #   command: npm run dev
-  #   networks:
-  #     - promote
-  #   restart: unless-stopped
+    # --- OPTION B (dev hot-reload): uncomment below ---
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    # environment:
+    #   - CHOKIDAR_USEPOLLING=1
+    #   - WATCHPACK_POLLING=true
+    # command: npm run dev
+
+    networks: [promote]
+    restart: unless-stopped
 
 networks:
   promote:
   devops:
 
-volumes:  
+volumes:
   data:
   esdata:
   prometheus-data: {}

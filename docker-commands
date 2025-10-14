@@ -1,0 +1,8 @@
+docker compose down --remove-orphans
+docker compose build --no-cache
+docker compose up
+
+
+
+# sanity check:
+docker exec -it frontend sh -lc "ls -la src/app && node -v && npm -v"

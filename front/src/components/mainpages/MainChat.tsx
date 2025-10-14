@@ -142,7 +142,7 @@ const MainChat: React.FC = () => {
         <Flex align="center" gap={2}>
           <HeartHandshake size={18} />
           <Text fontWeight="semibold" color={textMain}>
-            Matches & Chats
+            Matches & Chats lala
           </Text>
         </Flex>
 

@@ -82,7 +82,7 @@ const MainLogin = () => {
         </form>
         {error && <Text color="red.500" mt={2}>{error}</Text>}
         <Text mt={4} textAlign="center" color="gray.600">
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an account-?{" "}
           <Link href="/register" color="pink.500" fontWeight="bold">
             Register
           </Link>
